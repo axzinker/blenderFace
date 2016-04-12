@@ -8,4 +8,5 @@ Maintainer: Axel Zinkernagel <zinkernagel@uni-landau.de>
 Description: Collection of functions to process blender measured facial movement data. This includes functions to scale and plot data.
 License: GPL-3
 RoxygenNote: 5.0.1
-
+URL: https://github.com/axzinker/blenderFace.git
+BugReports: https://github.com/axzinker/blenderFace/issues
