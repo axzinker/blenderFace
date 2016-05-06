@@ -10,7 +10,7 @@ ScaleFaceData(data, colNames, scaleFactor, pupilDist, mouthcornerDist,
 \arguments{
 \item{data}{Data frame containig the columns which should be rescaled. Remaining colums will be returned untouched (e.g., z-values because we have no information to rescale them).}
 
-\item{colNames}{Character vector with names of the columns which should be rescaled. Variable names containing vertical movement should end with "_x", whereas variable names containing horizontal movement should end with "_y".}
+\item{colNames}{Character vector with names of the columns which should be rescaled. Variable names containing vertical movement should end with '_x', whereas variable names containing horizontal movement should end with '_y'.}
 
 \item{scaleFactor}{Numeric variable containing the value of the real world object measured in blender. For example, this can be the diameter of a glue dot measured in blender (default = 8 mm). Therefore, scaling should be done person by person.}
 

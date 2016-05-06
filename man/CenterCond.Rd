@@ -29,6 +29,8 @@ Sets the x/y/z-values of markers in colNames defined variable columns to 0 at th
 \examples{
 CenterCond()
 
+#@include doParallel
+
 }
 \author{
 Axel Zinkernagel \email{zinkernagel@uni-landau.de}

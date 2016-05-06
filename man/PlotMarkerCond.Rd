@@ -29,5 +29,7 @@ PlotXYMarkerMovementPerFrame()
 }
 \author{
 Axel Zinkernagel \email{zinkernagel@uni-landau.de}
+
+#@include plotrix
 }
 

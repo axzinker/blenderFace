@@ -20,7 +20,7 @@ Numeric vector with median distance and angle.
 Computes the distance and the angle for x/y marker movement. Data is supposed to start at x = 0, y =0, use function CenterCond before.
 }
 \examples{
-AngleDistance()
+AngleDistance(x,y)
 
 }
 \author{

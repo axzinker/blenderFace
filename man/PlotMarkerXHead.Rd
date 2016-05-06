@@ -8,7 +8,7 @@ PlotMarkerXHead(data, dataPos, dataScale, center = TRUE, title = "",
   overplot = FALSE, color = "black", alpha = 0.99, rwMeasure = 8)
 }
 \arguments{
-\item{data}{matrix or data-frame with a row sequence of *standardized* x/y coordinates for each marker. Please use function "ScaleFaceData" to standardize data.}
+\item{data}{matrix or data-frame with a row sequence of *standardized* x/y coordinates for each marker. Please use function 'ScaleFaceData' to standardize data.}
 
 \item{dataPos}{numeric vector with x/y starting coordinates each marker should be plotted on the face. Should have equal lenght to the number of columns of data. Default is FIX ME}
 
@@ -20,14 +20,14 @@ PlotMarkerXHead(data, dataPos, dataScale, center = TRUE, title = "",
 
 \item{overplot}{If TRUE, only the marker plots, but no base graph is plotted. Default is FALSE.}
 
-\item{color}{character vector of lenght one to define the color for plotting the Marker. Default is "black".}
+\item{color}{character vector of lenght one to define the color for plotting the Marker. Default is 'black'.}
 
 \item{alpha}{alpha value / density for marker plots. Default = .99}
 
 \item{rwMeasure}{Optional. Real world measure of the object diameter used to rescale. Default is the diameter of a glue dot of 8 millimeter.}
 }
 \value{
-nice "Quadratschädel" (square head) Plot
+nice 'Quadratschaedel' (square head) Plot
 }
 \description{
 Plots symbolic standardized head with markers plotted on predefined areas.

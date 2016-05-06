@@ -18,7 +18,7 @@ PlotXYMarkerMovementPerFrame(frames, xMarker, yMarker, center = TRUE,
 
 \item{center}{if TRUE, center x/y values by setting the x/y values to 0 at the first (appropriate, e.g. non NA frame) frame. Default = TRUE}
 
-\item{color}{character vector of two values to define color for x/y values of the Marker. Default is c("red","orange").}
+\item{color}{character vector of two values to define color for x/y values of the Marker. Default is c('red','orange').}
 
 \item{title}{Default is no title.}
 
