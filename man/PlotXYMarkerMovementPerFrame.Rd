@@ -2,38 +2,38 @@
 % Please edit documentation in R/05_Function_PlotXYMarkerMovementPerFrame.R
 \name{PlotXYMarkerMovementPerFrame}
 \alias{PlotXYMarkerMovementPerFrame}
-\title{Plot marker movement per frame
- 
-Plots separate lines for the x,y marker values (y-axis) per frame (x-axis).}
+\title{Plot marker movement per frame}
 \usage{
 PlotXYMarkerMovementPerFrame(frames, xMarker, yMarker, center = TRUE,
   color = c("red", "orange"), title = "", overplot = FALSE)
 }
 \arguments{
-\item{frames}{numeric vector containing the frames for which x/y-values should be plotted}
+\item{frames}{numeric vector containing the frames for which x/y-values
+should be plotted}
 
 \item{xMarker}{numeric vector with x values (same length as frames vector)}
 
 \item{yMarker}{numeric vector with y values (same length as frames vector)}
 
-\item{center}{if TRUE, center x/y values by setting the x/y values to 0 at the first (appropriate, e.g. non NA frame) frame. Default = TRUE}
+\item{center}{if TRUE, center x/y values by setting the x/y values to 0 at
+the first (appropriate, e.g. non NA frame) frame. Default = TRUE}
 
-\item{color}{character vector of two values to define color for x/y values of the Marker. Default is c('red','orange').}
+\item{color}{character vector of two values to define color for x/y values of
+the Marker. Default is c('red','orange').}
 
 \item{title}{Default is no title.}
 
-\item{overplot}{If TRUE, only the x/y lines, but no base graph is plotted. Default is FALSE.}
+\item{overplot}{If TRUE, only the x/y lines, but no base graph is plotted.
+Default is FALSE.}
 }
 \value{
 nice Plot
 }
 \description{
-Plot marker movement per frame
- 
 Plots separate lines for the x,y marker values (y-axis) per frame (x-axis).
 }
 \examples{
-PlotXYMarkerMovementPerFrame()
+\dontrun{PlotXYMarkerMovementPerFrame()}
   
 }
 \author{

@@ -17,10 +17,11 @@ AngleDistance(x, y, verbose = FALSE)
 Numeric vector with median distance and angle.
 }
 \description{
-Computes the distance and the angle for x/y marker movement. Data is supposed to start at x = 0, y =0, use function CenterCond before.
+Computes the distance and the angle for x/y marker movement. Data is supposed
+to start at x = 0, y =0, use function CenterCond before.
 }
 \examples{
-AngleDistance(x,y)
+\dontrun{AngleDistance(x,y)}
 
 }
 \author{

@@ -8,13 +8,19 @@ ScaleBlenderData(data, colNames, scaleFactor, rwMeasure = 8,
   verbose = FALSE)
 }
 \arguments{
-\item{data}{Data frame containig the columns which should be rescaled. Remaining colums will be returned untouched.}
+\item{data}{Data frame containig the columns which should be rescaled.
+Remaining colums will be returned untouched.}
 
-\item{colNames}{Character vector with names of the columns which should be rescaled.}
+\item{colNames}{Character vector with names of the columns which should be
+rescaled.}
 
-\item{scaleFactor}{Numeric variable containing the value of the real world object measured in blender. For example, this can be the diameter of a glue dot measured in blender (default = 8 mm). Therefore, scaling should be done person by person.}
+\item{scaleFactor}{Numeric variable containing the value of the real world
+object measured in blender. For example, this can be the diameter of a glue
+dot measured in blender (default = 8 mm). Therefore, scaling should be done
+person by person.}
 
-\item{rwMeasure}{Optional. Real world measure of the object diamoter used to rescale. Default is the diameter of a glue dot of 8 millimeter.}
+\item{rwMeasure}{Optional. Real world measure of the object diamoter used to
+rescale. Default is the diameter of a glue dot of 8 millimeter.}
 
 \item{verbose}{If TRUE, the function prints verbose output. Otherwise not.}
 }
@@ -22,10 +28,13 @@ ScaleBlenderData(data, colNames, scaleFactor, rwMeasure = 8,
 Data frame with scaled columns.
 }
 \description{
-Scales columns of a data frame according to a scale factor. For example, the scale factor can be the diameter of a glue dot measured in blender. The columns are rescaled accordingly to represent Millimeter instead of blender units as measurement unit.
+Scales columns of a data frame according to a scale factor. For example, the
+scale factor can be the diameter of a glue dot measured in blender. The
+columns are rescaled accordingly to represent Millimeter instead of blender
+units as measurement unit.
 }
 \examples{
-ScaleBlenderData()
+\dontrun{ScaleBlenderData()}
 
 }
 \author{

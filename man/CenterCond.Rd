@@ -8,15 +8,21 @@ CenterCond(data, colNames, colNameSubj, colNameFrames, colNameCond,
   verbose = FALSE)
 }
 \arguments{
-\item{data}{Data frame containig the columns which should be centered. Remaining colums will be returned untouched.}
+\item{data}{Data frame containig the columns which should be centered.
+Remaining colums will be returned untouched.}
 
-\item{colNames}{Character vector with names of the columns which should be centered.}
+\item{colNames}{Character vector with names of the columns which should be
+centered.}
 
-\item{colNameSubj}{Character vector with a single value containig the name of the subject column. It is assumed, that each experimental condition occurres only once per subject}
+\item{colNameSubj}{Character vector with a single value containig the name of
+the subject column. It is assumed, that each experimental condition
+occurres only once per subject}
 
-\item{colNameFrames}{Character vector with a single value containig the name of the frames column.}
+\item{colNameFrames}{Character vector with a single value containig the name
+of the frames column.}
 
-\item{colNameCond}{Character vector with a single value containing the experimental conditions column name of the data frame.}
+\item{colNameCond}{Character vector with a single value containing the
+experimental conditions column name of the data frame.}
 
 \item{verbose}{If TRUE, the function prints verbose output. Otherwise not.}
 }
@@ -24,10 +30,12 @@ CenterCond(data, colNames, colNameSubj, colNameFrames, colNameCond,
 Data frame with centered columns.
 }
 \description{
-Sets the x/y/z-values of markers in colNames defined variable columns to 0 at the start of every condition defined in variable cond. This is done for every subject marked in column colNameSubj.
+Sets the x/y/z-values of markers in colNames defined variable columns to 0 at
+the start of every condition defined in variable cond. This is done for every
+subject marked in column colNameSubj.
 }
 \examples{
-CenterCond()
+\dontrun{CenterCond()}
 
 #@include doParallel
 

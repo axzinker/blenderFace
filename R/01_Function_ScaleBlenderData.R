@@ -22,7 +22,7 @@
 #' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
 #'   
 #' @examples
-#' ScaleBlenderData()
+#' \dontrun{ScaleBlenderData()}
 #' 
 #' @export
 ScaleBlenderData <- function(data, colNames, scaleFactor, rwMeasure = 8, verbose = FALSE) {

@@ -4,30 +4,44 @@
 \alias{ConcatData}
 \title{Concatenate data files}
 \usage{
-ConcatData(filenames, inputDirectory, subjectColumn, outputFilename,
+ConcatData(dataFileNames, inputDirectory, subjectColumn, outputFilename,
   outputDirectory = "", verbose = FALSE)
 }
 \arguments{
-\item{inputDirectory}{Character variable containing the path to the input files (e.g., on Windows: 'C:/Data/Blenderdata/', on Linux: '/home/user/Data/Blenderdata/). Should end with a backslash (or slash, respectively).}
+\item{dataFileNames}{character vector of the filenames to be concatenated. Possible
+filetypes are csv and R data files (File endings: *.csv, *.rda, *.Rdata).}
 
-\item{subjectColumn}{logical value. Does the data files contain a column with the subject number? Otherwise the subject number has to be part of the filename accompanied by a left and right underscore (e.g., 'Subj_39_Experiment1.RData'). The first enclosed number is used (e.g., 'Subj_39_Experiment_02_Test.RData' -> 39)}
+\item{inputDirectory}{Character variable containing the path to the input
+files (e.g., on Windows: 'C:/Data/Blenderdata/', on Linux:
+'/home/user/Data/Blenderdata/). Should end with a backslash (or slash,
+respectively).}
+
+\item{subjectColumn}{logical value. Does the data files contain a column with
+the subject number? Otherwise the subject number has to be part of the
+filename accompanied by a left and right underscore (e.g.,
+'Subj_39_Experiment1.RData'). The first enclosed number is used (e.g.,
+'Subj_39_Experiment_02_Test.RData' -> 39)}
 
 \item{outputFilename}{Name of the output file}
 
-\item{outputDirectory}{Optional. Path to where the output file should be saved (e.g., on Windows: 'C:/Data/Blenderdata/output/', on Linux: '/home/user/Data/Blenderdata/output/). If empty, path of inputDirectory is beeing used. Should end with a backslash (or slash, respectively).}
+\item{outputDirectory}{Optional. Path to where the output file should be
+saved (e.g., on Windows: 'C:/Data/Blenderdata/output/', on Linux:
+'/home/user/Data/Blenderdata/output/). If empty, path of inputDirectory is
+beeing used. Should end with a backslash (or slash, respectively).}
 
 \item{verbose}{If TRUE, the function prints verbose output.}
-
-\item{data}{character vector of the filenames to be concatenated. Possible filetypes are csv and R data files (File endings: *.csv, *.rda, *.Rdata).}
 }
 \value{
 Returns data frame and saves Rdata file of concatenated input files.
 }
 \description{
-Concatenate several csv/Rdata files into one large 'master'-file. Either csv or Rdata files can be concatenated, but not mixed files. Data files must not have the same number of colums. The exhaustive number of columns will be determined by this function.
+Concatenate several csv/Rdata files into one large 'master'-file. Either csv
+or Rdata files can be concatenated, but not mixed files. Data files must not
+have the same number of colums. The exhaustive number of columns will be
+determined by this function.
 }
 \examples{
-ConcatData()
+\dontrun{ConcatData()}
 
 }
 \author{

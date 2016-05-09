@@ -7,29 +7,32 @@
 PlotMarkerCond(data, colNames, colNameCond, title = "", verbose = FALSE)
 }
 \arguments{
-\item{data:}{data frame containig the data to be plotted}
+\item{data}{data frame containig the data to be plotted}
 
-\item{colNames:}{character vector naming the two columns with the x/y-Values to be plotted}
+\item{colNames}{character vector naming the two columns with the x/y-Values
+to be plotted}
 
-\item{colNamesCond:}{character vector naming the column containig the conditions}
+\item{colNameCond}{character vector naming the column containig the
+conditions}
 
-\item{title:}{Default is no title.}
+\item{title}{Default is no title.}
 
-\item{verbose:}{print verbose output}
+\item{verbose}{print verbose output}
 }
 \value{
-Plot of median movement of marker with quartile ellipse around per condition
+Plot of median movement of marker with quartile ellipse around per
+  condition
 }
 \description{
 Plots the median and quartile ellipse per experimental condition
 }
 \examples{
-PlotXYMarkerMovementPerFrame()
+\dontrun{PlotXYMarkerMovementPerFrame()}
    
 }
 \author{
 Axel Zinkernagel \email{zinkernagel@uni-landau.de}
-
-#@include plotrix
+  
+  #@include plotrix
 }
 

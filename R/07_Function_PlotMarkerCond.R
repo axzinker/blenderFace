@@ -2,13 +2,13 @@
 #' 
 #' Plots the median and quartile ellipse per experimental condition
 #' 
-#' @param data: data frame containig the data to be plotted
-#' @param colNames: character vector naming the two columns with the x/y-Values
+#' @param data data frame containig the data to be plotted
+#' @param colNames character vector naming the two columns with the x/y-Values
 #'   to be plotted
-#' @param colNamesCond: character vector naming the column containig the
+#' @param colNameCond character vector naming the column containig the
 #'   conditions
-#' @param title: Default is no title.
-#' @param verbose: print verbose output
+#' @param title Default is no title.
+#' @param verbose print verbose output
 #'   
 #' @return Plot of median movement of marker with quartile ellipse around per
 #'   condition
@@ -18,7 +18,7 @@
 #'   #@include plotrix
 #'   
 #' @examples
-#' PlotXYMarkerMovementPerFrame()
+#' \dontrun{PlotXYMarkerMovementPerFrame()}
 #'    
 #' @export
 PlotMarkerCond <- function(data, colNames, colNameCond, title = "", verbose = FALSE) {

@@ -20,7 +20,7 @@
 #' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
 #'   
 #' @examples
-#' CenterCond()
+#' \dontrun{CenterCond()}
 #' 
 #' #@include doParallel
 #' 

@@ -12,7 +12,7 @@
 #' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
 #'   
 #' @examples
-#' AngleDistance(x,y)
+#' \dontrun{AngleDistance(x,y)}
 #' 
 #' @export
 AngleDistance <- function(x, y, verbose = FALSE) {

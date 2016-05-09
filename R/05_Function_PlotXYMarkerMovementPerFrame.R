@@ -19,7 +19,7 @@
 #' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
 #'   
 #' @examples
-#' PlotXYMarkerMovementPerFrame()
+#' \dontrun{PlotXYMarkerMovementPerFrame()}
 #'   
 #' @export
 PlotXYMarkerMovementPerFrame <- function(frames, xMarker, yMarker, center = TRUE, color = c("red", "orange"), title = "", overplot = FALSE) {

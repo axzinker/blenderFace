@@ -29,7 +29,7 @@
 #'   \email{rainer.alexandrowicz@aau.at, zinkernagel@uni-landau.de}
 #'   
 #' @examples
-#' PlotMarkerXHead()
+#' \dontrun{PlotMarkerXHead()}
 #' 
 #' @export
 PlotMarkerXHead <- function(data, dataPos, dataScale, center = TRUE, title = "", overplot = FALSE, color = "black", alpha = 0.99, rwMeasure = 8) {

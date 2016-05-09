@@ -29,7 +29,7 @@
 #'   \email{rainer.alexandrowicz@aau.at, zinkernagel@uni-landau.de}
 #'   
 #' @examples
-#' ScaleBlenderData()
+#' \dontrun{ScaleBlenderData()}
 #' 
 #' @return Data frame with scaled columns.
 #'   

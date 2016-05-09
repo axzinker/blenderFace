@@ -5,7 +5,7 @@
 #' have the same number of colums. The exhaustive number of columns will be
 #' determined by this function.
 #' 
-#' @param data character vector of the filenames to be concatenated. Possible
+#' @param dataFileNames character vector of the filenames to be concatenated. Possible
 #'   filetypes are csv and R data files (File endings: *.csv, *.rda, *.Rdata).
 #' @param inputDirectory Character variable containing the path to the input
 #'   files (e.g., on Windows: 'C:/Data/Blenderdata/', on Linux:
@@ -28,13 +28,13 @@
 #' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
 #'   
 #' @examples
-#' ConcatData()
+#' \dontrun{ConcatData()}
 #' 
 #' @export
-ConcatData <- function(filenames, inputDirectory, subjectColumn, outputFilename, outputDirectory = "", verbose = FALSE) {
+ConcatData <- function(dataFileNames, inputDirectory, subjectColumn, outputFilename, outputDirectory = "", verbose = FALSE) {
     # Error handling
-    if (!is.character(filenames) | length(filenames > 1)) {
-        stop("Argument filnames does not contain two or more filenames!")
+    if (!is.character(dataFileNames) | length(dataFileNames > 1)) {
+        stop("Argument dataFilNames does not contain two or more filenames!")
     }
     if (!(is.character(inputDirectory))) {
         stop("Argument inputDirectory is not of type character!")
@@ -60,7 +60,7 @@ ConcatData <- function(filenames, inputDirectory, subjectColumn, outputFilename,
         # Add Slash, if needed
         outputDirectory <- paste(outputDirectory, "/", sep = "")
     }
-    if (!(is.character(filenames)) | !(length(filenames) > 1)) {
+    if (!(is.character(dataFileNames)) | !(length(dataFileNames) > 1)) {
         stop("Argument filenames is not of type character or does not contain more than one value!")
     }
     if (!(is.logical(subjectColumn))) {
@@ -75,10 +75,10 @@ ConcatData <- function(filenames, inputDirectory, subjectColumn, outputFilename,
     
     # Determing file type from file ending (*.csv, *.rda, *.Rdata) (first filename used)
     filetype <- NULL
-    if (tolower(strsplit(filenames[1], "\\.")[[1]][2]) == "csv") {
+    if (tolower(strsplit(dataFileNames[1], "\\.")[[1]][2]) == "csv") {
         filetype <- "csv"
     }
-    if ((tolower(strsplit(filenames[1], "\\.")[[1]][2]) == "rda") | (tolower(strsplit(filenames[1], "\\.")[[1]][2]) == "rdata")) {
+    if ((tolower(strsplit(dataFileNames[1], "\\.")[[1]][2]) == "rda") | (tolower(strsplit(dataFileNames[1], "\\.")[[1]][2]) == "rdata")) {
         filetype <- "rda"
     }
     if (!((filetype != "csv") | (filetype != "rda"))) {
@@ -91,19 +91,19 @@ ConcatData <- function(filenames, inputDirectory, subjectColumn, outputFilename,
     }
     
     dataColNames <- NULL
-    for (i in 1:length(filenames)) {
+    for (i in 1:length(dataFileNames)) {
         if (verbose) {
             print(paste("Reading columns of file ", dataFileNames[i], " (", i, "/", length(dataFileNames), ")", sep = ""))
         }
         if (filetype == "rda") {
             # loading Rdata-files
-            dataName <- load(paste(inputDirectory, filenames[i], sep = ""))
+            dataName <- load(paste(inputDirectory, dataFileNames[i], sep = ""))
             tempData <- get(dataName)
             rm(list = dataName)  # delete temp data to keep memory usage low
         }
         if (filetype == "csv") {
             # loading csv-files
-            tempData <- read.csv2(paste(inputDirectory, filenames[i], sep = ""), header = TRUE, sep = ";", nrows = 1)
+            tempData <- read.csv2(paste(inputDirectory, dataFileNames[i], sep = ""), header = TRUE, sep = ";", nrows = 1)
         }
         dataColNames <- c(dataColNames, names(tempData))
     }
@@ -135,7 +135,7 @@ ConcatData <- function(filenames, inputDirectory, subjectColumn, outputFilename,
     }
     
     # load an concatenate files
-    for (i in 1:length(filenames)) {
+    for (i in 1:length(dataFileNames)) {
         if (verbose) {
             print(paste("Concatenating file ", dataFileNames[i], " (", i, "/", length(dataFileNames), ")", sep = ""))
         } else {
@@ -144,13 +144,13 @@ ConcatData <- function(filenames, inputDirectory, subjectColumn, outputFilename,
         }
         if (filetype == "rda") {
             # loading Rdata-files
-            dataName <- load(paste(inputDirectory, filenames[i], sep = ""))
+            dataName <- load(paste(inputDirectory, dataFileNames[i], sep = ""))
             tempData <- get(dataName)
             rm(list = dataName)  # delete temp data to keep memory usage low
         }
         if (filetype == "csv") {
             # loading csv-files
-            tempData <- read.csv2(paste(inputDirectory, filenames[i], sep = ""), header = TRUE, sep = ";")
+            tempData <- read.csv2(paste(inputDirectory, dataFileNames[i], sep = ""), header = TRUE, sep = ";")
         }
         
         if (!subjectColumn) {

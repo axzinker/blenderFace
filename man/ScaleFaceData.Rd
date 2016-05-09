@@ -8,21 +8,33 @@ ScaleFaceData(data, colNames, scaleFactor, pupilDist, mouthcornerDist,
   leftPMDist, rightPMDist, rwMeasure = 8, verbose = FALSE)
 }
 \arguments{
-\item{data}{Data frame containig the columns which should be rescaled. Remaining colums will be returned untouched (e.g., z-values because we have no information to rescale them).}
+\item{data}{Data frame containig the columns which should be rescaled.
+Remaining colums will be returned untouched (e.g., z-values because we have
+no information to rescale them).}
 
-\item{colNames}{Character vector with names of the columns which should be rescaled. Variable names containing vertical movement should end with '_x', whereas variable names containing horizontal movement should end with '_y'.}
+\item{colNames}{Character vector with names of the columns which should be
+rescaled. Variable names containing vertical movement should end with '_x',
+whereas variable names containing horizontal movement should end with '_y'.}
 
-\item{scaleFactor}{Numeric variable containing the value of the real world object measured in blender. For example, this can be the diameter of a glue dot measured in blender (default = 8 mm). Therefore, scaling should be done person by person.}
+\item{scaleFactor}{Numeric variable containing the value of the real world
+object measured in blender. For example, this can be the diameter of a glue
+dot measured in blender (default = 8 mm). Therefore, scaling should be done
+person by person.}
 
-\item{pupilDist}{Single numeric value. Distance from left to right pupile measured in blender units}
+\item{pupilDist}{Single numeric value. Distance from left to right pupile
+measured in blender units}
 
-\item{mouthcornerDist}{Single numeric value. Distance from left to right mouthcorner measured in blender units}
+\item{mouthcornerDist}{Single numeric value. Distance from left to right
+mouthcorner measured in blender units}
 
-\item{leftPMDist}{Single numeric value. Distance from left pupile to left mouthcorner measured in blender units}
+\item{leftPMDist}{Single numeric value. Distance from left pupile to left
+mouthcorner measured in blender units}
 
-\item{rightPMDist}{Single numeric value. Distance from right pupile to right mouthcorner measured in blender units}
+\item{rightPMDist}{Single numeric value. Distance from right pupile to right
+mouthcorner measured in blender units}
 
-\item{rwMeasure}{Optional. Real world measure of the object diameter used to rescale. Default is the diameter of a glue dot of 8 millimeter.}
+\item{rwMeasure}{Optional. Real world measure of the object diameter used to
+rescale. Default is the diameter of a glue dot of 8 millimeter.}
 
 \item{verbose}{If TRUE, the function prints verbose output. Otherwise not.}
 }
@@ -30,13 +42,15 @@ ScaleFaceData(data, colNames, scaleFactor, pupilDist, mouthcornerDist,
 Data frame with scaled columns.
 }
 \description{
-The heads of the participants are of different sizes. This function scales and resizes the x/y values according to a standardized face.
+The heads of the participants are of different sizes. This function scales
+and resizes the x/y values according to a standardized face.
 }
 \examples{
-ScaleBlenderData()
+\dontrun{ScaleBlenderData()}
 
 }
 \author{
-Rainer Alexandrowicz, Axel Zinkernagel \email{rainer.alexandrowicz@aau.at, zinkernagel@uni-landau.de}
+Rainer Alexandrowicz, Axel Zinkernagel
+  \email{rainer.alexandrowicz@aau.at, zinkernagel@uni-landau.de}
 }
 
