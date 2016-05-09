@@ -22,7 +22,7 @@
 #' @examples
 #' \dontrun{CenterCond()}
 #' 
-#' #@include doParallel
+#' @import doParallel
 #' 
 #' @return Data frame with centered columns.
 #'   

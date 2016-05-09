@@ -37,8 +37,6 @@ subject marked in column colNameSubj.
 \examples{
 \dontrun{CenterCond()}
 
-#@include doParallel
-
 }
 \author{
 Axel Zinkernagel \email{zinkernagel@uni-landau.de}
