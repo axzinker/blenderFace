@@ -121,4 +121,4 @@ PlotMarkerXHead <- function(data, dataPos, dataScale, center = TRUE, title = "",
     }
     
     # fix me: Plot markers on standardized Face
-} 
+}

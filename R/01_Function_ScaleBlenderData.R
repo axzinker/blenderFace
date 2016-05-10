@@ -60,4 +60,4 @@ ScaleBlenderData <- function(data, colNames, scaleFactor, rwMeasure = 8, verbose
     data[(names(data) %in% colNames)] <- scaleBU(data[(names(data) %in% colNames)])
     
     return(data)
-} 
+}

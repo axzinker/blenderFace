@@ -107,4 +107,4 @@ PlotXYMarkerMovementPerFrame <- function(frames, xMarker, yMarker, center = TRUE
     
     points(data$frames, data$xMarker, type = "l", col = color[1])
     points(data$frames, data$yMarker, type = "l", col = color[2])
-} 
+}

@@ -174,4 +174,4 @@ ConcatData <- function(dataFileNames, inputDirectory, subjectColumn, outputFilen
     }
     save(data, file = paste(outputDirectory, outputFilename, sep = ""))
     return(data)
-} 
+}

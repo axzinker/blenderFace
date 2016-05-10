@@ -45,46 +45,162 @@ CenterCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
         stop("Argument verbose is not of type logical!")
     }
     
-    # Sorting data frame (subject, frame)
-    data <- data[order(data[colNameSubj], data[colNameFrames]), ]
+    # Reordering columns of input data frame
+    data <- data[c(colNameSubj, colNameFrames, colNameCond, colNames)]
     
-    # Extracting conditions
-    cond <- unique(na.omit(unlist(data[colNameCond])))
-    cond <- cond[nchar(cond) > 0]
+    ############################## Setting up CPU-Cluster Leaving one CPU core for OS tasks
+    if (detectCores() > 1) {
+        cl <- makeCluster(detectCores() - 1)
+        registerDoParallel(cl)
+    }
+    if (verbose) {
+        writeLines(paste("Starting up CPU-cluster: Using ", getDoParWorkers(), " CPU-cores, leaving one for the OS.", sep = ""))
+        timestamp0 <- Sys.time()
+    }
     
-    # Find first valid frame (which is not NA) per subject for a given condition for a given column
-    minSubjCondFrame <- function(subj, col, cond) {
-        # subj: actual subject number col: column for which minimum of a condition should be returned cond: condition for which the minimum is searched for
+    ############################## Helper Functions
+    
+    # Find first frame of conditions per subject
+    FirstFrameSubjCond <- function(subjCol, frameCol, condCol) {
+        # SubjCol: column containing the subject number FrameCol: column containing the frame numbers CondCol: column containing the conditions, for which the
+        # first occurrence is searched for
         
-        # Step 1: select subject only
-        tempData <- subset(data, subset = (data[colNameSubj] == subj))
-        # Step 2: select condition only
-        if (length(cond) > 1) {
-            tempData <- subset(data, subset = (data[colNameCond] == cond))
+        data <- data.frame(subjCol, frameCol, condCol)
+        rm(list = "subjCol", "frameCol", "condCol")
+        subjects <- unique(data$subjCol)
+        
+        # Verbose output is very time consuming; if wanted, add '.verbose = verbose' to the first foreach loop
+        firstFrames <- foreach(i = subjects, .combine = rbind) %dopar% {
+            tempData <- subset(data, subset = (data$subjCol == i))
+            output <- tempData[!duplicated(tempData$condCol), ]
+            return(output)
         }
-        ## Step 3: be sure, the data frame is ordered by frames (already done in line 74) tempData <- tempData[order(tempData[colNameFrames]),] Step 4: omit
-        ## NAs
-        tempData <- na.omit(tempData[col])
-        # Step 5: select value of col with the lowest Framenumber (that is the first line, if data frame is ordered by frames)
-        tempData <- tempData[1, ]
-        return(tempData)
+        return(firstFrames)
     }
     
-    # Axel ToDo: function probably not correct Axel ToDo: paralellize these loops, its far to slow
-    subjects <- (unique(unlist(data[colNameSubj])))
-    # Loop over Subjects
-    for (i in 1:length(subjects)) {
-        # Loop over columns to be centered
-        for (j in 1:length(colNames)) {
-            # Loop over experimental conditions to be centered
-            for (k in 1:length(cond)) {
-                if (verbose) {
-                  writeLines(paste(sep = "", "Centering Vpn ", subjects[i], " Column ", colNames[j], " for Condition '", cond[k], "'"))
-                }
-                data[((data[[colNameSubj]] == subjects[i]) & (data[[colNameCond]] == cond[k])), colNames[j]] <- data[((data[[colNameSubj]] == subjects[i]) & 
-                  (data[[colNameCond]] == cond[k])), colNames[j]] - minSubjCondFrame(subjects[i], colNames[j], cond[k])
-            }
+    # Find length of conditions per subject
+    LengthSubjCond <- function(subjCol, condCol) {
+        # SubjCol: column containing the subject number CondCol: column containing the conditions, for which the first occurrence is searched for
+        
+        data <- data.frame(subjCol, condCol)
+        rm(list = "subjCol", "condCol")
+        subjects <- unique(data$subjCol)
+        
+        cond <- subset(unique(data$condCol), subset = (unique(data$condCol) != ""))
+        
+        # Verbose output is very time consuming; if wanted, add '.verbose = verbose' to the first foreach loop
+        lengthFrames <- foreach(i = subjects, .combine = cbind) %:% foreach(j = cond, .combine = cbind) %dopar% {
+            c(i, j, nrow(subset(data, subset = (data$subjCol == i & data$condCol == j))))
         }
+        lengthFrames <- as.data.frame(t(lengthFrames))
+        names(lengthFrames) <- c("subjCol", "condCol", "condLengthCol")
+        lengthFrames$subjCol <- as.numeric(lengthFrames$subjCol)
+        lengthFrames$condLengthCol <- as.numeric(lengthFrames$condLengthCol)
+        return(lengthFrames)
     }
+    
+    ############################## Step 1: Getting condition start frames per subject
+    if (verbose) {
+        writeLines("Step 1: Getting condition start frames per subject.")
+        timestamp1 <- Sys.time()
+    }
+    condStartFrames <- FirstFrameSubjCond(data$subject, data$Frame, data$stimulustype)
+    
+    # removing 'empty' condition starts
+    condStartFrames <- subset(condStartFrames, subset = (condStartFrames$condCol != ""))
+    
+    # getting the frame length of the conditions and attaching it to condStartFrames
+    condLengthFrames <- LengthSubjCond(data$subject, data$stimulustype)
+    condStartFrames <- cbind(condStartFrames, condLengthCol = condLengthFrames$condLengthCol)
+    rm(condLengthFrames)
+    
+    ############################## Step 2: Getting offset values for the to be centered variables for each subject and each condition
+    if (verbose) {
+        writeLines("Step 2: Getting offset values per condition per subject.")
+        timestamp2 <- Sys.time()
+    }
+    # Verbose output is very time consuming; if wanted, add '.verbose = verbose' to the first foreach loop
+    offsetValues <- foreach(i = 1:nrow(condStartFrames), .combine = rbind) %dopar% {
+        offsetRow <- subset(data, subset = ((data[[colNameSubj]] == condStartFrames$subjCol[i]) & (data[[colNameFrames]] == condStartFrames$frameCol[i])), 
+            select = colNames)
+    }
+    
+    offsetTable <- cbind(condStartFrames, offsetValues)
+    rm(list = c("condStartFrames", "offsetValues"))
+    
+    ############################## Step 3: compute centered values for all columns and subjects
+    if (verbose) {
+        writeLines("Step 3: Subtracting offset values per condition per subject.")
+        timestamp3 <- Sys.time()
+    }
+    
+    # First loop over rows in offsetTable (i), Second loop over colNames (j) Verbose output is very time consuming; if wanted, add '.verbose = verbose' to
+    # the first foreach loop
+    dataCen <- foreach(i = 1:nrow(offsetTable), .combine = rbind) %:% foreach(j = 1:length(colNames), .combine = cbind) %dopar% {
+        data[((data[[colNameSubj]] == offsetTable[i, "subjCol"]) & (data[[colNameCond]] == offsetTable[i, "condCol"])), colNames[j]] - offsetTable[i, colNames[j]]
+    }
+    
+    # Compute subject and condition columns and cbind it to dataCen
+    subjVec <- NULL
+    framesVec <- NULL
+    condVec <- NULL
+    for (i in 1:nrow(offsetTable)) {
+        subjVec <- c(subjVec, rep(offsetTable$subjCol[i], offsetTable$condLengthCol[i]))
+        framesVec <- c(framesVec, seq.int(offsetTable$frameCol[i], (offsetTable$frameCol[i] + (offsetTable$condLengthCol[i] - 1))))
+        condVec <- c(condVec, rep(offsetTable$condCol[i], offsetTable$condLengthCol[i]))
+    }
+    
+    dataCen <- data.frame(subjVec, framesVec, condVec, dataCen)
+    names(dataCen) <- c(colNameSubj, colNameFrames, colNameCond, colNames)
+    
+    ############################## Step 4: replace original values with centered values
+    
+    if (verbose) {
+        writeLines("Step 4: Replacing centered values in the original data.")
+        timestamp4 <- Sys.time()
+    }
+    
+    # Add data rows without a condition and order the data frame by subject,frames
+    dataCen <- rbind(dataCen, subset(data, subset = (data[[colNameCond]] == "")))
+    dataCen <- dataCen[with(dataCen, order(dataCen[[colNameSubj]], dataCen[[colNameFrames]])), ]
+    
+    ############################## Plausibility checks and performance output
+    
+    # Check of plausibility: are all condition onset rows at 0?
+    if (verbose) {
+        subjects <- unique(dataCen$subject)
+        conditions <- unique(dataCen$stimulustype)
+        conditions <- subset(conditions, subset = (conditions != ""))
+        
+        testmatrix <- foreach(i = 1:length(subjects), .combine = rbind) %:% foreach(j = 1:length(conditions), .combine = rbind) %dopar% {
+            head(subset(dataCen, subset = (dataCen$subject == subjects[i] & dataCen$stimulustype == conditions[j])), 1)
+        }
+        
+        writeLines("\nPlausibility check: ColSums of centered start frames per condition should be 0:")
+        print(colSums(testmatrix[, colNames], na.rm = TRUE))
+    }
+    
+    if (verbose) {
+        timestamp5 <- Sys.time()
+        writeLines("\nTime for completing each step of the function:")
+        writeLines("Step1: Getting condition start frames per subject: ")
+        print(round(timestamp2 - timestamp1, 2))
+        writeLines("Step2: Getting offset values per condition per subject: ")
+        print(round(timestamp3 - timestamp2, 2))
+        writeLines("Step3: Subtracting offset values per condition per subject: ")
+        print(round(timestamp4 - timestamp3, 2))
+        writeLines("Step4: Replacing centered values in the original data: ")
+        print(round(timestamp5 - timestamp4, 2))
+        writeLines("Overall time: ")
+        print(round(timestamp5 - timestamp0, 2))
+    }
+    
+    ############################## Finish
+    
+    if (verbose) {
+        writeLines("Shutting down CPU-Cluster")
+    }
+    stopCluster(cl)
+    
     return(data)
-} 
+}

@@ -47,4 +47,4 @@ AngleDistance <- function(x, y, verbose = FALSE) {
     }
     
     return(c(getDistance(c(0, 0), c(x, y)), getAngle(x, y)))
-} 
+}

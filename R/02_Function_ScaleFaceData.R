@@ -115,4 +115,4 @@ ScaleFaceData <- function(data, colNames, scaleFactor, pupilDist, mouthcornerDis
     data[(names(data) %in% colNamesWidth)] <- scaleUniWidth(data[(names(data) %in% colNamesWidth)])  # uniform head width
     
     return(data)
-} 
+}
