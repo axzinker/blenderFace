@@ -4,8 +4,8 @@
 \alias{ConcatData}
 \title{Concatenate data files}
 \usage{
-ConcatData(dataFileNames, inputDirectory, subjectColumn, outputFilename,
-  outputDirectory = "", verbose = FALSE)
+ConcatData(dataFileNames, inputDirectory, subjectColumn = FALSE,
+  outputFilename, outputDirectory = "", verbose = FALSE)
 }
 \arguments{
 \item{dataFileNames}{character vector of the filenames to be concatenated. Possible
@@ -13,14 +13,12 @@ filetypes are csv and R data files (File endings: *.csv, *.rda, *.Rdata).}
 
 \item{inputDirectory}{Character variable containing the path to the input
 files (e.g., on Windows: 'C:/Data/Blenderdata/', on Linux:
-'/home/user/Data/Blenderdata/). Should end with a backslash (or slash,
-respectively).}
+'/home/user/Data/Blenderdata/). Should end with a backslash.}
 
-\item{subjectColumn}{logical value. Does the data files contain a column with
-the subject number? Otherwise the subject number has to be part of the
-filename accompanied by a left and right underscore (e.g.,
-'Subj_39_Experiment1.RData'). The first enclosed number is used (e.g.,
-'Subj_39_Experiment_02_Test.RData' -> 39)}
+\item{subjectColumn}{Logical value. Default is FALSE. Do the single data files contain a column with
+the subject number?  If TRUE, the subject number is taken from the single files. If FALSE, the subject number has to be part of the
+filename. It should be the last number before the filetype (e.g., '.RData' or '.csv') divided by an underscore from the rest of the 
+filename. For example, from the filename 'RawData_Vpn_39.RData' the subject number 39 is generated.}
 
 \item{outputFilename}{Name of the output file}
 

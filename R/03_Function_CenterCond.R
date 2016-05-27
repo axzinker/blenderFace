@@ -137,7 +137,8 @@ CenterCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
     # First loop over rows in offsetTable (i), Second loop over colNames (j) Verbose output is very time consuming; if wanted, add '.verbose = verbose' to
     # the first foreach loop
     dataCen <- foreach(i = 1:nrow(offsetTable), .combine = rbind) %:% foreach(j = 1:length(colNames), .combine = cbind) %dopar% {
-        data[((data[[colNameSubj]] == offsetTable[i, "subjCol"]) & (data[[colNameCond]] == offsetTable[i, "condCol"])), colNames[j]] - offsetTable[i, colNames[j]]
+        #data[((data[[colNameSubj]] == offsetTable[i, "subjCol"]) & (data[[colNameCond]] == offsetTable[i, "condCol"])), colNames[j]] - offsetTable[i, colNames[j]]
+        subset(data, subset = ((data[[colNameSubj]] == offsetTable[i, "subjCol"]) & (data[[colNameCond]] == offsetTable[i, "condCol"])), select = colNames[j]) - offsetTable[i, colNames[j]]
     }
     
     # Compute subject and condition columns and cbind it to dataCen
