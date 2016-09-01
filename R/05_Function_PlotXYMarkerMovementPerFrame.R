@@ -19,10 +19,10 @@
 #' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
 #'   
 #' @examples
-#' \dontrun{PlotXYMarkerMovementPerFrame()}
+#' \dontrun{plotXYMarkerMovementPerFrame()}
 #'   
 #' @export
-PlotXYMarkerMovementPerFrame <- function(frames, xMarker, yMarker, center = TRUE, color = c("red", "orange"), title = "", overplot = FALSE) {
+plotXYMarkerMovementPerFrame <- function(frames, xMarker, yMarker, center = TRUE, color = c("red", "orange"), title = "", overplot = FALSE) {
     # Error handling
     if (!(length(frames) > 0) | !(is.numeric(frames))) {
         stop("Argument frames missing or of incorrect type!")
@@ -57,25 +57,42 @@ PlotXYMarkerMovementPerFrame <- function(frames, xMarker, yMarker, center = TRUE
         maxY <- 0.05
         ylab <- "Centered deviation"
     } else {
-        minX <- min(data$xMarker, na.rm = TRUE)
-        maxX <- max(data$xMarker, na.rm = TRUE)
-        minY <- min(data$yMarker, na.rm = TRUE)
-        maxY <- max(data$yMarker, na.rm = TRUE)
+        if (!is.infinite(min(data$xMarker, na.rm = TRUE))) {
+            minX <- min(data$xMarker, na.rm = TRUE)
+        } else {
+            minX <- -0.05
+        }
+        if (!is.infinite(max(data$xMarker, na.rm = TRUE))) {
+            maxX <- max(data$xMarker, na.rm = TRUE)
+        } else {
+            maxX <- 0.05
+        }
+        if (!is.infinite(min(data$yMarker, na.rm = TRUE))) {
+            minY <- min(data$yMarker, na.rm = TRUE)
+        } else {
+            minY <- -0.05
+        }
+        if (!is.infinite(max(data$yMarker, na.rm = TRUE))) {
+            maxY <- max(data$yMarker, na.rm = TRUE)
+        } else {
+            maxY <- 0.05
+        }
         ylab <- "Deviation"
     }
     min <- min(c(minX, minY))
     max <- max(c(maxX, maxY))
     
     if (!overplot) {
-        plot(1, type = "n", xlim = c(data$frame[1], data$frame[length(data$frame)]), ylim = c(min, max), main = title, xlab = "Frame number", ylab = ylab, 
-            xaxt = "n")
-        xAxisLabels <- c(data$frame[1], (data$frame[1] + round((data$frame[length(data$frame)]/14) * 1, digits = 0)), (data$frame[1] + round((data$frame[length(data$frame)]/14) * 
-            2, digits = 0)), (data$frame[1] + round((data$frame[length(data$frame)]/14) * 3, digits = 0)), (data$frame[1] + round((data$frame[length(data$frame)]/14) * 
-            4, digits = 0)), (data$frame[1] + round((data$frame[length(data$frame)]/14) * 5, digits = 0)), (data$frame[1] + round((data$frame[length(data$frame)]/14) * 
-            6, digits = 0)), (data$frame[1] + round((data$frame[length(data$frame)]/14) * 7, digits = 0)), (data$frame[1] + round((data$frame[length(data$frame)]/14) * 
-            8, digits = 0)), (data$frame[1] + round((data$frame[length(data$frame)]/14) * 9, digits = 0)), (data$frame[1] + round((data$frame[length(data$frame)]/14) * 
-            10, digits = 0)), (data$frame[1] + round((data$frame[length(data$frame)]/14) * 11, digits = 0)), (data$frame[1] + round((data$frame[length(data$frame)]/14) * 
-            12, digits = 0)), (data$frame[1] + round((data$frame[length(data$frame)]/14) * 13, digits = 0)), data$frame[length(data$frame)])
+        plot(1, type = "n", xlim = c(data$frame[1], data$frame[length(data$frame)]), ylim = c(min, max), main = title, xlab = "Frame number", 
+            ylab = ylab, xaxt = "n")
+        xAxisLabels <- c(data$frame[1], (data$frame[1] + round((data$frame[length(data$frame)]/14) * 1, digits = 0)), (data$frame[1] + 
+            round((data$frame[length(data$frame)]/14) * 2, digits = 0)), (data$frame[1] + round((data$frame[length(data$frame)]/14) * 
+            3, digits = 0)), (data$frame[1] + round((data$frame[length(data$frame)]/14) * 4, digits = 0)), (data$frame[1] + round((data$frame[length(data$frame)]/14) * 
+            5, digits = 0)), (data$frame[1] + round((data$frame[length(data$frame)]/14) * 6, digits = 0)), (data$frame[1] + round((data$frame[length(data$frame)]/14) * 
+            7, digits = 0)), (data$frame[1] + round((data$frame[length(data$frame)]/14) * 8, digits = 0)), (data$frame[1] + round((data$frame[length(data$frame)]/14) * 
+            9, digits = 0)), (data$frame[1] + round((data$frame[length(data$frame)]/14) * 10, digits = 0)), (data$frame[1] + round((data$frame[length(data$frame)]/14) * 
+            11, digits = 0)), (data$frame[1] + round((data$frame[length(data$frame)]/14) * 12, digits = 0)), (data$frame[1] + round((data$frame[length(data$frame)]/14) * 
+            13, digits = 0)), data$frame[length(data$frame)])
         axis(side = 1, at = xAxisLabels, labels = xAxisLabels)
         
         legend("topright", c("X Values", "Y Values"), col = color, lty = 1)

@@ -1,27 +1,31 @@
 #' Computes distance and angle from marker columns
 #' 
-#' Computes the distance and the angle for x/y marker movement. Data is supposed
-#' to start at x = 0, y =0, use function CenterCond before.
+#' Computes the distance and the angle for a (mean, median) x/y marker 
+#' point. The distance and the angle is computed from x = 0, y = 0 to the 
+#' x/y - values given. Therefore, to get correct values for distance and angle
+#' use the function CenderCond() before, to set the x/y-start values for each 
+#' condition to x = 0, y = 0.
 #' 
 #' @param x Numeric vector of x values of x marker movement, beginnig at 0
 #' @param y Numeric vector of y values of y marker movement, beginnig at 0
-#' @param verbose If TRUE, the function prints verbose output. Otherwise not.
+#' @param verbose If TRUE, the function prints verbose output. Otherwise not. 
+#' Default is FALSE.
 #'   
 #' @return Numeric vector with median distance and angle.
 #'   
 #' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
 #'   
 #' @examples
-#' \dontrun{AngleDistance(x,y)}
+#' \dontrun{angleDistance(x,y)}
 #' 
 #' @export
-AngleDistance <- function(x, y, verbose = FALSE) {
+angleDistance <- function(x, y, verbose = FALSE) {
     # Error handling
     if (!(is.numeric(x)) | (length(x) != 1)) {
-        stop("Argument x is missing, not of type numeric or contains more than one element!")
+        stop("Argument x is missing, not of type numeric, or contains more than one element!")
     }
     if (!(is.numeric(y)) | (length(y) != 1)) {
-        stop("Argument y is missing, not of type numeric or contains more than one element!")
+        stop("Argument y is missing, not of type numeric, or contains more than one element!")
     }
     if (!(is.logical(verbose))) {
         stop("Argument verbose is not of type logical!")
@@ -33,7 +37,8 @@ AngleDistance <- function(x, y, verbose = FALSE) {
     }
     
     getAngle <- function(x, y) {
-        # Computes the angle between the median of data points and origin of coordinate system Division by (pi/180) necessary to get deg (not rad)
+        # Computes the angle between the median of data points and origin of coordinate system Division by (pi/180) necessary to get deg (not
+        # rad)
         angle <- NA
         # catch error, if value is NA
         if (!is.na(x) & !is.na(y)) {
@@ -46,5 +51,5 @@ AngleDistance <- function(x, y, verbose = FALSE) {
         return(angle)
     }
     
-    return(c(getDistance(c(0, 0), c(x, y)), getAngle(x, y)))
+    return(c(getAngle(x, y), getDistance(c(0, 0), c(x, y))))
 }

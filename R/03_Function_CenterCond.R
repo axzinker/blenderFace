@@ -20,14 +20,16 @@
 #' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
 #'   
 #' @examples
-#' \dontrun{CenterCond()}
+#' \dontrun{centerCond()}
 #' 
 #' @import doParallel
 #' 
-#' @return Data frame with centered columns.
+#' @return List of (1) data frame with centered columns and (2) data frame with 
+#' individual offset values. The latter may be used to set the markers at
+#' measured locations in standardized face plots.
 #'   
 #' @export
-CenterCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, verbose = FALSE) {
+centerCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, verbose = FALSE) {
     # Error handling
     if (!(is.data.frame(data))) {
         stop("Argument data does not contain a data frame!")
@@ -49,9 +51,9 @@ CenterCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
     data <- data[c(colNameSubj, colNameFrames, colNameCond, colNames)]
     
     ############################## Setting up CPU-Cluster Leaving one CPU core for OS tasks
-    if (detectCores() > 1) {
-        cl <- makeCluster(detectCores() - 1)
-        registerDoParallel(cl)
+    if (parallel::detectCores() > 1) {
+        cl <- parallel::makeCluster(detectCores() - 1)
+        doParallel::registerDoParallel(cl)
     }
     if (verbose) {
         writeLines(paste("Starting up CPU-cluster: Using ", getDoParWorkers(), " CPU-cores, leaving one for the OS.", sep = ""))
@@ -62,8 +64,8 @@ CenterCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
     
     # Find first frame of conditions per subject
     FirstFrameSubjCond <- function(subjCol, frameCol, condCol) {
-        # SubjCol: column containing the subject number FrameCol: column containing the frame numbers CondCol: column containing the conditions, for which the
-        # first occurrence is searched for
+        # SubjCol: column containing the subject number FrameCol: column containing the frame numbers CondCol: column containing the
+        # conditions, for which the first occurrence is searched for
         
         data <- data.frame(subjCol, frameCol, condCol)
         rm(list = "subjCol", "frameCol", "condCol")
@@ -80,7 +82,8 @@ CenterCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
     
     # Find length of conditions per subject
     LengthSubjCond <- function(subjCol, condCol) {
-        # SubjCol: column containing the subject number CondCol: column containing the conditions, for which the first occurrence is searched for
+        # SubjCol: column containing the subject number CondCol: column containing the conditions, for which the first occurrence is searched
+        # for
         
         data <- data.frame(subjCol, condCol)
         rm(list = "subjCol", "condCol")
@@ -88,6 +91,8 @@ CenterCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
         
         cond <- subset(unique(data$condCol), subset = (unique(data$condCol) != ""))
         
+        # prevent j beeing a global variable (devtools, check)
+        j <- NULL
         # Verbose output is very time consuming; if wanted, add '.verbose = verbose' to the first foreach loop
         lengthFrames <- foreach(i = subjects, .combine = cbind) %:% foreach(j = cond, .combine = cbind) %dopar% {
             c(i, j, nrow(subset(data, subset = (data$subjCol == i & data$condCol == j))))
@@ -134,24 +139,25 @@ CenterCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
         timestamp3 <- Sys.time()
     }
     
-    # First loop over rows in offsetTable (i), Second loop over colNames (j) Verbose output is very time consuming; if wanted, add '.verbose = verbose' to
-    # the first foreach loop
+    # First loop over rows in offsetTable (i), Second loop over colNames (j) Verbose output is very time consuming; if wanted, add
+    # '.verbose = verbose' to the first foreach loop prevent j beeing a global variable (devtools, check)
+    j <- NULL
     dataCen <- foreach(i = 1:nrow(offsetTable), .combine = rbind) %:% foreach(j = 1:length(colNames), .combine = cbind) %dopar% {
-        #data[((data[[colNameSubj]] == offsetTable[i, "subjCol"]) & (data[[colNameCond]] == offsetTable[i, "condCol"])), colNames[j]] - offsetTable[i, colNames[j]]
-        subset(data, subset = ((data[[colNameSubj]] == offsetTable[i, "subjCol"]) & (data[[colNameCond]] == offsetTable[i, "condCol"])), select = colNames[j]) - offsetTable[i, colNames[j]]
+        subset(data, subset = ((data[[colNameSubj]] == offsetTable[i, "subjCol"]) & (data[[colNameCond]] == offsetTable[i, "condCol"])), 
+            select = colNames[j]) - offsetTable[i, colNames[j]]
     }
     
-    # Compute subject and condition columns and cbind it to dataCen
+    # Compute subject and condition columns and cbind it to dataCen fix me: Preallocate vectors
     subjVec <- NULL
     framesVec <- NULL
     condVec <- NULL
     for (i in 1:nrow(offsetTable)) {
         subjVec <- c(subjVec, rep(offsetTable$subjCol[i], offsetTable$condLengthCol[i]))
         framesVec <- c(framesVec, seq.int(offsetTable$frameCol[i], (offsetTable$frameCol[i] + (offsetTable$condLengthCol[i] - 1))))
-        condVec <- c(condVec, rep(offsetTable$condCol[i], offsetTable$condLengthCol[i]))
+        condVec <- c(condVec, rep(as.character(offsetTable$condCol[i]), offsetTable$condLengthCol[i]))
     }
     
-    dataCen <- data.frame(subjVec, framesVec, condVec, dataCen)
+    dataCen <- data.frame(subjVec, framesVec, condVec, dataCen, stringsAsFactors = FALSE)
     names(dataCen) <- c(colNameSubj, colNameFrames, colNameCond, colNames)
     
     ############################## Step 4: replace original values with centered values
@@ -162,7 +168,7 @@ CenterCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
     }
     
     # Add data rows without a condition and order the data frame by subject,frames
-    dataCen <- rbind(dataCen, subset(data, subset = (data[[colNameCond]] == "")))
+    dataCen <- rbind(dataCen, subset(data, subset = ((data[[colNameCond]] == "") | (is.na(data[[colNameCond]])))))
     dataCen <- dataCen[with(dataCen, order(dataCen[[colNameSubj]], dataCen[[colNameFrames]])), ]
     
     ############################## Plausibility checks and performance output
@@ -173,9 +179,10 @@ CenterCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
         conditions <- unique(dataCen$stimulustype)
         conditions <- subset(conditions, subset = (conditions != ""))
         
-        testmatrix <- foreach(i = 1:length(subjects), .combine = rbind) %:% foreach(j = 1:length(conditions), .combine = rbind) %dopar% {
-            head(subset(dataCen, subset = (dataCen$subject == subjects[i] & dataCen$stimulustype == conditions[j])), 1)
-        }
+        testmatrix <- foreach(i = 1:length(subjects), .combine = rbind) %:% foreach(j = 1:length(conditions), .combine = rbind) %dopar% 
+            {
+                head(subset(dataCen, subset = (dataCen$subject == subjects[i] & dataCen$stimulustype == conditions[j])), 1)
+            }
         
         writeLines("\nPlausibility check: ColSums of centered start frames per condition should be 0:")
         print(colSums(testmatrix[, colNames], na.rm = TRUE))
@@ -203,5 +210,5 @@ CenterCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
     }
     stopCluster(cl)
     
-    return(data)
+    return(list(dataCen, offsetTable))
 }

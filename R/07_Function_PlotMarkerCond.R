@@ -8,6 +8,10 @@
 #' @param colNameCond character vector naming the column containig the
 #'   conditions
 #' @param title Default is no title.
+#' @param xlim Numeric vector of two elements defining the x-axis range of the 
+#' plot. Default is c(-10, 10).
+#' @param ylim Numeric vector of two elements defining the y-axis range of the 
+#' plot. Default is c(-10, 10).
 #' @param verbose print verbose output
 #'   
 #' @return Plot of median movement of marker with quartile ellipse around per
@@ -18,10 +22,10 @@
 #'   #@include plotrix
 #'   
 #' @examples
-#' \dontrun{PlotXYMarkerMovementPerFrame()}
+#' \dontrun{plotXYMarkerMovementPerFrame()}
 #'    
 #' @export
-PlotMarkerCond <- function(data, colNames, colNameCond, title = "", verbose = FALSE) {
+plotMarkerCond <- function(data, colNames, colNameCond, title = "", xlim = c(-10, 10), ylim = c(-10, 10), verbose = FALSE) {
     # Error handling
     if (!(is.data.frame(data))) {
         stop("Argument data does not contain a data frame!")
@@ -35,6 +39,13 @@ PlotMarkerCond <- function(data, colNames, colNameCond, title = "", verbose = FA
     if (!(is.character(title))) {
         stop("Argument title is not of type character!")
     }
+    if (!(is.numeric(xlim)) | length(xlim) != 2) {
+        stop("Argument xlim is not numeric or not containing two elements")
+    }
+    if (!(is.numeric(ylim)) | length(ylim) != 2) {
+        stop("Argument ylim is not numeric or not containing two elements")
+    }
+    
     if (!(is.logical(verbose))) {
         stop("Argument verbose is not of type logical!")
     }
@@ -46,7 +57,7 @@ PlotMarkerCond <- function(data, colNames, colNameCond, title = "", verbose = FA
     cond <- cond[nchar(cond) > 0]
     
     # Generate basic plot
-    plot(c(-7, 7), c(-7, 7), type = "n", xlab = "Median movement x-Axis", ylab = "Median movement y-Axis", main = title)
+    plot(xlim, ylim, type = "n", xlab = "Median movement x-Axis", ylab = "Median movement y-Axis", main = title)
     legend("topright", cex = 0.7, inset = 0, cond, col = 1:length(cond), pch = 19, horiz = FALSE)
     points(0, 0, pch = 19, col = 1)
     # Draw points, lines and ellipses per condition
@@ -60,13 +71,13 @@ PlotMarkerCond <- function(data, colNames, colNameCond, title = "", verbose = FA
         quantY <- quantile(data[data[colNameCond] == cond[j], colNames[2]], c(0.25, 0.75), na.rm = TRUE)
         lines(c(0, medianX), c(0, medianY), type = "l", col = j)
         points(medianX, medianY, pch = 19, col = j)
-        plotrix::draw.ellipse(medianX, medianY, a = abs(quantX[2]), b = abs(quantY[2]), segment = c(0, 90), arc.only = FALSE, border = j, lty = 1, lwd = 1, 
-            deg = TRUE)
-        plotrix::draw.ellipse(medianX, medianY, a = abs(quantX[1]), b = abs(quantY[2]), segment = c(90, 180), arc.only = FALSE, border = j, lty = 1, lwd = 1, 
-            deg = TRUE)
-        plotrix::draw.ellipse(medianX, medianY, a = abs(quantX[1]), b = abs(quantY[1]), segment = c(180, 270), arc.only = FALSE, border = j, lty = 1, lwd = 1, 
-            deg = TRUE)
-        plotrix::draw.ellipse(medianX, medianY, a = abs(quantX[2]), b = abs(quantY[1]), segment = c(270, 360), arc.only = FALSE, border = j, lty = 1, lwd = 1, 
-            deg = TRUE)
+        plotrix::draw.ellipse(medianX, medianY, a = abs(quantX[2]), b = abs(quantY[2]), segment = c(0, 90), arc.only = FALSE, border = j, 
+            lty = 1, lwd = 1, deg = TRUE)
+        plotrix::draw.ellipse(medianX, medianY, a = abs(quantX[1]), b = abs(quantY[2]), segment = c(90, 180), arc.only = FALSE, border = j, 
+            lty = 1, lwd = 1, deg = TRUE)
+        plotrix::draw.ellipse(medianX, medianY, a = abs(quantX[1]), b = abs(quantY[1]), segment = c(180, 270), arc.only = FALSE, border = j, 
+            lty = 1, lwd = 1, deg = TRUE)
+        plotrix::draw.ellipse(medianX, medianY, a = abs(quantX[2]), b = abs(quantY[1]), segment = c(270, 360), arc.only = FALSE, border = j, 
+            lty = 1, lwd = 1, deg = TRUE)
     }
 }
