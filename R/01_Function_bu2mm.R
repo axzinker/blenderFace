@@ -72,24 +72,26 @@ bu2mm <- function(data, colNames, colNameSubj, scaleFactor, rwMeasure = 8, verbo
     }
     
     # Principle of rescaling: Perform scaling via rule of proportion (BU = blender units).
-    # Example: Assuming the glue dot has 8 mm diameter, then:
-    # (glue dot in BU / 8mm) = (variable in BU / x mm)
+    # Example: Assuming the glue dot has 8 mm diameter and we observe a coordinate of x=50 bu, then:
+    # 1. (glue dot in BU / 8mm) = BU per mm  [bu/mm]
+    # 2. (variable in BU / x mm)
+    #       BU per mm        =
     # x = (variable in BU * 8 mm) / glue dot in BU
     # ---> the factor to scale with is 8mm / glue dot in BU -> rwMeasure/scaleFactor[i]
 
 
     if (is.character(scaleFactor))
-       data[,colNames] = data[,colNames] * data[,scaleFactor]
+       data[,colNames] = data[,colNames] * rwMeasure/data[,scaleFactor]
     else {
           subjects <- unique(data[[colNameSubj]])   # Determine number of subjects in data
           for (i in 1:length(subjects)) {           # *** RA: tapply?
              if (verbose) fcat(paste("Perform scaling to real wold measures for subject ", i, " of ", length(subjects), ".", sep = ""))
-             sF <- rwMeasure/scaleFactor[i]        # Determine individual scaleFactor    *** RA (*)
-             data[data$subject == subjects[i], colNames] <- data[data$subject == subjects[i], colNames] * sF  # Rescale data per subject
+             isF <- rwMeasure/scaleFactor[i]        # Determine individual scaleFactor    *** RA (*)
+             data[data$subject == subjects[i], colNames] <- data[data$subject == subjects[i], colNames] * isF  # Rescale data per subject
           }  # end for
           }  # end else
 
-    # *** RA: Dieser Ansatz setzt voraus, dass der sf-Vektor die gleiche Sortierung hat wie der Datensatz!
+    # (*) Dieser Ansatz setzt voraus, dass der sf-Vektor die gleiche Sortierung hat wie der Datensatz!
     
     invisible(data)
 }
