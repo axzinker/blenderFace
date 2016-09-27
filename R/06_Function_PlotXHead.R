@@ -1,7 +1,7 @@
 #' Plot markers on symbolic head
 #' 
 #' Plots symbolic standardized head with markers plotted on predefined areas. 
-#' Be sure to use standardized data, done by the functions \code{\link{scaleBlenderData}}
+#' Be sure to use standardized data, done by the functions \code{\link{bu2mm}}
 #' and \code{\link{scaleFaceData}}.
 #' 
 #' @param data Data-frame with a row sequence of *standardized* x/y

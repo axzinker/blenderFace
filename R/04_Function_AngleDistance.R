@@ -37,8 +37,7 @@ angleDistance <- function(x, y, verbose = FALSE) {
     }
     
     getAngle <- function(x, y) {
-        # Computes the angle between the median of data points and origin of coordinate system Division by (pi/180) necessary to get deg (not
-        # rad)
+        # Computes the angle between the median of data points and origin of coordinate system Division by (pi/180) necessary to get deg (not rad)
         angle <- NA
         # catch error, if value is NA
         if (!is.na(x) & !is.na(y)) {

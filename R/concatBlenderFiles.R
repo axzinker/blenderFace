@@ -1,24 +1,28 @@
 #' Concatenate data files
 #' 
 #' Concatenate several csv/Rdata files into one large 'master'-file. Either csv
-#' or Rdata files can be concatenated, but not mixed cvs/Rdata files. Data files must not
-#' have the same number of colums, e.g., it is possible to concatenate files with a different number of markers tracked. The exhaustive number of columns will be
+#' or Rdata files can be concatenated, but not mixed cvs/Rdata files. Data files need not
+#' to have the same number of colums, e.g., it is possible to concatenate files with varying
+#' number of markers tracked. The total number of columns will be
 #' determined by this function.
 #' 
-#' @param dataFileNames character vector of the filenames to be concatenated. Possible
-#'   filetypes are csv and R data files (File endings: *.csv, *.rda, *.Rdata).
+#' @param dataFileNames character vector of the filenames to be concatenated. 
+#' Possiblefiletypes are csv and R data files (File endings: *.csv, *.rda, 
+#' *.Rdata).
 #' @param inputDirectory Character variable containing the path to the input
-#'   files (e.g., on Windows: 'C:/Data/Blenderdata/', on Linux:
-#'   '/home/user/Data/Blenderdata/). Should end with a backslash.
-#' @param subjectColumn Logical value. Default is FALSE. Do the single data files contain a column with
-#'   the subject number?  If TRUE, the subject number is taken from the single files. If FALSE, the subject number has to be part of the
-#'   filename. It should be the last number before the filetype (e.g., '.RData' or '.csv') divided by an underscore from the rest of the 
-#'   filename. For example, from the filename 'RawData_Vpn_39.RData' the subject number 39 is generated. 
+#' files (e.g., on Windows: 'C:/Data/Blenderdata/', on Linux:
+#' '/home/user/Data/Blenderdata/').
+#' @param subjectColumn Logical value. Default is FALSE. Do the single data 
+#' files contain a column with the subject number?  If TRUE, the subject number 
+#' is taken from the single files. If FALSE, the subject number has to be part 
+#' of the filename. It should be the last number before the filetype (e.g., 
+#' '.RData' or '.csv') separated by an underscore from the rest of the filename.
+#'  For example, from the filename 'RawData_Subj_39.RData' the subject number 
+#'  39 is generated. 
 #' @param outputFilename Name of the output file
 #' @param outputDirectory Optional. Path to where the output file should be
-#'   saved (e.g., on Windows: 'C:/Data/Blenderdata/output/', on Linux:
-#'   '/home/user/Data/Blenderdata/output/). If empty, path of inputDirectory is
-#'   beeing used. Should end with a backslash (or slash, respectively).
+#' saved (e.g., on Windows: 'C:/Data/Blenderdata/output/', on Linux:
+#' '/home/user/Data/Blenderdata/output/). If empty, inputDirectory is used.
 #' @param verbose If TRUE, the function prints verbose output.
 #'   
 #' @return Returns data frame and saves Rdata file of concatenated input files.
@@ -26,23 +30,38 @@
 #' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
 #'   
 #' @examples
-#' \dontrun{concatData()}
+#' \dontrun{
+#' inputdir <- paste(system.file(package = "blenderFace"),"/extdata/",sep="")
+#' outputdir <- paste(system.file(package = "blenderFace"),"/data/",sep="")
+#' filenames <- c("Subject_01.csv","Subject_02.csv")
+#' 
+#' concatBlenderFiles(dataFileNames = filenames, inputDirectory = inputdir, 
+#' subjectColumn = FALSE, outputFilename = "Rawdata.rda", 
+#' outputDirectory = outputdir, verbose = TRUE)
+#' }
 #' 
 #' @export
-concatData <- function(dataFileNames, inputDirectory, subjectColumn = FALSE, outputFilename, outputDirectory = "", verbose = FALSE) {
+concatBlenderFiles <- function(dataFileNames, inputDirectory, subjectColumn = FALSE, outputFilename, outputDirectory = "", verbose = FALSE) {
     # Error handling
+    
+    # Remove leading / trailing spaces from inputDirectory / outputDirectory
+    inputDirectory <- gsub("^\\s+|\\s+$", "",inputDirectory)
+    outputDirectory <- gsub("^\\s+|\\s+$", "",outputDirectory)
+    
     if (!is.character(dataFileNames) | !length(dataFileNames) > 1) {
         stop("Argument dataFileNames is not of type character or does not contain two or more filenames!")
     }
     if (!(is.character(inputDirectory))) {
-        stop("Argument inputDirectory is not of type character!")
-        if (!(dir.exists(inputDirectory))) {
-            stop("The input directory is not accessible! Please check the path.")
+        stop("Argument inputDirectory is not of type character!") 
+        # first mode number must be either 5 or 7 to be at least readable / executable (changable) by the user
+        if (!(dir.exists(inputDirectory)) | !(substr(as.character(file.mode(inputDirectory)),1,1) == "5" | substr(as.character(file.mode(inputDirectory)),1,1) == "7")) { 
+            stop("The input directory is not accessible! Please check the path and the directory permissions.")
         }
     }
     if (is.character(outputDirectory)) {
-        if ((outputDirectory != "") & (!(dir.exists(outputDirectory)))) {
-            stop("The output directory is not accessible! Please check the path.")
+      # first mode number must be either 3 or 7 to be at least writable / executable (changable) by the user
+        if ((outputDirectory == "") | (!(dir.exists(outputDirectory))) | !(substr(as.character(file.mode(outputDirectory)),1,1) == "3" | substr(as.character(file.mode(outputDirectory)),1,1) == "7")) {
+            stop("The output directory is not accessible! Please check the path and the directory permissions.")
         }
     } else {
         stop("Argument inputDirectory is not of type character!")
@@ -71,12 +90,12 @@ concatData <- function(dataFileNames, inputDirectory, subjectColumn = FALSE, out
         stop("Argument verbose is not of type logical!")
     }
     
-    # Determing file type from file ending (*.csv, *.rda, *.Rdata) (first filename used)
+    # Determing file type from file ending (*.csv, *.rda, *.Rdata); only the first filename is used!
     filetype <- NULL
-    if (tolower(strsplit(dataFileNames[1], "\\.")[[1]][2]) == "csv") {
+    if (tolower(substr(dataFileNames[1], nchar(dataFileNames[1])-2, nchar(dataFileNames[1]))) == "csv") {
         filetype <- "csv"
     }
-    if ((tolower(strsplit(dataFileNames[1], "\\.")[[1]][2]) == "rda") | (tolower(strsplit(dataFileNames[1], "\\.")[[1]][2]) == "rdata")) {
+    if ((tolower(substr(dataFileNames[1], nchar(dataFileNames[1])-2, nchar(dataFileNames[1]))) == "rda") | (tolower(substr(dataFileNames[1], nchar(dataFileNames[1])-2, nchar(dataFileNames[1]))) == "rdata")) {
         filetype <- "rda"
     }
     if (!((filetype != "csv") | (filetype != "rda"))) {
@@ -88,21 +107,26 @@ concatData <- function(dataFileNames, inputDirectory, subjectColumn = FALSE, out
         writeLines("Step 1: Determing unique column names and number of rows of the files to be concatenated.")
     }
     
+    NFiles <- length(dataFileNames)
     dataColNames <- NULL
     dataNrows <- 0
+    if (verbose) {
+      writeLines(paste("Reading", NFiles,"files:"))
+    }
     for (i in 1:length(dataFileNames)) {
         if (verbose) {
-            writeLines(paste("Reading columns of file ", dataFileNames[i], " (", i, "/", length(dataFileNames), ")", sep = ""))
+            writeLines(paste("Reading file ", dataFileNames[i], " (", i, "/", NFiles, ")", sep = ""))
         }
         if (filetype == "rda") {
             # loading Rdata-files
             dataName <- load(paste(inputDirectory, dataFileNames[i], sep = ""))
             tempData <- get(dataName)
             rm(list = dataName)  # delete temp data to keep memory usage low
+            gc()
         }
         if (filetype == "csv") {
             # loading csv-files
-            tempData <- read.csv2(paste(inputDirectory, dataFileNames[i], sep = ""), header = TRUE, sep = ";", nrows = 1)
+            tempData <- read.csv2(paste(inputDirectory, dataFileNames[i], sep = ""), header = TRUE, sep = ";")
         }
         if (verbose) {
             writeLines(paste("  Adding ", nrow(tempData), " rows to data frame of actually ", dataNrows, " rows.", sep = ""))
@@ -114,15 +138,18 @@ concatData <- function(dataFileNames, inputDirectory, subjectColumn = FALSE, out
     dataColNames <- sort(unique(dataColNames))
     
     if (verbose) {
-        writeLines(paste("\nThe final data frame will have ", length(dataColNames), " (+1, if subject number is included in the filename) columns and ", 
-            dataNrows, " rows.", sep = ""))
+        writeLines(paste("\nThe final data frame will have ", 
+                         if (subjectColumn == FALSE)
+                         {length(dataColNames) + 1}
+                         else {length(dataColNames)}, 
+                         " columns and ", dataNrows, " rows.", sep = ""))
     }
     
     if (verbose) {
         writeLines("\nThese are the unique column names of all files to be concatenated. Check, if they are correct.")
         print(dataColNames)
-        writeLines("Abort Script? (Press 'y' to abort or any other key to coninue)")
-        if (readline(prompt = "? ") == "y") {
+        writeLines("Abort Script? (Press 'y' to abort, or any other key to coninue)")
+        if (tolower(readline(prompt = "? ")) == "y") {
             stop("Aborted due to user request.")
         }
     }
@@ -134,17 +161,21 @@ concatData <- function(dataFileNames, inputDirectory, subjectColumn = FALSE, out
     
     # Preallocate empty data frame
     if (verbose) {
-        writeLines(paste("\nPreallocating data frame of a ", length(dataColNames), "x", dataNrows, " matrix.", sep = ""))
+        writeLines(paste("\nPreallocating data frame of a ", 
+                         if (subjectColumn == FALSE)
+                         {length(dataColNames) + 1}
+                         else {length(dataColNames)}, 
+                         "x", dataNrows, " matrix.", sep = ""))
     }
     if (subjectColumn) {
-        data <- as.data.frame(matrix(data = NA, nrow = dataNrows, ncol = length(dataColNames)))
-        colnames(data) <- dataColNames
+        rawdata <- as.data.frame(matrix(data = NA, nrow = dataNrows, ncol = length(dataColNames)))
+        colnames(rawdata) <- dataColNames
     } else {
-        data <- as.data.frame(matrix(data = NA, nrow = dataNrows, ncol = length(dataColNames) + 1))
-        colnames(data) <- c("subject", dataColNames)
+        rawdata <- as.data.frame(matrix(data = NA, nrow = dataNrows, ncol = length(dataColNames) + 1))
+        colnames(rawdata) <- c("subject", dataColNames)
     }
     
-    # load an concatenate files
+    # load and concatenate files
     dataNrows <- 1  # counter must start at 1 to address dataframe rows correctly
     for (i in 1:length(dataFileNames)) {
         if (verbose) {
@@ -174,7 +205,7 @@ concatData <- function(dataFileNames, inputDirectory, subjectColumn = FALSE, out
         }
         
         # Writing data into preallocated data frame (much faster than merge())
-        data[(dataNrows:(dataNrows + nrow(tempData) - 1)), names(tempData)] <- tempData
+        rawdata[(dataNrows:(dataNrows + nrow(tempData) - 1)), names(tempData)] <- tempData
         dataNrows <- dataNrows + nrow(tempData)
     }
     rm(tempData)
@@ -185,9 +216,9 @@ concatData <- function(dataFileNames, inputDirectory, subjectColumn = FALSE, out
     }
     
     # Sorting rows according to subject
-    data <- data[with(data, order(data$subject)), ]
+    rawdata <- rawdata[with(rawdata, order(rawdata$subject)), ]
     # Sorting columns alphabetically
-    data <- data[sort(names(data))]
+    rawdata <- rawdata[sort(names(rawdata))]
     
-    save(data, file = paste(outputDirectory, outputFilename, sep = ""))
+    save(rawdata, file = paste(outputDirectory, outputFilename, sep = ""))
 }

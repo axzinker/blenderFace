@@ -1,8 +1,8 @@
 Package: blenderFace
 Type: Package
 Title: Collection of functions to process blender measured facial movement data
-Version: 0.1.9002
-Date: 2016-05-04
+Version: 0.1.9003
+Date: 2016-09-13
 Authors@R: c(
   person("Axel", "Zinkernagel", email = "zinkernagel@uni-landau.de", role = c("cre","aut")),
   person("Rainer", "Alexandrowicz", email = "rainer.alexandrowicz@aau.at", role = "aut"))
@@ -19,8 +19,8 @@ Imports:
     doParallel (>= 1.0.10),
     foreach (>= 1.4.3)
 Collate:
-    '00_Function_ConcatData.R'
-    '01_Function_ScaleBlenderData.R'
+    'concatBlenderFiles.R'
+    'bu2mm.R'
     '02_Function_ScaleFaceData.R'
     '03_Function_CenterCond.R'
     '04_Function_AngleDistance.R'

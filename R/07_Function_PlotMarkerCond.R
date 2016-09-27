@@ -71,13 +71,13 @@ plotMarkerCond <- function(data, colNames, colNameCond, title = "", xlim = c(-10
         quantY <- quantile(data[data[colNameCond] == cond[j], colNames[2]], c(0.25, 0.75), na.rm = TRUE)
         lines(c(0, medianX), c(0, medianY), type = "l", col = j)
         points(medianX, medianY, pch = 19, col = j)
-        plotrix::draw.ellipse(medianX, medianY, a = abs(quantX[2]), b = abs(quantY[2]), segment = c(0, 90), arc.only = FALSE, border = j, 
-            lty = 1, lwd = 1, deg = TRUE)
-        plotrix::draw.ellipse(medianX, medianY, a = abs(quantX[1]), b = abs(quantY[2]), segment = c(90, 180), arc.only = FALSE, border = j, 
-            lty = 1, lwd = 1, deg = TRUE)
-        plotrix::draw.ellipse(medianX, medianY, a = abs(quantX[1]), b = abs(quantY[1]), segment = c(180, 270), arc.only = FALSE, border = j, 
-            lty = 1, lwd = 1, deg = TRUE)
-        plotrix::draw.ellipse(medianX, medianY, a = abs(quantX[2]), b = abs(quantY[1]), segment = c(270, 360), arc.only = FALSE, border = j, 
-            lty = 1, lwd = 1, deg = TRUE)
+        plotrix::draw.ellipse(medianX, medianY, a = abs(quantX[2]), b = abs(quantY[2]), segment = c(0, 90), arc.only = FALSE, border = j, lty = 1, 
+            lwd = 1, deg = TRUE)
+        plotrix::draw.ellipse(medianX, medianY, a = abs(quantX[1]), b = abs(quantY[2]), segment = c(90, 180), arc.only = FALSE, border = j, lty = 1, 
+            lwd = 1, deg = TRUE)
+        plotrix::draw.ellipse(medianX, medianY, a = abs(quantX[1]), b = abs(quantY[1]), segment = c(180, 270), arc.only = FALSE, border = j, lty = 1, 
+            lwd = 1, deg = TRUE)
+        plotrix::draw.ellipse(medianX, medianY, a = abs(quantX[2]), b = abs(quantY[1]), segment = c(270, 360), arc.only = FALSE, border = j, lty = 1, 
+            lwd = 1, deg = TRUE)
     }
 }

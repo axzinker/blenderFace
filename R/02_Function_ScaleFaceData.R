@@ -85,8 +85,8 @@ scaleFaceData <- function(data, colNames, colNameSubj, pupilDist, leftPMDist, sc
     # Determing number of subjects in data
     subjects <- unique(data[[colNameSubj]])
     
-    # Principle of rescaling (again): Perform scaling via rule of proportion.  Example: Assuming the glue dot has 8 mm diameter (BU =
-    # blender units): (glue dot in BU / 8mm) = (variable in BU / x mm) x = (variable in BU * 8 mm) / glue dot in BU
+    # Principle of rescaling (again): Perform scaling via rule of proportion.  Example: Assuming the glue dot has 8 mm diameter (BU = blender
+    # units): (glue dot in BU / 8mm) = (variable in BU / x mm) x = (variable in BU * 8 mm) / glue dot in BU
     
     # Compute real world measures for eye-eye distance (x-axis) and eye-mouthcorner distance to get mean and sd
     sFxyaxes <- as.data.frame(matrix(data = NA, nrow = length(subjects), ncol = 2))

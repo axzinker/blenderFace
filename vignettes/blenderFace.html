@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=9" >
+
+<title>Workflow of Blender-data post-processing with the blenderFace package</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+<!-- Styles for R syntax highlighter -->
+<style type="text/css">
+   pre .operator,
+   pre .paren {
+     color: rgb(104, 118, 135)
+   }
+
+   pre .literal {
+     color: rgb(88, 72, 246)
+   }
+
+   pre .number {
+     color: rgb(0, 0, 205);
+   }
+
+   pre .comment {
+     color: rgb(76, 136, 107);
+   }
+
+   pre .keyword {
+     color: rgb(0, 0, 255);
+   }
+
+   pre .identifier {
+     color: rgb(0, 0, 0);
+   }
+
+   pre .string {
+     color: rgb(3, 106, 7);
+   }
+</style>
+
+<!-- R syntax highlighter -->
+<script type="text/javascript">
+var hljs=new function(){function m(p){return p.replace(/&/gm,"&amp;").replace(/</gm,"&lt;")}function f(r,q,p){return RegExp(q,"m"+(r.cI?"i":"")+(p?"g":""))}function b(r){for(var p=0;p<r.childNodes.length;p++){var q=r.childNodes[p];if(q.nodeName=="CODE"){return q}if(!(q.nodeType==3&&q.nodeValue.match(/\s+/))){break}}}function h(t,s){var p="";for(var r=0;r<t.childNodes.length;r++){if(t.childNodes[r].nodeType==3){var q=t.childNodes[r].nodeValue;if(s){q=q.replace(/\n/g,"")}p+=q}else{if(t.childNodes[r].nodeName=="BR"){p+="\n"}else{p+=h(t.childNodes[r])}}}if(/MSIE [678]/.test(navigator.userAgent)){p=p.replace(/\r/g,"\n")}return p}function a(s){var r=s.className.split(/\s+/);r=r.concat(s.parentNode.className.split(/\s+/));for(var q=0;q<r.length;q++){var p=r[q].replace(/^language-/,"");if(e[p]){return p}}}function c(q){var p=[];(function(s,t){for(var r=0;r<s.childNodes.length;r++){if(s.childNodes[r].nodeType==3){t+=s.childNodes[r].nodeValue.length}else{if(s.childNodes[r].nodeName=="BR"){t+=1}else{if(s.childNodes[r].nodeType==1){p.push({event:"start",offset:t,node:s.childNodes[r]});t=arguments.callee(s.childNodes[r],t);p.push({event:"stop",offset:t,node:s.childNodes[r]})}}}}return t})(q,0);return p}function k(y,w,x){var q=0;var z="";var s=[];function u(){if(y.length&&w.length){if(y[0].offset!=w[0].offset){return(y[0].offset<w[0].offset)?y:w}else{return w[0].event=="start"?y:w}}else{return y.length?y:w}}function t(D){var A="<"+D.nodeName.toLowerCase();for(var B=0;B<D.attributes.length;B++){var C=D.attributes[B];A+=" "+C.nodeName.toLowerCase();if(C.value!==undefined&&C.value!==false&&C.value!==null){A+='="'+m(C.value)+'"'}}return A+">"}while(y.length||w.length){var v=u().splice(0,1)[0];z+=m(x.substr(q,v.offset-q));q=v.offset;if(v.event=="start"){z+=t(v.node);s.push(v.node)}else{if(v.event=="stop"){var p,r=s.length;do{r--;p=s[r];z+=("</"+p.nodeName.toLowerCase()+">")}while(p!=v.node);s.splice(r,1);while(r<s.length){z+=t(s[r]);r++}}}}return z+m(x.substr(q))}function j(){function q(x,y,v){if(x.compiled){return}var u;var s=[];if(x.k){x.lR=f(y,x.l||hljs.IR,true);for(var w in x.k){if(!x.k.hasOwnProperty(w)){continue}if(x.k[w] instanceof Object){u=x.k[w]}else{u=x.k;w="keyword"}for(var r in u){if(!u.hasOwnProperty(r)){continue}x.k[r]=[w,u[r]];s.push(r)}}}if(!v){if(x.bWK){x.b="\\b("+s.join("|")+")\\s"}x.bR=f(y,x.b?x.b:"\\B|\\b");if(!x.e&&!x.eW){x.e="\\B|\\b"}if(x.e){x.eR=f(y,x.e)}}if(x.i){x.iR=f(y,x.i)}if(x.r===undefined){x.r=1}if(!x.c){x.c=[]}x.compiled=true;for(var t=0;t<x.c.length;t++){if(x.c[t]=="self"){x.c[t]=x}q(x.c[t],y,false)}if(x.starts){q(x.starts,y,false)}}for(var p in e){if(!e.hasOwnProperty(p)){continue}q(e[p].dM,e[p],true)}}function d(B,C){if(!j.called){j();j.called=true}function q(r,M){for(var L=0;L<M.c.length;L++){if((M.c[L].bR.exec(r)||[null])[0]==r){return M.c[L]}}}function v(L,r){if(D[L].e&&D[L].eR.test(r)){return 1}if(D[L].eW){var M=v(L-1,r);return M?M+1:0}return 0}function w(r,L){return L.i&&L.iR.test(r)}function K(N,O){var M=[];for(var L=0;L<N.c.length;L++){M.push(N.c[L].b)}var r=D.length-1;do{if(D[r].e){M.push(D[r].e)}r--}while(D[r+1].eW);if(N.i){M.push(N.i)}return f(O,M.join("|"),true)}function p(M,L){var N=D[D.length-1];if(!N.t){N.t=K(N,E)}N.t.lastIndex=L;var r=N.t.exec(M);return r?[M.substr(L,r.index-L),r[0],false]:[M.substr(L),"",true]}function z(N,r){var L=E.cI?r[0].toLowerCase():r[0];var M=N.k[L];if(M&&M instanceof Array){return M}return false}function F(L,P){L=m(L);if(!P.k){return L}var r="";var O=0;P.lR.lastIndex=0;var M=P.lR.exec(L);while(M){r+=L.substr(O,M.index-O);var N=z(P,M);if(N){x+=N[1];r+='<span class="'+N[0]+'">'+M[0]+"</span>"}else{r+=M[0]}O=P.lR.lastIndex;M=P.lR.exec(L)}return r+L.substr(O,L.length-O)}function J(L,M){if(M.sL&&e[M.sL]){var r=d(M.sL,L);x+=r.keyword_count;return r.value}else{return F(L,M)}}function I(M,r){var L=M.cN?'<span class="'+M.cN+'">':"";if(M.rB){y+=L;M.buffer=""}else{if(M.eB){y+=m(r)+L;M.buffer=""}else{y+=L;M.buffer=r}}D.push(M);A+=M.r}function G(N,M,Q){var R=D[D.length-1];if(Q){y+=J(R.buffer+N,R);return false}var P=q(M,R);if(P){y+=J(R.buffer+N,R);I(P,M);return P.rB}var L=v(D.length-1,M);if(L){var O=R.cN?"</span>":"";if(R.rE){y+=J(R.buffer+N,R)+O}else{if(R.eE){y+=J(R.buffer+N,R)+O+m(M)}else{y+=J(R.buffer+N+M,R)+O}}while(L>1){O=D[D.length-2].cN?"</span>":"";y+=O;L--;D.length--}var r=D[D.length-1];D.length--;D[D.length-1].buffer="";if(r.starts){I(r.starts,"")}return R.rE}if(w(M,R)){throw"Illegal"}}var E=e[B];var D=[E.dM];var A=0;var x=0;var y="";try{var s,u=0;E.dM.buffer="";do{s=p(C,u);var t=G(s[0],s[1],s[2]);u+=s[0].length;if(!t){u+=s[1].length}}while(!s[2]);if(D.length>1){throw"Illegal"}return{r:A,keyword_count:x,value:y}}catch(H){if(H=="Illegal"){return{r:0,keyword_count:0,value:m(C)}}else{throw H}}}function g(t){var p={keyword_count:0,r:0,value:m(t)};var r=p;for(var q in e){if(!e.hasOwnProperty(q)){continue}var s=d(q,t);s.language=q;if(s.keyword_count+s.r>r.keyword_count+r.r){r=s}if(s.keyword_count+s.r>p.keyword_count+p.r){r=p;p=s}}if(r.language){p.second_best=r}return p}function i(r,q,p){if(q){r=r.replace(/^((<[^>]+>|\t)+)/gm,function(t,w,v,u){return w.replace(/\t/g,q)})}if(p){r=r.replace(/\n/g,"<br>")}return r}function n(t,w,r){var x=h(t,r);var v=a(t);var y,s;if(v){y=d(v,x)}else{return}var q=c(t);if(q.length){s=document.createElement("pre");s.innerHTML=y.value;y.value=k(q,c(s),x)}y.value=i(y.value,w,r);var u=t.className;if(!u.match("(\\s|^)(language-)?"+v+"(\\s|$)")){u=u?(u+" "+v):v}if(/MSIE [678]/.test(navigator.userAgent)&&t.tagName=="CODE"&&t.parentNode.tagName=="PRE"){s=t.parentNode;var p=document.createElement("div");p.innerHTML="<pre><code>"+y.value+"</code></pre>";t=p.firstChild.firstChild;p.firstChild.cN=s.cN;s.parentNode.replaceChild(p.firstChild,s)}else{t.innerHTML=y.value}t.className=u;t.result={language:v,kw:y.keyword_count,re:y.r};if(y.second_best){t.second_best={language:y.second_best.language,kw:y.second_best.keyword_count,re:y.second_best.r}}}function o(){if(o.called){return}o.called=true;var r=document.getElementsByTagName("pre");for(var p=0;p<r.length;p++){var q=b(r[p]);if(q){n(q,hljs.tabReplace)}}}function l(){if(window.addEventListener){window.addEventListener("DOMContentLoaded",o,false);window.addEventListener("load",o,false)}else{if(window.attachEvent){window.attachEvent("onload",o)}else{window.onload=o}}}var e={};this.LANGUAGES=e;this.highlight=d;this.highlightAuto=g;this.fixMarkup=i;this.highlightBlock=n;this.initHighlighting=o;this.initHighlightingOnLoad=l;this.IR="[a-zA-Z][a-zA-Z0-9_]*";this.UIR="[a-zA-Z_][a-zA-Z0-9_]*";this.NR="\\b\\d+(\\.\\d+)?";this.CNR="\\b(0[xX][a-fA-F0-9]+|(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?)";this.BNR="\\b(0b[01]+)";this.RSR="!|!=|!==|%|%=|&|&&|&=|\\*|\\*=|\\+|\\+=|,|\\.|-|-=|/|/=|:|;|<|<<|<<=|<=|=|==|===|>|>=|>>|>>=|>>>|>>>=|\\?|\\[|\\{|\\(|\\^|\\^=|\\||\\|=|\\|\\||~";this.ER="(?![\\s\\S])";this.BE={b:"\\\\.",r:0};this.ASM={cN:"string",b:"'",e:"'",i:"\\n",c:[this.BE],r:0};this.QSM={cN:"string",b:'"',e:'"',i:"\\n",c:[this.BE],r:0};this.CLCM={cN:"comment",b:"//",e:"$"};this.CBLCLM={cN:"comment",b:"/\\*",e:"\\*/"};this.HCM={cN:"comment",b:"#",e:"$"};this.NM={cN:"number",b:this.NR,r:0};this.CNM={cN:"number",b:this.CNR,r:0};this.BNM={cN:"number",b:this.BNR,r:0};this.inherit=function(r,s){var p={};for(var q in r){p[q]=r[q]}if(s){for(var q in s){p[q]=s[q]}}return p}}();hljs.LANGUAGES.cpp=function(){var a={keyword:{"false":1,"int":1,"float":1,"while":1,"private":1,"char":1,"catch":1,"export":1,virtual:1,operator:2,sizeof:2,dynamic_cast:2,typedef:2,const_cast:2,"const":1,struct:1,"for":1,static_cast:2,union:1,namespace:1,unsigned:1,"long":1,"throw":1,"volatile":2,"static":1,"protected":1,bool:1,template:1,mutable:1,"if":1,"public":1,friend:2,"do":1,"return":1,"goto":1,auto:1,"void":2,"enum":1,"else":1,"break":1,"new":1,extern:1,using:1,"true":1,"class":1,asm:1,"case":1,typeid:1,"short":1,reinterpret_cast:2,"default":1,"double":1,register:1,explicit:1,signed:1,typename:1,"try":1,"this":1,"switch":1,"continue":1,wchar_t:1,inline:1,"delete":1,alignof:1,char16_t:1,char32_t:1,constexpr:1,decltype:1,noexcept:1,nullptr:1,static_assert:1,thread_local:1,restrict:1,_Bool:1,complex:1},built_in:{std:1,string:1,cin:1,cout:1,cerr:1,clog:1,stringstream:1,istringstream:1,ostringstream:1,auto_ptr:1,deque:1,list:1,queue:1,stack:1,vector:1,map:1,set:1,bitset:1,multiset:1,multimap:1,unordered_set:1,unordered_map:1,unordered_multiset:1,unordered_multimap:1,array:1,shared_ptr:1}};return{dM:{k:a,i:"</",c:[hljs.CLCM,hljs.CBLCLM,hljs.QSM,{cN:"string",b:"'\\\\?.",e:"'",i:"."},{cN:"number",b:"\\b(\\d+(\\.\\d*)?|\\.\\d+)(u|U|l|L|ul|UL|f|F)"},hljs.CNM,{cN:"preprocessor",b:"#",e:"$"},{cN:"stl_container",b:"\\b(deque|list|queue|stack|vector|map|set|bitset|multiset|multimap|unordered_map|unordered_set|unordered_multiset|unordered_multimap|array)\\s*<",e:">",k:a,r:10,c:["self"]}]}}}();hljs.LANGUAGES.r={dM:{c:[hljs.HCM,{cN:"number",b:"\\b0[xX][0-9a-fA-F]+[Li]?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+(?:[eE][+\\-]?\\d*)?L\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\b\\d+\\.(?!\\d)(?:i\\b)?",e:hljs.IMMEDIATE_RE,r:1},{cN:"number",b:"\\b\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"keyword",b:"(?:tryCatch|library|setGeneric|setGroupGeneric)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\.",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\.\\.\\d+(?![\\w.])",e:hljs.IMMEDIATE_RE,r:10},{cN:"keyword",b:"\\b(?:function)",e:hljs.IMMEDIATE_RE,r:2},{cN:"keyword",b:"(?:if|in|break|next|repeat|else|for|return|switch|while|try|stop|warning|require|attach|detach|source|setMethod|setClass)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"literal",b:"(?:NA|NA_integer_|NA_real_|NA_character_|NA_complex_)\\b",e:hljs.IMMEDIATE_RE,r:10},{cN:"literal",b:"(?:NULL|TRUE|FALSE|T|F|Inf|NaN)\\b",e:hljs.IMMEDIATE_RE,r:1},{cN:"identifier",b:"[a-zA-Z.][a-zA-Z0-9._]*\\b",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"<\\-(?!\\s*\\d)",e:hljs.IMMEDIATE_RE,r:2},{cN:"operator",b:"\\->|<\\-",e:hljs.IMMEDIATE_RE,r:1},{cN:"operator",b:"%%|~",e:hljs.IMMEDIATE_RE},{cN:"operator",b:">=|<=|==|!=|\\|\\||&&|=|\\+|\\-|\\*|/|\\^|>|<|!|&|\\||\\$|:",e:hljs.IMMEDIATE_RE,r:0},{cN:"operator",b:"%",e:"%",i:"\\n",r:1},{cN:"identifier",b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[hljs.BE],r:0},{cN:"string",b:"'",e:"'",c:[hljs.BE],r:0},{cN:"paren",b:"[[({\\])}]",e:hljs.IMMEDIATE_RE,r:0}]}};
+hljs.initHighlightingOnLoad();
+</script>
+
+
+<!-- MathJax scripts -->
+<script type="text/javascript" src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+</head>
+
+<body>
+<h1>Workflow of Blender-data post-processing with the blenderFace package</h1>
+
+<p>For using the blenderFace package it is assumed, that you have tracked facial movements for at least two subjects, following the &ldquo;Step_by_Step_Instructions.pdf&rdquo;. The output of this procedure is a csv file for each participant, which includes the x,y,z-axis movement of the tracked facial markers. The blenderFace package includes raw data sets of two subjects (in fact, it is one subject recorded and tracked twice). </p>
+
+<p>First, be sure to have loaded the package:</p>
+
+<pre><code class="r">library(blenderFace)
+</code></pre>
+
+<h2>Concatenating raw data files to one large RData file</h2>
+
+<p>To perform the concatenation of files, use the <em>concatData()</em> function of the package. If you have followed the &ldquo;Step-by-Step&rdquo;-instructions, the subject number is part of the file name. However, the file name ends with &ldquo;_Step_03&rdquo; for each participant. Please rename the files, so that the subject number is the last number before the filetype ending (e.g., &ldquo;.csv&rdquo;). For example, if you have the file &ldquo;Subject_39_Step_03.csv&rdquo;, rename it into &ldquo;Subject_39.csv&rdquo;. The package includes two sample csv files in the <code>./inst/extdata</code> directory (&ldquo;Subject_01.csv&rdquo;,&ldquo;Subject_02.csv&rdquo;). Although the <em>concatData()</em> function does some basic input checks, be aware that this function writes on your hard disk and may change/overwrite/delete files, if messed up input strings are given!</p>
+
+<p>The path specifications are adapted for the package example. Please change the paths to your needs.</p>
+
+<pre><code class="r">inputdir &lt;- paste(system.file(package = &quot;blenderFace&quot;),&quot;/extdata/&quot;,sep=&quot;&quot;)
+outputdir &lt;- paste(system.file(package = &quot;blenderFace&quot;),&quot;/data/&quot;,sep=&quot;&quot;)
+filenames &lt;- c(&quot;Subject_01.csv&quot;,&quot;Subject_02.csv&quot;)
+
+# If all files in a directory should be processes, use:
+# filenames &lt;- list.files(inputdir, pattern = paste(&quot;[0-9]&quot;,&quot;.csv&quot;,&quot;$&quot;,sep=&quot;&quot;))
+
+concatData(dataFileNames = filenames, inputDirectory = inputdir, subjectColumn = FALSE, outputFilename = &quot;rawdata.rda&quot;, outputDirectory = outputdir, verbose = TRUE)
+</code></pre>
+
+<p>The console output of the <em>concatData()</em> function shows:</p>
+
+<pre><code class="r">Step 1: Determing unique column names and number of rows of the files to be concatenated.
+Reading 2 files:
+Reading file Subject_01.csv (1/2)
+  Adding 1714 rows to data frame of actually 0 rows.
+Reading file Subject_02.csv (2/2)
+  Adding 1692 rows to data frame of actually 1714 rows.
+
+The final data frame will have 51 columns and 3406 rows.
+
+These are the unique column names of all files to be concatenated. Check, if they are correct.
+ [1] &quot;AU_01_L_x&quot;    &quot;AU_01_L_y&quot;    &quot;AU_01_L_z&quot;    &quot;AU_01_R_x&quot;    &quot;AU_01_R_y&quot;    &quot;AU_01_R_z&quot;    &quot;AU_02_L_x&quot;    &quot;AU_02_L_y&quot;    &quot;AU_02_L_z&quot;   
+[10] &quot;AU_02_R_x&quot;    &quot;AU_02_R_y&quot;    &quot;AU_02_R_z&quot;    &quot;AU_06_L_x&quot;    &quot;AU_06_L_y&quot;    &quot;AU_06_L_z&quot;    &quot;AU_06_R_x&quot;    &quot;AU_06_R_y&quot;    &quot;AU_06_R_z&quot;   
+[19] &quot;AU_08_x&quot;      &quot;AU_08_y&quot;      &quot;AU_08_z&quot;      &quot;AU_09_L_x&quot;    &quot;AU_09_L_y&quot;    &quot;AU_09_L_z&quot;    &quot;AU_09_R_x&quot;    &quot;AU_09_R_y&quot;    &quot;AU_09_R_z&quot;   
+[28] &quot;AU_10_L_x&quot;    &quot;AU_10_L_y&quot;    &quot;AU_10_L_z&quot;    &quot;AU_10_R_x&quot;    &quot;AU_10_R_y&quot;    &quot;AU_10_R_z&quot;    &quot;AU_11_L_x&quot;    &quot;AU_11_L_y&quot;    &quot;AU_11_L_z&quot;   
+[37] &quot;AU_11_R_x&quot;    &quot;AU_11_R_y&quot;    &quot;AU_11_R_z&quot;    &quot;AU_12_L_x&quot;    &quot;AU_12_L_y&quot;    &quot;AU_12_L_z&quot;    &quot;AU_12_R_x&quot;    &quot;AU_12_R_y&quot;    &quot;AU_12_R_z&quot;   
+[46] &quot;AU_16_x&quot;      &quot;AU_16_y&quot;      &quot;AU_16_z&quot;      &quot;Frame&quot;        &quot;Stimulustype&quot;
+Abort Script? (Press &#39;y&#39; to abort, or any other key to coninue)
+? 
+Step 2: Concatenating files.
+
+Preallocating data frame of a 51x3406 matrix.
+Concatenating file Subject_01.csv (1/2)
+Concatenating file Subject_02.csv (2/2)
+Step 3: Saving output file (it takes time to save large files).
+</code></pre>
+
+<p>As main output of this function a file with the filename given in <code>outputFilename</code> is saved in the directory given in as <code>outputDirectory</code>. The data frame stored in this file contains the data of all concatenated subjects. This output file of the two sample subjects is also attached to this package.</p>
+
+<h2>Scale Blender units to real world measures</h2>
+
+<p>The next step in Blender data post-processing is to scale the Blender units (BU) to real world measures, e.g., into mm. In principle, the rescaling is done by rule of proportion:
+\[ \begin{equation*}
+  \frac{\mbox{Diameter in Blender units}}{\mbox{Diameter in millimeter}} =
+  \mbox{Factor to multiply BU with, to obtain mm}
+\end{equation*}
+ \]</p>
+
+<p>In the sample video &ldquo;Subject_01.mp4&rdquo; glue-dots with 8 mm diameter were used. Additionally, the glue-dot diameter measurement in BU is needed. If you have followed the &ldquo;Step-by-Step&rdquo;-instructions, you have measured and saved the glue-dot diameters in BU in a file called &ldquo;Blender_Scalingdata.csv&rdquo;. For the two example subjects, the file &ldquo;Blender_Scalingdata.csv&rdquo; is included in the package.</p>
+
+<p>The path specifications are adapted for the package example. Please change the paths to your needs.</p>
+
+<pre><code class="r">scaledata &lt;- read.csv(system.file(&quot;extdata&quot;, &quot;Blender_Scalingdata.csv&quot;, package = &quot;blenderFace&quot;), header = TRUE, sep =&quot;,&quot;)
+# Be sure to have the table sorted by subjects
+scaledata &lt;- scaledata[with(scaledata, order(scaledata$subject)), ]
+
+data(rawdata, package=&quot;blenderFace&quot;)
+names(rawdata)
+</code></pre>
+
+<pre><code>## Error in eval(expr, envir, enclos): Objekt &#39;rawdata&#39; nicht gefunden
+</code></pre>
+
+<pre><code class="r">colNames &lt;- c(&quot;AU_01_L_x&quot;, &quot;AU_01_L_y&quot;, &quot;AU_01_L_z&quot;, &quot;AU_01_R_x&quot;, &quot;AU_01_R_y&quot;, &quot;AU_01_R_z&quot;, &quot;AU_02_L_x&quot;, &quot;AU_02_L_y&quot;, &quot;AU_02_L_z&quot;, &quot;AU_02_R_x&quot;, &quot;AU_02_R_y&quot;, 
+              &quot;AU_02_R_z&quot;, &quot;AU_06_L_x&quot;, &quot;AU_06_L_y&quot;, &quot;AU_06_L_z&quot;, &quot;AU_06_R_x&quot;, &quot;AU_06_R_y&quot;, &quot;AU_06_R_z&quot;, &quot;AU_08_x&quot;, &quot;AU_08_y&quot;, &quot;AU_08_z&quot;, &quot;AU_09_L_x&quot;,  
+              &quot;AU_09_L_y&quot;, &quot;AU_09_L_z&quot;, &quot;AU_09_R_x&quot;, &quot;AU_09_R_y&quot;, &quot;AU_09_R_z&quot;, &quot;AU_10_L_x&quot;, &quot;AU_10_L_y&quot;, &quot;AU_10_L_z&quot;, &quot;AU_10_R_x&quot;, &quot;AU_10_R_y&quot;, &quot;AU_10_R_z&quot;,  
+              &quot;AU_12_L_x&quot;, &quot;AU_12_L_y&quot;, &quot;AU_12_L_z&quot;, &quot;AU_12_R_x&quot;, &quot;AU_12_R_y&quot;, &quot;AU_12_R_z&quot;, &quot;AU_16_x&quot;, &quot;AU_16_y&quot;, &quot;AU_16_z&quot;)
+
+load(paste(outputDirectory,&quot;BdataRaw.Rdata&quot;,sep=&quot;&quot;))
+
+# Order columns of data frame accordingly
+data &lt;- data[c(&quot;subject&quot;, &quot;Frame&quot;, &quot;stimulustype&quot;, colNames)]
+
+# Read table with scaling data per subject to scale blender units to real world measures
+scaleTable &lt;- read.csv(paste(inputDirectory,&quot;Hilfsdaten.csv&quot;,sep=&quot;&quot;),header = TRUE, sep = &quot;;&quot;)
+# Sort table by subjects
+scaleTable &lt;- scaleTable[with(scaleTable, order(scaleTable$subject)), ]
+
+BdataScaledB &lt;- scaleBlenderData(data, colNames, colNameSubj=&quot;subject&quot;, scaleTable$Skalierung_Markerpunkt, verbose=TRUE)
+save(BdataScaledB, file=(paste(outputDirectory,&quot;BdataScaledB.Rdata&quot;,sep=&quot;&quot;)))
+</code></pre>
+
+<p><em>Axel</em> <em><em>fix me</em></em>: Im Beispielvideo falsche Markerbennung (AU_08_R) korrigieren!</p>
+
+<p>The figure sizes have been customised so that you can easily put two images side-by-side. </p>
+
+<pre><code class="r">plot(1:10)
+plot(10:1)
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-7"/><img src="data:image/png;base64,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" alt="plot of chunk unnamed-chunk-7"/></p>
+
+<p>You can enable figure captions by <code>fig_caption: yes</code> in YAML:</p>
+
+<pre><code>output:
+  rmarkdown::html_vignette:
+    fig_caption: yes
+</code></pre>
+
+<p>Then you can use the chunk option <code>fig.cap = &quot;Your figure caption.&quot;</code> in <strong>knitr</strong>.</p>
+
+<p>You can write math expressions, e.g. \( Y = X\beta + \epsilon \), footnotes<sup>[A</sup> footnote here.], and tables, e.g. using <code>knitr::kable()</code>.</p>
+
+<table><thead>
+<tr>
+<th align="left"></th>
+<th align="right">mpg</th>
+<th align="right">cyl</th>
+<th align="right">disp</th>
+<th align="right">hp</th>
+<th align="right">drat</th>
+<th align="right">wt</th>
+<th align="right">qsec</th>
+<th align="right">vs</th>
+<th align="right">am</th>
+<th align="right">gear</th>
+<th align="right">carb</th>
+</tr>
+</thead><tbody>
+<tr>
+<td align="left">Mazda RX4</td>
+<td align="right">21.0</td>
+<td align="right">6</td>
+<td align="right">160.0</td>
+<td align="right">110</td>
+<td align="right">3.90</td>
+<td align="right">2.620</td>
+<td align="right">16.46</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">4</td>
+<td align="right">4</td>
+</tr>
+<tr>
+<td align="left">Mazda RX4 Wag</td>
+<td align="right">21.0</td>
+<td align="right">6</td>
+<td align="right">160.0</td>
+<td align="right">110</td>
+<td align="right">3.90</td>
+<td align="right">2.875</td>
+<td align="right">17.02</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">4</td>
+<td align="right">4</td>
+</tr>
+<tr>
+<td align="left">Datsun 710</td>
+<td align="right">22.8</td>
+<td align="right">4</td>
+<td align="right">108.0</td>
+<td align="right">93</td>
+<td align="right">3.85</td>
+<td align="right">2.320</td>
+<td align="right">18.61</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">4</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td align="left">Hornet 4 Drive</td>
+<td align="right">21.4</td>
+<td align="right">6</td>
+<td align="right">258.0</td>
+<td align="right">110</td>
+<td align="right">3.08</td>
+<td align="right">3.215</td>
+<td align="right">19.44</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td align="left">Hornet Sportabout</td>
+<td align="right">18.7</td>
+<td align="right">8</td>
+<td align="right">360.0</td>
+<td align="right">175</td>
+<td align="right">3.15</td>
+<td align="right">3.440</td>
+<td align="right">17.02</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">2</td>
+</tr>
+<tr>
+<td align="left">Valiant</td>
+<td align="right">18.1</td>
+<td align="right">6</td>
+<td align="right">225.0</td>
+<td align="right">105</td>
+<td align="right">2.76</td>
+<td align="right">3.460</td>
+<td align="right">20.22</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td align="left">Duster 360</td>
+<td align="right">14.3</td>
+<td align="right">8</td>
+<td align="right">360.0</td>
+<td align="right">245</td>
+<td align="right">3.21</td>
+<td align="right">3.570</td>
+<td align="right">15.84</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">4</td>
+</tr>
+<tr>
+<td align="left">Merc 240D</td>
+<td align="right">24.4</td>
+<td align="right">4</td>
+<td align="right">146.7</td>
+<td align="right">62</td>
+<td align="right">3.69</td>
+<td align="right">3.190</td>
+<td align="right">20.00</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">4</td>
+<td align="right">2</td>
+</tr>
+<tr>
+<td align="left">Merc 230</td>
+<td align="right">22.8</td>
+<td align="right">4</td>
+<td align="right">140.8</td>
+<td align="right">95</td>
+<td align="right">3.92</td>
+<td align="right">3.150</td>
+<td align="right">22.90</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">4</td>
+<td align="right">2</td>
+</tr>
+<tr>
+<td align="left">Merc 280</td>
+<td align="right">19.2</td>
+<td align="right">6</td>
+<td align="right">167.6</td>
+<td align="right">123</td>
+<td align="right">3.92</td>
+<td align="right">3.440</td>
+<td align="right">18.30</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">4</td>
+<td align="right">4</td>
+</tr>
+</tbody></table>
+
+<p>Also a quote using <code>&gt;</code>:</p>
+
+<blockquote>
+<p>&ldquo;He who gives up [code] safety for [code] speed deserves neither.&rdquo;
+(<a href="https://twitter.com/hadleywickham/status/504368538874703872">via</a>)</p>
+</blockquote>
+
+</body>
+
+</html>
+

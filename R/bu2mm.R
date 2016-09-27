@@ -28,11 +28,9 @@
 #' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
 #'   
 #' @examples
-#' \dontrun{scaleBlenderData()}
+#' \dontrun{bu2mm()}
 #' 
 #' @export
-
-fcat = function(...,newline=TRUE) {if (newline) cat(...,"\n") else cat(...); flush.console() }  # immediate console output
 
 bu2mm <- function(data, colNames, colNameSubj, scaleFactor, rwMeasure = 8, verbose = FALSE) {
     # Error handling
@@ -56,7 +54,7 @@ bu2mm <- function(data, colNames, colNameSubj, scaleFactor, rwMeasure = 8, verbo
        stopifnot(scaleFactor %in% colnames(data))
     else                             # test, if data frame subjects and scaleFactor subjects have the same length
     if (!(is.numeric(scaleFactor)) | !(length(scaleFactor) > 2))
-        stop("Argument scaleFactor is neither a column name nort of type numeric or contains only one value!")
+        stop("Argument scaleFactor is neither a column name nor of type numeric, or contains only one value!")
     else
     if (length(unique(data[[colNameSubj]])) != length(scaleFactor))
         stop(paste("Number of subjects in data data-frame (", length(unique(data[[colNameSubj]])), ") is not equal to length of scaleFactor (", 
@@ -70,6 +68,9 @@ bu2mm <- function(data, colNames, colNameSubj, scaleFactor, rwMeasure = 8, verbo
     if (!(is.logical(verbose))) {
         stop("Argument verbose is not of type logical!")
     }
+    
+    # Helper functions
+    fcat <- function(...,newline=TRUE) {if (newline) cat(...,"\n") else cat(...); flush.console() }  # immediate console output
     
     # Principle of rescaling: Perform scaling via rule of proportion (BU = blender units).
     # Example: Assuming the glue dot has 8 mm diameter and we observe a coordinate of x=50 bu, then:

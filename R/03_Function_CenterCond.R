@@ -64,8 +64,8 @@ centerCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
     
     # Find first frame of conditions per subject
     FirstFrameSubjCond <- function(subjCol, frameCol, condCol) {
-        # SubjCol: column containing the subject number FrameCol: column containing the frame numbers CondCol: column containing the
-        # conditions, for which the first occurrence is searched for
+        # SubjCol: column containing the subject number FrameCol: column containing the frame numbers CondCol: column containing the conditions, for
+        # which the first occurrence is searched for
         
         data <- data.frame(subjCol, frameCol, condCol)
         rm(list = "subjCol", "frameCol", "condCol")
@@ -82,8 +82,7 @@ centerCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
     
     # Find length of conditions per subject
     LengthSubjCond <- function(subjCol, condCol) {
-        # SubjCol: column containing the subject number CondCol: column containing the conditions, for which the first occurrence is searched
-        # for
+        # SubjCol: column containing the subject number CondCol: column containing the conditions, for which the first occurrence is searched for
         
         data <- data.frame(subjCol, condCol)
         rm(list = "subjCol", "condCol")
@@ -139,12 +138,12 @@ centerCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
         timestamp3 <- Sys.time()
     }
     
-    # First loop over rows in offsetTable (i), Second loop over colNames (j) Verbose output is very time consuming; if wanted, add
-    # '.verbose = verbose' to the first foreach loop prevent j beeing a global variable (devtools, check)
+    # First loop over rows in offsetTable (i), Second loop over colNames (j) Verbose output is very time consuming; if wanted, add '.verbose =
+    # verbose' to the first foreach loop prevent j beeing a global variable (devtools, check)
     j <- NULL
     dataCen <- foreach(i = 1:nrow(offsetTable), .combine = rbind) %:% foreach(j = 1:length(colNames), .combine = cbind) %dopar% {
-        subset(data, subset = ((data[[colNameSubj]] == offsetTable[i, "subjCol"]) & (data[[colNameCond]] == offsetTable[i, "condCol"])), 
-            select = colNames[j]) - offsetTable[i, colNames[j]]
+        subset(data, subset = ((data[[colNameSubj]] == offsetTable[i, "subjCol"]) & (data[[colNameCond]] == offsetTable[i, "condCol"])), select = colNames[j]) - 
+            offsetTable[i, colNames[j]]
     }
     
     # Compute subject and condition columns and cbind it to dataCen fix me: Preallocate vectors
@@ -179,10 +178,9 @@ centerCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
         conditions <- unique(dataCen$stimulustype)
         conditions <- subset(conditions, subset = (conditions != ""))
         
-        testmatrix <- foreach(i = 1:length(subjects), .combine = rbind) %:% foreach(j = 1:length(conditions), .combine = rbind) %dopar% 
-            {
-                head(subset(dataCen, subset = (dataCen$subject == subjects[i] & dataCen$stimulustype == conditions[j])), 1)
-            }
+        testmatrix <- foreach(i = 1:length(subjects), .combine = rbind) %:% foreach(j = 1:length(conditions), .combine = rbind) %dopar% {
+            head(subset(dataCen, subset = (dataCen$subject == subjects[i] & dataCen$stimulustype == conditions[j])), 1)
+        }
         
         writeLines("\nPlausibility check: ColSums of centered start frames per condition should be 0:")
         print(colSums(testmatrix[, colNames], na.rm = TRUE))
