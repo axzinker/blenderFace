@@ -1,9 +1,9 @@
 #' Scale blender data
 #' 
 #' Scales columns of a data frame according to a scale factor. For example, the
-#' scale factor can be the diameter of a glue dot measured in blender. The
-#' columns are rescaled accordingly to represent Millimeter instead of blender
-#' units as measurement unit.
+#' scale factor can be the diameter of a glue dot measured in Blender. The
+#' columns are rescaled accordingly to represent millimeter instead of Blender
+#' Units as measurement unit.
 #' 
 #' @param data Data frame containig the columns which should be rescaled.
 #'   Remaining colums will be returned untouched. The data frame should contain 
@@ -12,7 +12,9 @@
 #'   data-frame which should be rescaled.
 #' @param colNameSubj Character vector with a single value containig the name 
 #'   of the subject column of the data data-frame.
-#' @param scaleFactor Numeric vector containing the values of the real world
+#' @param scaleFactor This factor could be either given as a column name for a 
+#'   numeric column attached to the data dataframe, or as separate numeric vector.
+#'   The column or vector sould contain the values of the real world
 #'   object measured in blender for each subject in the data data-frame. For 
 #'   example, this can be the diameter of a glue dot measured in blender. 
 #'   The scaleFactor vector must contain a scale value for each subject in the 
@@ -28,71 +30,79 @@
 #' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
 #'   
 #' @examples
-#' \dontrun{bu2mm()}
-#' 
+#' # Load the file "Blender_Scalingdata.csv"
+#' scaledata <- read.csv(system.file("extdata", "Blender_Scalingdata.csv", package = "blenderFace"), header = TRUE, sep =",")
+#' # Be sure to have the data sorted by subjects
+#' scaledata <- scaledata[with(scaledata, order(scaledata$subject)), ]
+#'
+#' # Determin the dataframe columns which should be scaled:
+#' names(rawdata)
+#' # -> Frame, Stimulustype and subject should not be scaled -> removed for variable colNames
+#' colNames <- c("AU_01_L_x", "AU_01_L_y", "AU_01_L_z", "AU_01_R_x", "AU_01_R_y", "AU_01_R_z", "AU_02_L_x", "AU_02_L_y", "AU_02_L_z", "AU_02_R_x", "AU_02_R_y", 
+#'              "AU_02_R_z", "AU_06_L_x", "AU_06_L_y", "AU_06_L_z", "AU_06_R_x", "AU_06_R_y", "AU_06_R_z", "AU_08_x", "AU_08_y", "AU_08_z", "AU_09_L_x",  
+#'              "AU_09_L_y", "AU_09_L_z", "AU_09_R_x", "AU_09_R_y", "AU_09_R_z", "AU_10_L_x", "AU_10_L_y", "AU_10_L_z", "AU_10_R_x", "AU_10_R_y", "AU_10_R_z",  
+#'              "AU_12_L_x", "AU_12_L_y", "AU_12_L_z", "AU_12_R_x", "AU_12_R_y", "AU_12_R_z", "AU_16_x", "AU_16_y", "AU_16_z")
+#'
+#' # To not overwrite data, use a new data frame (dataSmm means data scaled in millimeter)
+#' dataSmm <- bu2mm(data = rawdata, colNames = colNames, colNameSubj = "subject", scaleFactor = scaledata$GlueDotDiameter, rwMeasure = 8, verbose = TRUE)
 #' @export
 
 bu2mm <- function(data, colNames, colNameSubj, scaleFactor, rwMeasure = 8, verbose = FALSE) {
-    # Error handling
-    if (!(is.data.frame(data))) {
-        stop("Argument data does not contain a data frame!")
-    }
-
-    if (!(is.character(colNames))) {
-        stop("Argument colNames is missing or not of type character!")
-    }
-
-    if (!(is.character(colNameSubj))) {
-        stop("Argument colNameSubj is missing or not of type character!")
-    }
-
-    if (any(is.na(match(colNames,colnames(data))))) {
-       stop(paste("Invalid column(s): ",colNames[which(is.na(match(colNames,colnames(data))))]))
-    }
-
-    if (is.character(scaleFactor))   # is it a valid column in the data set?
-       stopifnot(scaleFactor %in% colnames(data))
-    else                             # test, if data frame subjects and scaleFactor subjects have the same length
-    if (!(is.numeric(scaleFactor)) | !(length(scaleFactor) > 2))
-        stop("Argument scaleFactor is neither a column name nor of type numeric, or contains only one value!")
-    else
-    if (length(unique(data[[colNameSubj]])) != length(scaleFactor))
-        stop(paste("Number of subjects in data data-frame (", length(unique(data[[colNameSubj]])), ") is not equal to length of scaleFactor (", 
-            length(scaleFactor), ")!", sep = ""))
-
-
-    if (!(is.numeric(rwMeasure)) | (length(rwMeasure) != 1)) {
-        stop("Argument rwMeasure is not of type numeric or contains more than one value!")
-    }
-
-    if (!(is.logical(verbose))) {
-        stop("Argument verbose is not of type logical!")
-    }
-    
-    # Helper functions
-    fcat <- function(...,newline=TRUE) {if (newline) cat(...,"\n") else cat(...); flush.console() }  # immediate console output
-    
-    # Principle of rescaling: Perform scaling via rule of proportion (BU = blender units).
-    # Example: Assuming the glue dot has 8 mm diameter and we observe a coordinate of x=50 bu, then:
-    # 1. (glue dot in BU / 8mm) = BU per mm  [bu/mm]
-    # 2. (variable in BU / x mm)
-    #       BU per mm        =
-    # x = (variable in BU * 8 mm) / glue dot in BU
-    # ---> the factor to scale with is 8mm / glue dot in BU -> rwMeasure/scaleFactor[i]
-
-
-    if (is.character(scaleFactor))
-       data[,colNames] = data[,colNames] * rwMeasure/data[,scaleFactor]
-    else {
-          subjects <- unique(data[[colNameSubj]])   # Determine number of subjects in data
-          for (i in 1:length(subjects)) {           # *** RA: tapply?
-             if (verbose) fcat(paste("Perform scaling to real wold measures for subject ", i, " of ", length(subjects), ".", sep = ""))
-             isF <- rwMeasure/scaleFactor[i]        # Determine individual scaleFactor    *** RA (*)
-             data[data$subject == subjects[i], colNames] <- data[data$subject == subjects[i], colNames] * isF  # Rescale data per subject
-          }  # end for
-          }  # end else
-
-    # (*) Dieser Ansatz setzt voraus, dass der sf-Vektor die gleiche Sortierung hat wie der Datensatz!
-    
-    invisible(data)
+  # Error handling
+  if (!(is.data.frame(data))) {
+    stop("Argument data does not contain a data frame!")
+  }
+  
+  if (!(is.character(colNames))) {
+    stop("Argument colNames is missing or not of type character!")
+  }
+  
+  if (!(is.character(colNameSubj))) {
+    stop("Argument colNameSubj is missing or not of type character!")
+  }
+  
+  if (any(is.na(match(colNames,colnames(data))))) {
+    stop(paste("Invalid column(s): ",colNames[which(is.na(match(colNames,colnames(data))))]))
+  }
+  
+  if (is.character(scaleFactor))   # is it a valid column name in the data dataframe?
+    stopifnot(scaleFactor %in% colnames(data))
+  else                             # test, if data frame subjects and scaleFactor subjects have the same length
+    if (!(is.numeric(scaleFactor)) | !(length(scaleFactor) >= 2))
+      stop("Argument scaleFactor is neither a column name nor of type numeric, or contains only one value!")
+  else
+    if (length(unique(data[[colNameSubj]])) != length(scaleFactor)) # @ Rainer: hier fehlen noch die Anpassungen für die Spalte des Hauptdatenframes (-> unique()?)
+      stop(paste("Number of subjects in data data-frame (", length(unique(data[[colNameSubj]])), ") is not equal to length of scaleFactor (", 
+                 length(scaleFactor), ")!", sep = ""))
+  
+  
+  if (!(is.numeric(rwMeasure)) | (length(rwMeasure) != 1)) {
+    stop("Argument rwMeasure is not of type numeric or contains more than one value!")
+  }
+  
+  if (!(is.logical(verbose))) {
+    stop("Argument verbose is not of type logical!")
+  }
+  
+  # Helper functions
+  fcat <- function(...,newline=TRUE) {if (newline) cat(...,"\n") else cat(...); flush.console() }  # immediate console output
+  
+  # Principle of rescaling: Perform scaling via rule of proportion (BU = blender units).
+  # ((Diameter in BU)/(Diameter in mm)) = Factor to divide BU by, to obtain mm
+  # For example, a glue dot has a diameter of 8 mm and is measured in Blender with a diameter of 1 BU:
+  # ((1 BU)/(8 mm)) = 0.125
+  # ((2 BU)/ 0.125) = 16 mm
+  
+  if (is.character(scaleFactor))
+    data[,colNames] = data[,colNames] * rwMeasure/data[,scaleFactor]
+  else {
+    subjects <- unique(data[[colNameSubj]])   # Determine number of subjects in data
+    for (i in 1:length(subjects)) {           # *** RA: tapply?
+      if (verbose) fcat(paste("Perform scaling to millimeter for subject ", i, " of ", length(subjects), ".", sep = ""))
+      isF <- rwMeasure/scaleFactor[i]        # Determine individual scaleFactor; very important to have the same subject sorting of data dataframe and scaleFactor vector!
+      data[data$subject == subjects[i], colNames] <- data[data$subject == subjects[i], colNames] / isF  # Rescale data per subject
+    }  # end for
+  }  # end else
+  
+  invisible(data)
 }

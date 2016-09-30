@@ -18,7 +18,9 @@ data-frame which should be rescaled.}
 \item{colNameSubj}{Character vector with a single value containig the name 
 of the subject column of the data data-frame.}
 
-\item{scaleFactor}{Numeric vector containing the values of the real world
+\item{scaleFactor}{This factor could be either given as a column name for a 
+numeric column attached to the data dataframe, or as separate numeric vector.
+The column or vector sould contain the values of the real world
 object measured in blender for each subject in the data data-frame. For 
 example, this can be the diameter of a glue dot measured in blender. 
 The scaleFactor vector must contain a scale value for each subject in the 
@@ -36,13 +38,26 @@ Rescaled input data frame.
 }
 \description{
 Scales columns of a data frame according to a scale factor. For example, the
-scale factor can be the diameter of a glue dot measured in blender. The
-columns are rescaled accordingly to represent Millimeter instead of blender
-units as measurement unit.
+scale factor can be the diameter of a glue dot measured in Blender. The
+columns are rescaled accordingly to represent millimeter instead of Blender
+Units as measurement unit.
 }
 \examples{
-\dontrun{bu2mm()}
+# Load the file "Blender_Scalingdata.csv"
+scaledata <- read.csv(system.file("extdata", "Blender_Scalingdata.csv", package = "blenderFace"), header = TRUE, sep =",")
+# Be sure to have the data sorted by subjects
+scaledata <- scaledata[with(scaledata, order(scaledata$subject)), ]
 
+# Determin the dataframe columns which should be scaled:
+names(rawdata)
+# -> Frame, Stimulustype and subject should not be scaled -> removed for variable colNames
+colNames <- c("AU_01_L_x", "AU_01_L_y", "AU_01_L_z", "AU_01_R_x", "AU_01_R_y", "AU_01_R_z", "AU_02_L_x", "AU_02_L_y", "AU_02_L_z", "AU_02_R_x", "AU_02_R_y", 
+             "AU_02_R_z", "AU_06_L_x", "AU_06_L_y", "AU_06_L_z", "AU_06_R_x", "AU_06_R_y", "AU_06_R_z", "AU_08_x", "AU_08_y", "AU_08_z", "AU_09_L_x",  
+             "AU_09_L_y", "AU_09_L_z", "AU_09_R_x", "AU_09_R_y", "AU_09_R_z", "AU_10_L_x", "AU_10_L_y", "AU_10_L_z", "AU_10_R_x", "AU_10_R_y", "AU_10_R_z",  
+             "AU_12_L_x", "AU_12_L_y", "AU_12_L_z", "AU_12_R_x", "AU_12_R_y", "AU_12_R_z", "AU_16_x", "AU_16_y", "AU_16_z")
+
+# To not overwrite data, use a new data frame (dataSmm means data scaled in millimeter)
+dataSmm <- bu2mm(data = rawdata, colNames = colNames, colNameSubj = "subject", scaleFactor = scaledata$GlueDotDiameter, rwMeasure = 8, verbose = TRUE)
 }
 \author{
 Axel Zinkernagel \email{zinkernagel@uni-landau.de}

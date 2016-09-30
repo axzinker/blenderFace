@@ -185,16 +185,21 @@ hljs.initHighlightingOnLoad();
 <body>
 <h1>Workflow of Blender-data post-processing with the blenderFace package</h1>
 
-<p>For using the blenderFace package it is assumed, that you have tracked facial movements for at least two subjects, following the &ldquo;Step_by_Step_Instructions.pdf&rdquo;. The output of this procedure is a csv file for each participant, which includes the x,y,z-axis movement of the tracked facial markers. The blenderFace package includes raw data sets of two subjects (in fact, it is one subject recorded and tracked twice). </p>
+<p>For using the blenderFace package it is assumed, that you have tracked facial movements for at least two subjects, following the &ldquo;Step_by_Step_Instructions.pdf&rdquo;. The output of this procedure is a csv file for each participant, which includes the x,y,z-axis movement of the tracked facial markers. Additionally, you need to mark the frames for which a stimulus was presented to the participants. This must be done for each participant (a.k.a. csv file) in a column called &ldquo;stimulustype&rdquo; which marks the frames for which a stimulus was presented to the participant (e.g., &ldquo;posing happiness&rdquo; or viewing an emotion eliciting film clip). Unfortunately, there is no function or procedure that helps you with this step, because it strongly depends on how you presented the stimuli and how you recorded the video clips of the participants. If you know the start- and stop-frames of the presented stimuli, for example, by recording the computer screen via a mirror in the back of the participant, you can fill in  the stimulustype-colums by hand using a spreadsheet programm. </p>
 
-<p>First, be sure to have loaded the package:</p>
+<p>The blenderFace package contains raw data sets of two subjects (in fact, it is one subject recorded and tracked twice) which already have the stimulustype-column attached. </p>
 
-<pre><code class="r">library(blenderFace)
+<p>First, be sure to have installed and loaded the package:</p>
+
+<pre><code class="r">install.packages(&quot;devtools&quot;)
+library(devtools)
+install_github(&quot;axzinker/blenderFace&quot;, built_vignettes = TRUE)
+library(blenderFace)
 </code></pre>
 
-<h2>Concatenating raw data files to one large RData file</h2>
+<h2>Concatenating raw data files to one large RData file with the function <em>concatBlenderFiles</em></h2>
 
-<p>To perform the concatenation of files, use the <em>concatData()</em> function of the package. If you have followed the &ldquo;Step-by-Step&rdquo;-instructions, the subject number is part of the file name. However, the file name ends with &ldquo;_Step_03&rdquo; for each participant. Please rename the files, so that the subject number is the last number before the filetype ending (e.g., &ldquo;.csv&rdquo;). For example, if you have the file &ldquo;Subject_39_Step_03.csv&rdquo;, rename it into &ldquo;Subject_39.csv&rdquo;. The package includes two sample csv files in the <code>./inst/extdata</code> directory (&ldquo;Subject_01.csv&rdquo;,&ldquo;Subject_02.csv&rdquo;). Although the <em>concatData()</em> function does some basic input checks, be aware that this function writes on your hard disk and may change/overwrite/delete files, if messed up input strings are given!</p>
+<p>To perform the concatenation of files, use the <em>concatBlenderFiles</em> function of the package. If you have followed the &ldquo;Step-by-Step&rdquo;-instructions, the subject number is part of the file name. However, the file name ends with &ldquo;_Step_03&rdquo; for each participant. Please rename the files, so that the subject number is the last number before the filetype ending (e.g., &ldquo;.csv&rdquo;). For example, if you have the file &ldquo;Subject_39_Step_03.csv&rdquo;, rename it into &ldquo;Subject_39.csv&rdquo;. The package includes two sample csv files in the <code>./inst/extdata</code> directory (&ldquo;Subject_01.csv&rdquo;,&ldquo;Subject_02.csv&rdquo;). Although the <em>concatBlenderFiles</em> function does some basic input checks, be aware that this function writes on your hard disk and may change/overwrite/delete files, if messed up input strings are given!</p>
 
 <p>The path specifications are adapted for the package example. Please change the paths to your needs.</p>
 
@@ -205,10 +210,10 @@ filenames &lt;- c(&quot;Subject_01.csv&quot;,&quot;Subject_02.csv&quot;)
 # If all files in a directory should be processes, use:
 # filenames &lt;- list.files(inputdir, pattern = paste(&quot;[0-9]&quot;,&quot;.csv&quot;,&quot;$&quot;,sep=&quot;&quot;))
 
-concatData(dataFileNames = filenames, inputDirectory = inputdir, subjectColumn = FALSE, outputFilename = &quot;rawdata.rda&quot;, outputDirectory = outputdir, verbose = TRUE)
+concatBlenderFiles(dataFileNames = filenames, inputDirectory = inputdir, subjectColumn = FALSE, outputFilename = &quot;rawdata.rda&quot;, outputDirectory = outputdir, verbose = TRUE)
 </code></pre>
 
-<p>The console output of the <em>concatData()</em> function shows:</p>
+<p>The console output of the <em>concatBlenderFiles</em> function shows:</p>
 
 <pre><code class="r">Step 1: Determing unique column names and number of rows of the files to be concatenated.
 Reading 2 files:
@@ -236,52 +241,123 @@ Concatenating file Subject_02.csv (2/2)
 Step 3: Saving output file (it takes time to save large files).
 </code></pre>
 
-<p>As main output of this function a file with the filename given in <code>outputFilename</code> is saved in the directory given in as <code>outputDirectory</code>. The data frame stored in this file contains the data of all concatenated subjects. This output file of the two sample subjects is also attached to this package.</p>
+<p>As main output of this function a file with the filename given in <code>outputFilename</code> is saved in the directory given in as <code>outputDirectory</code>. The data frame stored in this file contains the data of all concatenated subjects. This output file of the two sample subjects is also attached to this package and labeled <code>rawdata</code>.</p>
 
-<h2>Scale Blender units to real world measures</h2>
+<h2>Scale Blender units to millimeter by using the function <em>bu2mm</em></h2>
 
-<p>The next step in Blender data post-processing is to scale the Blender units (BU) to real world measures, e.g., into mm. In principle, the rescaling is done by rule of proportion:
+<p>The next step in Blender data post-processing is to scale the Blender units (BU) into mm. In principle, the rescaling is done by the rule of proportion:
 \[ \begin{equation*}
   \frac{\mbox{Diameter in Blender units}}{\mbox{Diameter in millimeter}} =
-  \mbox{Factor to multiply BU with, to obtain mm}
+  \mbox{Factor to divide BU by, to obtain mm}
 \end{equation*}
  \]</p>
 
-<p>In the sample video &ldquo;Subject_01.mp4&rdquo; glue-dots with 8 mm diameter were used. Additionally, the glue-dot diameter measurement in BU is needed. If you have followed the &ldquo;Step-by-Step&rdquo;-instructions, you have measured and saved the glue-dot diameters in BU in a file called &ldquo;Blender_Scalingdata.csv&rdquo;. For the two example subjects, the file &ldquo;Blender_Scalingdata.csv&rdquo; is included in the package.</p>
+<p>For example, a glue dot has a diameter of 8 mm and is measured in Blender with a diameter of 1 BU:</p>
 
-<p>The path specifications are adapted for the package example. Please change the paths to your needs.</p>
+<p>\[ \begin{equation*}
+  \frac{1 \mbox{ BU}}{8 \mbox{ mm}} = 0.125 \\
+  \frac{2 \mbox{ BU}}{0.125} = 16 \mbox{ mm}
+\end{equation*}
+ \]</p>
 
-<pre><code class="r">scaledata &lt;- read.csv(system.file(&quot;extdata&quot;, &quot;Blender_Scalingdata.csv&quot;, package = &quot;blenderFace&quot;), header = TRUE, sep =&quot;,&quot;)
-# Be sure to have the table sorted by subjects
+<p>In the sample videos &ldquo;Subject_01.mp4&rdquo; and &ldquo;Subject_02.mp4&rdquo; glue-dots with 8 mm diameter were used. To perform the rescaling for the <code>rawdata</code> dataset, the glue-dot diameter measurements in BU for each participant are needed. If you have followed the &ldquo;Step-by-Step&rdquo;-instructions, you have measured and saved the glue-dot diameters in BU in a file called &ldquo;Blender_Scalingdata.csv&rdquo;. For the two example subjects, the file &ldquo;Blender_Scalingdata.csv&rdquo; is included in the package and should be loaded to get the scaling parameters. Please note, that the paths used in the example below are specified for the package datasets. Therefore, adapt the paths matching your work environment accordingly.</p>
+
+<pre><code class="r"># Load the file &quot;Blender_Scalingdata.csv&quot;
+scaledata &lt;- read.csv(system.file(&quot;extdata&quot;, &quot;Blender_Scalingdata.csv&quot;, package = &quot;blenderFace&quot;), header = TRUE, sep =&quot;,&quot;)
+# Be sure to have the data sorted by subjects
 scaledata &lt;- scaledata[with(scaledata, order(scaledata$subject)), ]
 
-data(rawdata, package=&quot;blenderFace&quot;)
+# Load the file &quot;rawdata&quot;
+data(rawdata, package=&quot;blenderFace&quot;) # for the package example, please comment out
+# load(&quot;path/to/your/directory/rawdata.rda&quot;) # uncomment and adapt to your work environment
+# Be sure to have the data sorted by subjects
+rawdata &lt;- rawdata[with(rawdata, order(rawdata$subject)), ]
+</code></pre>
+
+<p>From the loaded data files the relevant information for the <em>bu2mm</em> function has to be extracted:</p>
+
+<pre><code class="r"># Determin the dataframe columns which should be scaled:
 names(rawdata)
 </code></pre>
 
-<pre><code>## Error in eval(expr, envir, enclos): Objekt &#39;rawdata&#39; nicht gefunden
+<pre><code>##  [1] &quot;AU_01_L_x&quot;    &quot;AU_01_L_y&quot;    &quot;AU_01_L_z&quot;    &quot;AU_01_R_x&quot;   
+##  [5] &quot;AU_01_R_y&quot;    &quot;AU_01_R_z&quot;    &quot;AU_02_L_x&quot;    &quot;AU_02_L_y&quot;   
+##  [9] &quot;AU_02_L_z&quot;    &quot;AU_02_R_x&quot;    &quot;AU_02_R_y&quot;    &quot;AU_02_R_z&quot;   
+## [13] &quot;AU_06_L_x&quot;    &quot;AU_06_L_y&quot;    &quot;AU_06_L_z&quot;    &quot;AU_06_R_x&quot;   
+## [17] &quot;AU_06_R_y&quot;    &quot;AU_06_R_z&quot;    &quot;AU_08_x&quot;      &quot;AU_08_y&quot;     
+## [21] &quot;AU_08_z&quot;      &quot;AU_09_L_x&quot;    &quot;AU_09_L_y&quot;    &quot;AU_09_L_z&quot;   
+## [25] &quot;AU_09_R_x&quot;    &quot;AU_09_R_y&quot;    &quot;AU_09_R_z&quot;    &quot;AU_10_L_x&quot;   
+## [29] &quot;AU_10_L_y&quot;    &quot;AU_10_L_z&quot;    &quot;AU_10_R_x&quot;    &quot;AU_10_R_y&quot;   
+## [33] &quot;AU_10_R_z&quot;    &quot;AU_11_L_x&quot;    &quot;AU_11_L_y&quot;    &quot;AU_11_L_z&quot;   
+## [37] &quot;AU_11_R_x&quot;    &quot;AU_11_R_y&quot;    &quot;AU_11_R_z&quot;    &quot;AU_12_L_x&quot;   
+## [41] &quot;AU_12_L_y&quot;    &quot;AU_12_L_z&quot;    &quot;AU_12_R_x&quot;    &quot;AU_12_R_y&quot;   
+## [45] &quot;AU_12_R_z&quot;    &quot;AU_16_x&quot;      &quot;AU_16_y&quot;      &quot;AU_16_z&quot;     
+## [49] &quot;Frame&quot;        &quot;Stimulustype&quot; &quot;subject&quot;
 </code></pre>
 
-<pre><code class="r">colNames &lt;- c(&quot;AU_01_L_x&quot;, &quot;AU_01_L_y&quot;, &quot;AU_01_L_z&quot;, &quot;AU_01_R_x&quot;, &quot;AU_01_R_y&quot;, &quot;AU_01_R_z&quot;, &quot;AU_02_L_x&quot;, &quot;AU_02_L_y&quot;, &quot;AU_02_L_z&quot;, &quot;AU_02_R_x&quot;, &quot;AU_02_R_y&quot;, 
+<pre><code class="r"># -&gt; Frame, Stimulustype and subject should not be scaled -&gt; removed for variable colNames
+colNames &lt;- c(&quot;AU_01_L_x&quot;, &quot;AU_01_L_y&quot;, &quot;AU_01_L_z&quot;, &quot;AU_01_R_x&quot;, &quot;AU_01_R_y&quot;, &quot;AU_01_R_z&quot;, &quot;AU_02_L_x&quot;, &quot;AU_02_L_y&quot;, &quot;AU_02_L_z&quot;, &quot;AU_02_R_x&quot;, &quot;AU_02_R_y&quot;, 
               &quot;AU_02_R_z&quot;, &quot;AU_06_L_x&quot;, &quot;AU_06_L_y&quot;, &quot;AU_06_L_z&quot;, &quot;AU_06_R_x&quot;, &quot;AU_06_R_y&quot;, &quot;AU_06_R_z&quot;, &quot;AU_08_x&quot;, &quot;AU_08_y&quot;, &quot;AU_08_z&quot;, &quot;AU_09_L_x&quot;,  
               &quot;AU_09_L_y&quot;, &quot;AU_09_L_z&quot;, &quot;AU_09_R_x&quot;, &quot;AU_09_R_y&quot;, &quot;AU_09_R_z&quot;, &quot;AU_10_L_x&quot;, &quot;AU_10_L_y&quot;, &quot;AU_10_L_z&quot;, &quot;AU_10_R_x&quot;, &quot;AU_10_R_y&quot;, &quot;AU_10_R_z&quot;,  
               &quot;AU_12_L_x&quot;, &quot;AU_12_L_y&quot;, &quot;AU_12_L_z&quot;, &quot;AU_12_R_x&quot;, &quot;AU_12_R_y&quot;, &quot;AU_12_R_z&quot;, &quot;AU_16_x&quot;, &quot;AU_16_y&quot;, &quot;AU_16_z&quot;)
 
-load(paste(outputDirectory,&quot;BdataRaw.Rdata&quot;,sep=&quot;&quot;))
-
-# Order columns of data frame accordingly
-data &lt;- data[c(&quot;subject&quot;, &quot;Frame&quot;, &quot;stimulustype&quot;, colNames)]
-
-# Read table with scaling data per subject to scale blender units to real world measures
-scaleTable &lt;- read.csv(paste(inputDirectory,&quot;Hilfsdaten.csv&quot;,sep=&quot;&quot;),header = TRUE, sep = &quot;;&quot;)
-# Sort table by subjects
-scaleTable &lt;- scaleTable[with(scaleTable, order(scaleTable$subject)), ]
-
-BdataScaledB &lt;- scaleBlenderData(data, colNames, colNameSubj=&quot;subject&quot;, scaleTable$Skalierung_Markerpunkt, verbose=TRUE)
-save(BdataScaledB, file=(paste(outputDirectory,&quot;BdataScaledB.Rdata&quot;,sep=&quot;&quot;)))
+# To not overwrite data, use a new data frame (dataSmm means data scaled in millimeter)
+dataSmm &lt;- bu2mm(data = rawdata, colNames = colNames, colNameSubj = &quot;subject&quot;, scaleFactor = scaledata$GlueDotDiameter, rwMeasure = 8, verbose = TRUE)
 </code></pre>
 
-<p><em>Axel</em> <em><em>fix me</em></em>: Im Beispielvideo falsche Markerbennung (AU_08_R) korrigieren!</p>
+<pre><code>## Perform scaling to millimeter for subject 1 of 2. 
+## Perform scaling to millimeter for subject 2 of 2.
+</code></pre>
+
+<pre><code class="r"># Optionally save data at this stage of analysis
+# save(dataSmm, file = &quot;path/to/your/directory/dataSmm.rda&quot;)
+</code></pre>
+
+<p>In the output data frame of this function is rescaled, and therefore movements can be interpreted in millimenter.</p>
+
+<h2>Scale facial movements to a standardized face by using the function <em>face2stdFace</em></h2>
+
+<p>Sometimes it is useful not to interpret the movements in an absolute measure, such as millimeter, but to be able to compare movements of different face sizes. Imagine, you want to compare the facial expression of a child sample with the facial expression of an adult sample. Because the head sizes of the children are smaller, the facial movements are also smaller, compared to the adult sample. Therefore, the standardization of different face sizes to a standardized face is needed. The function <em>face2stdFace</em> performs this step for you. The proportions of the standard face used here are based on biological and artistical resources (<em>@Rainer: fix me: Literaturangeben?</em>). In the standardized face the length and the height of the head have each a value of 1, while the left-eye &ndash; right-eye distance and the left-eye &ndash; left-mouth-corner distance are scaled to 1/3 of the face height and face width.</p>
+
+<p>As individual measures for face width and face height, the individual left-eye &ndash; right-eye, and the left-eye &ndash; left-mouth-corner distances are used. If you have followed the &ldquo;Step-by-Step&rdquo;-instructions, you have measured and saved the these distances in BU in a file called &ldquo;Blender_Scalingdata.csv&rdquo;. To have comparable measures for all subjects, first, these distances are scaled from BU into millimenter. Subsequently, the rescaled left-eye &ndash; right-eye distance is used to standardize the x-axis, while the left-eye &ndash; left-mouth-corner distance is used to standaradize the y-axis. Additionally, if the left-mouth-corner &ndash; right-mouth-corner, or the right-eye &ndash; right-mouth-corner distances are given to the function, a mean of the two measures is computed for the x-axis and the y-axis, respectively.</p>
+
+<p>Standardizing the z-axis is not (yet) implemented, mainly due to the lack of an appropriate facial distance measure for scaling the z-axis. As a consequence, the z-axis is omitted in further analyses.</p>
+
+<p>Again, as in function <em>bu2mm</em> the rescaling is done via the rule of proportion. In the first step, the left-eye &ndash; right-eye, and the left-eye &ndash; left-mouthcorner distances are scaled to mm to obtain real and comparable measurements for these distances. For example, the glue dot diameter of 8 mm is measured as 0.0228 BU in Blender for a subject, therefore the individual scale factor to rescale into millimenter is 0.00285:
+\[ \begin{equation*}
+  \frac{0.0228\mbox{ BU}}{8\mbox{ mm}} = 0.00285
+\end{equation*}
+ \]
+Contiuing the example, if the left-eye &ndash; right-eye distance for that subject is 0.1767 BU, the individual distance in mm is 62 mm.
+\[ \begin{equation*}
+  \frac{0.1716\mbox{ BU}}{0.00285} = 62 \mbox{ mm}
+\end{equation*}
+ \]
+In order to receive an individual scale factor for the x-axis, this distance has to be set in proportion to 1/3, the left-eye &ndash; right-eye distance of the standardized face.
+\[ \begin{equation*}
+  \frac{62 \mbox{ mm}}{1/3} = 186
+\end{equation*}
+ \]
+This is the factor, the x-axis columns of the dataframe of this subject are divided by to restale them to a standardized face. For example, if the left-mouth-corner &ndash; right-mouth-corner distance is 58 mm, the standardized distance is 0.311828 and therefore smaller than the standardized left-eye &ndash; right-eye distance of 1/3.
+\[ \begin{equation*}
+  \frac{58 \mbox{ mm}}{186} = 0.311828
+\end{equation*}
+ \]
+Similarily, the scale factor for the y-axis is compupted.</p>
+
+<hr/>
+
+<hr/>
+
+<hr/>
+
+<hr/>
+
+<p><em>@Axel: fix me:</em> <em>Im Beispielvideo falsche Markerbennung (AU_08_R) korrigieren!</em></p>
+
+<hr/>
+
+<hr/>
 
 <p>The figure sizes have been customised so that you can easily put two images side-by-side. </p>
 

@@ -40,7 +40,7 @@ nice X-head plot with aggregated marker movements
 \description{
 Plots symbolic standardized head with markers plotted on predefined areas. 
 Be sure to use standardized data, done by the functions \code{\link{bu2mm}}
-and \code{\link{scaleFaceData}}.
+and \code{\link{face2stdFace}}.
 }
 \examples{
 \dontrun{plotMarkerXHead()}
