@@ -24,7 +24,7 @@ Collate:
     'face2stdFace.R'
     '03_Function_CenterCond.R'
     '04_Function_AngleDistance.R'
-    '05_Function_PlotXYMarkerMovementPerFrame.R'
+    'plotXYmmpf.R'
     '06_Function_PlotXHead.R'
     '07_Function_PlotMarkerCond.R'
 Suggests: knitr,

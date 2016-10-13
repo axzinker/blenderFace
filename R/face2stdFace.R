@@ -35,13 +35,25 @@
 #'   \email{zinkernagel@uni-landau.de, rainer.alexandrowicz@aau.at}
 #'   
 #' @examples
-#' \dontrun{face2stdFace()}
+#' # Load the file "Blender_Scalingdata.csv"
+#' scaledata <- read.csv(system.file("extdata", "Blender_Scalingdata.csv", package = "blenderFace"), header = TRUE, sep =",")
+#' # Be sure to have the data sorted by subjects
+#' scaledata <- scaledata[with(scaledata, order(scaledata$subject)), ]
+#'
+#' # Determin the dataframe columns which should be scaled:
+#' names(rawdata)
+#' # -> Frame, Stimulustype, subject and z-axis values should not be scaled -> removed for variable colNames
+#' colNames <- c("AU_01_L_x", "AU_01_L_y", "AU_01_R_x", "AU_01_R_y", "AU_02_L_x", "AU_02_L_y", "AU_02_R_x", "AU_02_R_y", 
+#' "AU_06_L_x", "AU_06_L_y", "AU_06_R_x", "AU_06_R_y", "AU_08_x", "AU_08_y", 
+#' "AU_09_L_x", "AU_09_L_y", "AU_09_R_x", "AU_09_R_y", "AU_10_L_x", "AU_10_L_y", "AU_10_R_x", "AU_10_R_y",  
+#' "AU_12_L_x", "AU_12_L_y", "AU_12_R_x", "AU_12_R_y", "AU_16_x", "AU_16_y")
 #' 
+#' # To not overwrite data, use a new data frame (dataStdF means data of standaradized faces)
+#' dataStdF <- face2stdFace(data = rawdata, colNames = colNames, colNameSubj = "subject", pupilDist = scaledata$PupilPupilDistance, leftPMDist = scaledata$LeftPupilLeftMouthcornerDistance)
 #' @return Data frame with scaled columns.
 #'   
 #' @export
-face2stdFace <- function(data, colNames, colNameSubj, pupilDist, leftPMDist, mouthcornerDist = NA, rightPMDist = NA, rwMeasure = 8, 
-    verbose = FALSE) {
+face2stdFace <- function(data, colNames, colNameSubj, pupilDist, leftPMDist, mouthcornerDist = NA, rightPMDist = NA, verbose = FALSE) {
     # Error handling
     if (!(is.data.frame(data))) {
         stop("Argument data does not contain a data frame!")
@@ -90,7 +102,7 @@ face2stdFace <- function(data, colNames, colNameSubj, pupilDist, leftPMDist, mou
     # individual values are now set in relation to mean value which results in the individual scale factors for x and y-axes
     for (i in 1:length(subjects)) {
         if (verbose) {
-            fcat(paste("Standardizing subject ", i, " of ", length(subjects), ".", sep = ""))
+            fcat(paste("Perform scaling to standardized face for subject ", i, " of ", length(subjects), ".", sep = ""))
         }
         
         # compute individual scale factor for x-, and y-axis

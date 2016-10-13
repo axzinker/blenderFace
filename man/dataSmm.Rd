@@ -2,10 +2,10 @@
 \alias{dataSmm}
 \docType{data}
 \title{
-R-data file of data scaled to millimeter of the two sample subjects
+R-data file of data scaled to millimeter of the two sample subjects.
 }
 \description{
-R-data file of data scaled to millimeter of the two sample subjects concatenated by the function \link{concatBlenderFiles}. Scaling has been performed with function *bu2mm* for the `rawdata` dataset.
+R-data file of data scaled to millimeter of the two sample subjects concatenated by the function \link{concatBlenderFiles}. Scaling has been performed with function the \link{bu2mm} for the `rawdata` dataset.
 }
 \usage{data("dataSmm")}
 \format{

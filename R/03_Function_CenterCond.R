@@ -86,20 +86,20 @@ centerCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
         
         data <- data.frame(subjCol, condCol)
         rm(list = "subjCol", "condCol")
-        subjects <- unique(data$subjCol)
+        subjects <- unique(data[,1])
         
-        cond <- subset(unique(data$condCol), subset = (unique(data$condCol) != ""))
+        cond <- subset(unique(data[,2]), subset = (unique(data[,2]) != ""))
         
         # prevent j beeing a global variable (devtools, check)
         j <- NULL
         # Verbose output is very time consuming; if wanted, add '.verbose = verbose' to the first foreach loop
         lengthFrames <- foreach(i = subjects, .combine = cbind) %:% foreach(j = cond, .combine = cbind) %dopar% {
-            c(i, j, nrow(subset(data, subset = (data$subjCol == i & data$condCol == j))))
+            c(i, j, nrow(subset(data, subset = (data[,1] == i & data[,2] == j))))
         }
         lengthFrames <- as.data.frame(t(lengthFrames))
         names(lengthFrames) <- c("subjCol", "condCol", "condLengthCol")
-        lengthFrames$subjCol <- as.numeric(lengthFrames$subjCol)
-        lengthFrames$condLengthCol <- as.numeric(lengthFrames$condLengthCol)
+        lengthFrames$subjCol <- as.numeric(as.character(lengthFrames$subjCol))
+        lengthFrames$condLengthCol <- as.numeric(as.character(lengthFrames$condLengthCol))
         return(lengthFrames)
     }
     
@@ -108,13 +108,13 @@ centerCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
         writeLines("Step 1: Getting condition start frames per subject.")
         timestamp1 <- Sys.time()
     }
-    condStartFrames <- FirstFrameSubjCond(data$subject, data$Frame, data$stimulustype)
+    condStartFrames <- FirstFrameSubjCond(data[colNameSubj], data[colNameFrames], data[colNameCond])
     
     # removing 'empty' condition starts
     condStartFrames <- subset(condStartFrames, subset = (condStartFrames$condCol != ""))
     
     # getting the frame length of the conditions and attaching it to condStartFrames
-    condLengthFrames <- LengthSubjCond(data$subject, data$stimulustype)
+    condLengthFrames <- LengthSubjCond(data[colNameSubj], data[colNameCond])
     condStartFrames <- cbind(condStartFrames, condLengthCol = condLengthFrames$condLengthCol)
     rm(condLengthFrames)
     

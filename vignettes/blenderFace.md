@@ -1,7 +1,7 @@
 ---
 title: "blenderFace"
 author: "Axel Zinkernagel"
-date: "2016-09-29"
+date: "2016-10-13"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{blenderFace}
@@ -11,7 +11,7 @@ vignette: >
 
 # Workflow of Blender-data post-processing with the blenderFace package 
 
-For using the blenderFace package it is assumed, that you have tracked facial movements for at least two subjects, following the "Step_by_Step_Instructions.pdf". The output of this procedure is a csv file for each participant, which includes the x,y,z-axis movement of the tracked facial markers. Additionally, you need to mark the frames for which a stimulus was presented to the participants. This must be done for each participant (a.k.a. csv file) in a column called "stimulustype" which marks the frames for which a stimulus was presented to the participant (e.g., "posing happiness" or viewing an emotion eliciting film clip). Unfortunately, there is no function or procedure that helps you with this step, because it strongly depends on how you presented the stimuli and how you recorded the video clips of the participants. If you know the start- and stop-frames of the presented stimuli, for example, by recording the computer screen via a mirror in the back of the participant, you can fill in  the stimulustype-colums by hand using a spreadsheet programm. 
+For using the blenderFace package it is assumed, that you have tracked facial movements for at least two subjects, following the "Step_by_Step_Instructions.pdf". The output of this procedure is a csv file for each participant, which includes the x,y,z-axis movement of the tracked facial markers. Additionally, you need to mark the frames for which a stimulus was presented to the participants. This must be done for each participant (a.k.a. csv file) in a column called "Stimulustype" which marks the frames for which a stimulus was presented to the participant (e.g., "posing happiness" or viewing an emotion eliciting film clip). Unfortunately, there is no function or procedure that helps you with this step, because it strongly depends on how you presented the stimuli and how you recorded the video clips of the participants. If you know the start- and stop-frames of the presented stimuli, for example, by recording the computer screen via a mirror in the back of the participant, you can fill in  the stimulustype-colums by hand using a spreadsheet programm. 
 
 The blenderFace package contains raw data sets of two subjects (in fact, it is one subject recorded and tracked twice) which already have the stimulustype-column attached. 
 
@@ -24,6 +24,9 @@ install_github("axzinker/blenderFace", built_vignettes = TRUE)
 library(blenderFace)
 ```
 
+
+
+@Axel: fix me: Übersicht über generellen Ablauf der Funktionen, Aufzählung
 
 
 ## Concatenating raw data files to one large RData file with the function *concatBlenderFiles*
@@ -76,10 +79,27 @@ Step 3: Saving output file (it takes time to save large files).
 
 As main output of this function a file with the filename given in `outputFilename` is saved in the directory given in as `outputDirectory`. The data frame stored in this file contains the data of all concatenated subjects. This output file of the two sample subjects is also attached to this package and labeled `rawdata`.
 
+Finally, check if the names for the "Stimulustype" column are euqal for all cases, e.g., they do not contain misspellings. If not, perform the corrections in the corresponding csv files of the participants.
+
+
+```r
+table(rawdata$Stimulustype, rawdata$subject)
+```
+
+```
+##                
+##                   1   2
+##                 863 791
+##   posed_disgust 215 240
+##   posed_fear    235 220
+##   posed_happy   215 200
+##   posed_neutral 186 241
+```
+
 ## Scale Blender units to millimeter by using the function *bu2mm*
 
 The next step in Blender data post-processing is to scale the Blender units (BU) into mm. In principle, the rescaling is done by the rule of proportion:
-$$latex
+$$
 \begin{equation*}
   \frac{\mbox{Diameter in Blender units}}{\mbox{Diameter in millimeter}} =
   \mbox{Factor to divide BU by, to obtain mm}
@@ -88,7 +108,7 @@ $$
 
 For example, a glue dot has a diameter of 8 mm and is measured in Blender with a diameter of 1 BU:
 
-$$latex
+$$
 \begin{equation*}
   \frac{1 \mbox{ BU}}{8 \mbox{ mm}} = 0.125 \\
   \frac{2 \mbox{ BU}}{0.125} = 16 \mbox{ mm}
@@ -113,6 +133,21 @@ rawdata <- rawdata[with(rawdata, order(rawdata$subject)), ]
 
 From the loaded data files the relevant information for the *bu2mm* function has to be extracted:
 
+
+```r
+# Geting the column names of the scaledata dataframe
+names(scaledata)
+```
+
+```
+## [1] "subject"                           
+## [2] "GlueDotDiameter"                   
+## [3] "PupilPupilDistance"                
+## [4] "MouthcornerMouthcornerDistance"    
+## [5] "LeftPupilLeftMouthcornerDistance"  
+## [6] "RightPupilRightMouthcornerDistance"
+## [7] "Comment"
+```
 
 ```r
 # Determin the dataframe columns which should be scaled:
@@ -155,42 +190,225 @@ dataSmm <- bu2mm(data = rawdata, colNames = colNames, colNameSubj = "subject", s
 # Optionally save data at this stage of analysis
 # save(dataSmm, file = "path/to/your/directory/dataSmm.rda")
 ```
+<!-- this is necessary to save the data file in /data but not needed in the vignette
 
-In the output data frame of this function is rescaled, and therefore movements can be interpreted in millimenter.
+```r
+devtools::use_data(dataSmm, overwrite = TRUE)
+```
+
+```
+## Saving dataSmm as dataSmm.rda to /home/axel/Dropbox/015_Artikel/Blender/Supplemental_Material/R_Scripts/blenderFace/data
+```
+-->
+
+
+In the output data frame of this function is rescaled, and therefore movements can be interpreted in millimeter.
 
 ## Scale facial movements to a standardized face by using the function *face2stdFace*
 
-Sometimes it is useful not to interpret the movements in an absolute measure, such as millimeter, but to be able to compare movements of different face sizes. Imagine, you want to compare the facial expression of a child sample with the facial expression of an adult sample. Because the head sizes of the children are smaller, the facial movements are also smaller, compared to the adult sample. Therefore, the standardization of different face sizes to a standardized face is needed. The function *face2stdFace* performs this step for you. The proportions of the standard face used here are based on biological and artistical resources (*@Rainer: fix me: Literaturangeben?*). In the standardized face the length and the height of the head have each a value of 1, while the left-eye -- right-eye distance and the left-eye -- left-mouth-corner distance are scaled to 1/3 of the face height and face width.
+Sometimes it is useful not to interpret the movements in an absolute measure, such as millimeter, but to be able to compare movements of different face sizes. Imagine, you want to compare the facial expression of a child sample with the facial expression of an adult sample. Because the head sizes of the children are smaller, the facial movements are also smaller, compared to the adult sample. Therefore, the standardization of different face sizes to a standardized face is needed. The function *face2stdFace* performs this step for you. The proportions of the standard face used here are based on biological and artistic resources (*@Rainer: fix me: Literaturangaben?*). In the standardized face the length and the height of the head have each a value of 1, while the left-pupil -- right-pupil distance and the left-pupil -- left-mouth-corner distance are scaled to 1/3rd of the face height and face width.
 
-As individual measures for face width and face height, the individual left-eye -- right-eye, and the left-eye -- left-mouth-corner distances are used. If you have followed the "Step-by-Step"-instructions, you have measured and saved the these distances in BU in a file called "Blender_Scalingdata.csv". To have comparable measures for all subjects, first, these distances are scaled from BU into millimenter. Subsequently, the rescaled left-eye -- right-eye distance is used to standardize the x-axis, while the left-eye -- left-mouth-corner distance is used to standaradize the y-axis. Additionally, if the left-mouth-corner -- right-mouth-corner, or the right-eye -- right-mouth-corner distances are given to the function, a mean of the two measures is computed for the x-axis and the y-axis, respectively.
+As individual measures for face width and face height, the individual left-pupil -- right-pupil, and the left-pupil -- left-mouth-corner distances are used. If you have followed the "Step-by-Step"-instructions, you have measured and saved the these distances in BU in a file called "Blender_Scalingdata.csv". To have comparable measures for all subjects, the left-pupil -- right-pupil distance and the left-pupil -- left-mouth-corner distance are set in proportion to 1/3rd to achieve a factor by which the x-axis and the y-axis must be divided, to obtain a standardized scaling. Additionally, if the left-mouth-corner -- right-mouth-corner distance or the right-pupil -- right-mouth-corner distance are given, the *face2stdFace* function allows to compute a mean of these distances for the x-, and the y-axis to have a more reliable distance measure. However, to our experience, the mouth corner distance ist not such an reliable measure as the pupil distance is.
 
-Standardizing the z-axis is not (yet) implemented, mainly due to the lack of an appropriate facial distance measure for scaling the z-axis. As a consequence, the z-axis is omitted in further analyses.
+Standardizing the z-axis is not (yet) implemented, mainly due to the lack of an appropriate facial distance measure for scaling the z-axis. As a consequence, at the monment it is not meaningful to rescale the z-axis. Therefore the z-axis is omitted in further analyses.
 
-Again, as in function *bu2mm* the rescaling is done via the rule of proportion. In the first step, the left-eye -- right-eye, and the left-eye -- left-mouthcorner distances are scaled to mm to obtain real and comparable measurements for these distances. For example, the glue dot diameter of 8 mm is measured as 0.0228 BU in Blender for a subject, therefore the individual scale factor to rescale into millimenter is 0.00285:
-$$latex
+Again, as in function *bu2mm* the rescaling is done via the rule of proportion. For subject 1 in the example data in the file "Blender_Scalingdata.csv", the left-pupil -- right-pupil distance is measured with 0.3346 BU in Blender. This distance is set in proportion to 1/3 to obtain a scaling factor for the x-axis.
+$$
 \begin{equation*}
-  \frac{0.0228\mbox{ BU}}{8\mbox{ mm}} = 0.00285
+  \frac{0.3346\mbox{ BU}}{0.\bar{3}} = 1.0038
 \end{equation*}
 $$
-Contiuing the example, if the left-eye -- right-eye distance for that subject is 0.1767 BU, the individual distance in mm is 62 mm.
-$$latex
+as scale factor for the x-axis. The left-pupil -- left-mouth-corner distance for subject 1 is measured with 0.36611 BU. Therefore, the scale factor for the y-axis is
+$$
 \begin{equation*}
-  \frac{0.1716\mbox{ BU}}{0.00285} = 62 \mbox{ mm}
+  \frac{0.36611\mbox{ BU}}{0.\bar{3}} = 1.09833
 \end{equation*}
 $$
-In order to receive an individual scale factor for the x-axis, this distance has to be set in proportion to 1/3, the left-eye -- right-eye distance of the standardized face.
-$$latex
-\begin{equation*}
-  \frac{62 \mbox{ mm}}{1/3} = 186
-\end{equation*}
-$$
-This is the factor, the x-axis columns of the dataframe of this subject are divided by to restale them to a standardized face. For example, if the left-mouth-corner -- right-mouth-corner distance is 58 mm, the standardized distance is 0.311828 and therefore smaller than the standardized left-eye -- right-eye distance of 1/3.
-$$latex
-\begin{equation*}
-  \frac{58 \mbox{ mm}}{186} = 0.311828
-\end{equation*}
-$$
-Similarily, the scale factor for the y-axis is compupted.
+
+If not yet loaded, load the files `scaledata` and `rawdata`  into Rs environment:
+
+```r
+# Load the file "Blender_Scalingdata.csv"
+scaledata <- read.csv(system.file("extdata", "Blender_Scalingdata.csv", package = "blenderFace"), header = TRUE, sep =",")
+# Be sure to have the data sorted by subjects
+scaledata <- scaledata[with(scaledata, order(scaledata$subject)), ]
+
+# Load the file "rawdata"
+data(rawdata, package="blenderFace") # for the package example, please comment out
+# load("path/to/your/directory/rawdata.rda") # uncomment and adapt to your work environment
+# Be sure to have the data sorted by subjects
+rawdata <- rawdata[with(rawdata, order(rawdata$subject)), ]
+```
+
+Subsequently, prepare the parameters and call the function *face2stdFace*:
+
+```r
+# Geting the column names of the scaledata dataframe
+names(scaledata)
+```
+
+```
+## [1] "subject"                           
+## [2] "GlueDotDiameter"                   
+## [3] "PupilPupilDistance"                
+## [4] "MouthcornerMouthcornerDistance"    
+## [5] "LeftPupilLeftMouthcornerDistance"  
+## [6] "RightPupilRightMouthcornerDistance"
+## [7] "Comment"
+```
+
+```r
+# Determin the dataframe columns which should be scaled:
+names(rawdata)
+```
+
+```
+##  [1] "AU_01_L_x"    "AU_01_L_y"    "AU_01_L_z"    "AU_01_R_x"   
+##  [5] "AU_01_R_y"    "AU_01_R_z"    "AU_02_L_x"    "AU_02_L_y"   
+##  [9] "AU_02_L_z"    "AU_02_R_x"    "AU_02_R_y"    "AU_02_R_z"   
+## [13] "AU_06_L_x"    "AU_06_L_y"    "AU_06_L_z"    "AU_06_R_x"   
+## [17] "AU_06_R_y"    "AU_06_R_z"    "AU_08_x"      "AU_08_y"     
+## [21] "AU_08_z"      "AU_09_L_x"    "AU_09_L_y"    "AU_09_L_z"   
+## [25] "AU_09_R_x"    "AU_09_R_y"    "AU_09_R_z"    "AU_10_L_x"   
+## [29] "AU_10_L_y"    "AU_10_L_z"    "AU_10_R_x"    "AU_10_R_y"   
+## [33] "AU_10_R_z"    "AU_11_L_x"    "AU_11_L_y"    "AU_11_L_z"   
+## [37] "AU_11_R_x"    "AU_11_R_y"    "AU_11_R_z"    "AU_12_L_x"   
+## [41] "AU_12_L_y"    "AU_12_L_z"    "AU_12_R_x"    "AU_12_R_y"   
+## [45] "AU_12_R_z"    "AU_16_x"      "AU_16_y"      "AU_16_z"     
+## [49] "Frame"        "Stimulustype" "subject"
+```
+
+```r
+# -> Frame, Stimulustype, subject and z-axis values should not be scaled -> removed for variable colNames
+colNames <- c("AU_01_L_x", "AU_01_L_y", "AU_01_R_x", "AU_01_R_y", "AU_02_L_x", "AU_02_L_y", "AU_02_R_x", "AU_02_R_y", 
+              "AU_06_L_x", "AU_06_L_y", "AU_06_R_x", "AU_06_R_y", "AU_08_x", "AU_08_y", 
+              "AU_09_L_x", "AU_09_L_y", "AU_09_R_x", "AU_09_R_y", "AU_10_L_x", "AU_10_L_y", "AU_10_R_x", "AU_10_R_y",  
+              "AU_12_L_x", "AU_12_L_y", "AU_12_R_x", "AU_12_R_y", "AU_16_x", "AU_16_y")
+
+# To not overwrite data, use a new data frame (dataStdF means data of standaradized faces)
+dataStdF <- face2stdFace(data = rawdata, colNames = colNames, colNameSubj = "subject", pupilDist = scaledata$PupilPupilDistance, leftPMDist = scaledata$LeftPupilLeftMouthcornerDistance)
+
+# Optionally save data at this stage of analysis
+# save(dataStdF, file = "path/to/your/directory/dataStdF.rda")
+```
+<!-- this is necessary to save the data file in /data but not needed in the vignette
+
+```r
+devtools::use_data(dataStdF, overwrite = TRUE)
+```
+
+```
+## Saving dataStdF as dataStdF.rda to /home/axel/Dropbox/015_Artikel/Blender/Supplemental_Material/R_Scripts/blenderFace/data
+```
+-->
+Be aware, that if you want to standardize data with the *face2stdFace* function you have previously rescaled to millimeter with the *bu2mm* funktion, you also have to rescale the left-pupil -- right-pupil and the left-pupil -- left-mouth-corner distance into millimeter, to achieve a correct scaling!
+
+
+```r
+# First, compute the scale factor to scale into millimenter
+mm_scaleFactor <- scaledata$GlueDotDiameter / 8
+
+# Then divide distances by that scalefactor
+dataStdFmm <- face2stdFace(data = dataSmm, colNames = colNames, colNameSubj = "subject", pupilDist = (scaledata$PupilPupilDistance/mm_scaleFactor), leftPMDist = (scaledata$LeftPupilLeftMouthcornerDistance / mm_scaleFactor))
+
+# Axel: fix me: this should be identical, however, it is not completely identical:
+cor.test(dataStdF$AU_01_L_x,dataStdFmm$AU_01_L_x)
+```
+
+```
+## 
+## 	Pearson's product-moment correlation
+## 
+## data:  dataStdF$AU_01_L_x and dataStdFmm$AU_01_L_x
+## t = 13.932, df = 1750, p-value < 2.2e-16
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  0.2731955 0.3575246
+## sample estimates:
+##      cor 
+## 0.315984
+```
+
+```r
+cor.test(dataStdF$AU_01_L_y,dataStdFmm$AU_01_L_y)
+```
+
+```
+## 
+## 	Pearson's product-moment correlation
+## 
+## data:  dataStdF$AU_01_L_y and dataStdFmm$AU_01_L_y
+## t = 54.635, df = 1750, p-value < 2.2e-16
+## alternative hypothesis: true correlation is not equal to 0
+## 95 percent confidence interval:
+##  0.7760093 0.8106736
+## sample estimates:
+##       cor 
+## 0.7939859
+```
+
+```r
+# ...
+```
+
+## Center the movement of the markers with the function *centerCond*
+
+The function *centerCond* sets the first frame of a stimulus episode (e.g., the “posing happiness” episode in the "stimulustype" column of the example data frames) to x/y/z = 0 and substracts the offset of the first frame from all remainig frames of this stimulus episode. This is needed, since the absolute positions of the markers on the participant`s face are not equal for all participants, because the faces differ in their shape and size, and the markers were drawn relatively arbitrary and unaccurate on the participants face^[Otherwise a very standardized and accurate procedure of drawing the markers would have been necessary.].
+
+Therefore, at the start frame of a stimulus episode the movement of a marker starts at x=0, y=0 and z=0 and moves from there on. The advantage is, that you can easily aggregate facial movements over participants, or compare marker movements of participants for different stimulus episodes.
+
+Because the processing of this marker centering is computationally very intensive, this function uses parallelizing and computes on n-1 cores of the computer it runs on. Use the `verbose` option to visualize the progress of this function.
+
+
+```r
+colNames <- c("AU_01_L_x", "AU_01_L_y", "AU_01_R_x", "AU_01_R_y", "AU_02_L_x", "AU_02_L_y", "AU_02_R_x", "AU_02_R_y", 
+              "AU_06_L_x", "AU_06_L_y", "AU_06_R_x", "AU_06_R_y", "AU_08_x", "AU_08_y", 
+              "AU_09_L_x", "AU_09_L_y", "AU_09_R_x", "AU_09_R_y", "AU_10_L_x", "AU_10_L_y", "AU_10_R_x", "AU_10_R_y",  
+              "AU_12_L_x", "AU_12_L_y", "AU_12_R_x", "AU_12_R_y", "AU_16_x", "AU_16_y")
+
+#dataCen <- centerCond(dataStdF, colNames = colNames, colNameSubj = "subject", colNameFrames = "Frame", colNameCond = "Stimulustype", verbose = TRUE)
+```
+
+Axel: fix me from here: Funktion scheint nicht mehr zu laufen (innerhalb der parallelized loop)
+
+## Plotting control plots
+
+Graphical plots are a good way to check data and rescaled data for outliers, artefacts and plausibility. The blenderFace package provides several functions to visualize the data.
+
+### Plot the x- and y-axis movement per marker over the frames with the function *plotXYmmpf*
+
+This function plots the x-, and y-axis movement of a marker per frame for a single participant. The plot may be used to find artefacts recording problems (e.g., scratching the facial skin and therefore moving markers).
+
+The x-axis presents the frames and the y-axis the marker movement. In the example below AU_09 of subject 2 is used.
+
+
+```r
+# Selecting data for subject 2
+# Also omit untracked frames at the start and the end of the video clip
+data_Subj2 <- subset(dataSmm, subset = ((dataSmm$subject == 2) & (dataSmm$Frame >= 690)& (dataSmm$Frame <= 1610)))
+plotXYmmpf(frames = data_Subj2$Frame, xMarker = data_Subj2$AU_09_L_x, yMarker = data_Subj2$AU_09_L_y, center = FALSE, title = "Subject 1, AU_09_L")
+# Plot the right marker with stimulus episodes
+plotXYmmpf(frames = data_Subj2$Frame, xMarker = data_Subj2$AU_09_R_x, yMarker = data_Subj2$AU_09_R_y, stimF = data_Subj2$Stimulustype, center = FALSE, title = "Subject 1, AU_09_R",color = c("blue","green"))
+```
+
+![plot of chunk unnamed-chunk-14](figure/unnamed-chunk-14-1.png)![plot of chunk unnamed-chunk-14](figure/unnamed-chunk-14-2.png)
+
+To better compare left and right movements (e.g., for judging symmetry of the facial expression), combine the two plots. To achieve an appropriate scaling, use the `center` switch. Note, that for the left and the right marker the movement on the x-axis aims into the opposite direction.
+
+
+```r
+# Plotting left marker of AU_09 (Centered)
+plotXYmmpf(frames = data_Subj2$Frame, xMarker = data_Subj2$AU_09_L_x, yMarker = data_Subj2$AU_09_L_y, center = TRUE, title = "Subject 1, AU_09")
+# Adding right marker of AU09
+plotXYmmpf(frames = data_Subj2$Frame, xMarker = data_Subj2$AU_09_R_x, yMarker = data_Subj2$AU_09_R_y, center = TRUE, color = c("blue",
+  "green"), overplot = TRUE)
+```
+
+![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png)
+
+
+
+
 
 
 ----------------------------------------------------
@@ -214,7 +432,7 @@ plot(1:10)
 plot(10:1)
 ```
 
-![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png)![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-2.png)
+![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-1.png)![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-2.png)
 
 You can enable figure captions by `fig_caption: yes` in YAML:
 

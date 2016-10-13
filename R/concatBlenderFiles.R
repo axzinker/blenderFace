@@ -95,7 +95,7 @@ concatBlenderFiles <- function(dataFileNames, inputDirectory, subjectColumn = FA
     if (tolower(substr(dataFileNames[1], nchar(dataFileNames[1])-2, nchar(dataFileNames[1]))) == "csv") {
         filetype <- "csv"
     }
-    if ((tolower(substr(dataFileNames[1], nchar(dataFileNames[1])-2, nchar(dataFileNames[1]))) == "rda") | (tolower(substr(dataFileNames[1], nchar(dataFileNames[1])-2, nchar(dataFileNames[1]))) == "rdata")) {
+    if ((tolower(substr(dataFileNames[1], nchar(dataFileNames[1])-2, nchar(dataFileNames[1]))) == "rda") | (tolower(substr(dataFileNames[1], nchar(dataFileNames[1])-4, nchar(dataFileNames[1]))) == "rdata")) {
         filetype <- "rda"
     }
     if (!((filetype != "csv") | (filetype != "rda"))) {
@@ -106,6 +106,7 @@ concatBlenderFiles <- function(dataFileNames, inputDirectory, subjectColumn = FA
     fcat <- function(...,newline=TRUE) {if (newline) cat(...,"\n") else cat(...); flush.console() }  # immediate console output
     
     # Step 1: Determing unique column names and nrows of the files to be concatenated for preallocation of dataframe
+    # Axel: fix me: compute also unique Stimulustypes
     if (verbose) {
         fcat("Step 1: Determing unique column names and number of rows of the files to be concatenated.")
     }
@@ -129,7 +130,7 @@ concatBlenderFiles <- function(dataFileNames, inputDirectory, subjectColumn = FA
         }
         if (filetype == "csv") {
             # loading csv-files
-            tempData <- read.csv2(paste(inputDirectory, dataFileNames[i], sep = ""), header = TRUE, sep = ";")
+            tempData <- read.table(paste(inputDirectory, dataFileNames[i], sep = ""), header = TRUE, sep = ";", stringsAsFactors = FALSE, , dec = ".")
         }
         if (verbose) {
             fcat(paste("  Adding ", nrow(tempData), " rows to data frame of actually ", dataNrows, " rows.", sep = ""))
@@ -195,7 +196,7 @@ concatBlenderFiles <- function(dataFileNames, inputDirectory, subjectColumn = FA
         }
         if (filetype == "csv") {
             # loading csv-files
-            tempData <- read.csv2(paste(inputDirectory, dataFileNames[i], sep = ""), header = TRUE, sep = ";")
+            tempData <- read.table(paste(inputDirectory, dataFileNames[i], sep = ""), header = TRUE, sep = ";", stringsAsFactors = FALSE, dec = ".")
         }
         
         # Compute subject number from filename
@@ -215,7 +216,7 @@ concatBlenderFiles <- function(dataFileNames, inputDirectory, subjectColumn = FA
     
     # Step 3: Save output file
     if (verbose) {
-        fcat("Step 3: Saving output file (it takes time to save large files).")
+        fcat("Step 3: Saving output file (saving large data files takes some time).")
     }
     
     # Sorting rows according to subject
