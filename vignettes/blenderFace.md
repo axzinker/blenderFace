@@ -1,7 +1,7 @@
 ---
 title: "blenderFace"
 author: "Axel Zinkernagel"
-date: "2016-10-13"
+date: "2016-10-14"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{blenderFace}
@@ -377,14 +377,14 @@ Graphical plots are a good way to check data and rescaled data for outliers, art
 
 ### Plot the x- and y-axis movement per marker over the frames with the function *plotXYmmpf*
 
-This function plots the x-, and y-axis movement of a marker per frame for a single participant. The plot may be used to find artefacts recording problems (e.g., scratching the facial skin and therefore moving markers).
+This function produces a raw data plot. It plots the x-, and y-axis movement of a marker per frame for a single participant. The plot may be used to find artefacts recording problems (e.g., scratching the facial skin and therefore moving markers).
 
 The x-axis presents the frames and the y-axis the marker movement. In the example below AU_09 of subject 2 is used.
 
 
 ```r
 # Selecting data for subject 2
-# Also omit untracked frames at the start and the end of the video clip
+# Additionally, omit untracked frames at the start and the end of the video clip
 data_Subj2 <- subset(dataSmm, subset = ((dataSmm$subject == 2) & (dataSmm$Frame >= 690)& (dataSmm$Frame <= 1610)))
 plotXYmmpf(frames = data_Subj2$Frame, xMarker = data_Subj2$AU_09_L_x, yMarker = data_Subj2$AU_09_L_y, center = FALSE, title = "Subject 1, AU_09_L")
 # Plot the right marker with stimulus episodes
@@ -406,9 +406,59 @@ plotXYmmpf(frames = data_Subj2$Frame, xMarker = data_Subj2$AU_09_R_x, yMarker = 
 
 ![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png)
 
+### Plot the movement of the markers on a standardized head with the function *plotXhead*
+
+This function plots the raw data of several facial markers on a standardized head model. It is possible to plot a single subject or aggregated subjects. To get meaninful and well scaled plots use the function *face2stdFace* first. To have the position of the markers at the defined starting positions be sure to have used the functon *centerCond* first.
 
 
+```r
+colNames <- c("AU_01_L_x", "AU_01_L_y", "AU_01_R_x", "AU_01_R_y", "AU_02_L_x", "AU_02_L_y", "AU_02_R_x", "AU_02_R_y", 
+              "AU_06_L_x", "AU_06_L_y", "AU_06_R_x", "AU_06_R_y", "AU_08_x", "AU_08_y", 
+              "AU_09_L_x", "AU_09_L_y", "AU_09_R_x", "AU_09_R_y", "AU_10_L_x", "AU_10_L_y", "AU_10_R_x", "AU_10_R_y",  
+              "AU_12_L_x", "AU_12_L_y", "AU_12_R_x", "AU_12_R_y", "AU_16_x", "AU_16_y")
 
+# Select data for plotting (selecting stimulus type and omit z-axis)
+data_Subj_happy <- subset(dataStdF, subset = (dataStdF$Stimulustype == "posed_happy"), select = colNames)
+data_Subj_disgust <- subset(dataStdF, subset = (dataStdF$Stimulustype == "posed_disgust"), select = colNames)
+
+# Define the positions for the markers for the standardized face of x (-1,1) and y (-1,1) size as named list
+dataPos <- list(AU_01_L = c(-.3,.7), AU_01_R = c(.3,.7), AU_02_L = c(-.7,.7), AU_02_R = c(.7,.7), 
+            AU_06_L = c(-.5,.2), AU_06_R = c(.5,.2), AU_08 = c(0,-.6), 
+            AU_09_L = c(-.2,.2), AU_09_R = c(.2,.2), AU_10_L = c(-.2,-.6), AU_10_R = c(.2,-.6), 
+            AU_12_L = c(-.3,-.7), AU_12_R = c(.3,-.7), AU_16 = c(0,-.8)) 
+
+
+plotXhead(data = data_Subj_happy, dataPos = dataPos, title = "All Subjects, neutral")
+# For debugging purposes the marker start positions are plotted
+plotXhead(data = data_Subj_disgust, dataPos = dataPos, title = "All Subjects, disgust", plotDataPos = TRUE)
+```
+
+![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-1.png)![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-2.png)
+
+This function can also be used to compare facial movements
+
+```r
+plotXhead(data = data_Subj_happy, dataPos = dataPos, title = "All Subjects, neutral vs. disgust")
+plotXhead(data = data_Subj_disgust, dataPos = dataPos, overplot = TRUE, color = "red")
+```
+
+![plot of chunk unnamed-chunk-17](figure/unnamed-chunk-17-1.png)
+
+### Plot aggregated marker movement per stimulus condition using the function *plotMmpCond*
+
+The function plots aggregated data of one or more subjects per marker per condition. This plot facilitates the comparison of the movement of a marker per stimulus type. The median and the quartiles are plottet in different colors for each stimulus type.
+
+
+```r
+plotMmpCond(data = dataStdF, colNames = c("AU_09_L_x", "AU_09_L_y"), colNameCond = "Stimulustype", title = "AU_09_L",xlim = c(-.2,.2), ylim = c(-.2,.2))
+plotMmpCond(data = dataStdF, colNames = c("AU_09_R_x", "AU_09_R_y"), colNameCond = "Stimulustype", title = "AU_09_R",xlim = c(-.2,.2), ylim = c(-.2,.2))
+```
+
+![plot of chunk unnamed-chunk-18](figure/unnamed-chunk-18-1.png)![plot of chunk unnamed-chunk-18](figure/unnamed-chunk-18-2.png)
+
+### Plot individual median movement per participant using the function *plotIndmm*
+
+Plots the individual median movement. These plots may be used for outlied detection of participants.
 
 
 ----------------------------------------------------
@@ -432,7 +482,7 @@ plot(1:10)
 plot(10:1)
 ```
 
-![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-1.png)![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-2.png)
+![plot of chunk unnamed-chunk-19](figure/unnamed-chunk-19-1.png)![plot of chunk unnamed-chunk-19](figure/unnamed-chunk-19-2.png)
 
 You can enable figure captions by `fig_caption: yes` in YAML:
 

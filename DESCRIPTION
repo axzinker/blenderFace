@@ -25,8 +25,9 @@ Collate:
     '03_Function_CenterCond.R'
     '04_Function_AngleDistance.R'
     'plotXYmmpf.R'
-    '06_Function_PlotXHead.R'
-    '07_Function_PlotMarkerCond.R'
+    'plotXhead.R'
+    'plotMmpCond.R'
+    'plotIndmm.R'
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr

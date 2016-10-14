@@ -2,17 +2,17 @@
 #' 
 #' Plots the median and quartile ellipse per experimental condition
 #' 
-#' @param data data frame containig the data to be plotted
-#' @param colNames character vector naming the two columns with the x/y-Values
-#'   to be plotted
-#' @param colNameCond character vector naming the column containig the
-#'   conditions
+#' @param data Data frame containig the data to be plotted.
+#' @param colNames Character vector naming the two columns with the x/y-Values
+#'   to be plotted.
+#' @param colNameCond Character vector with a single value containig the name 
+#' of the stimulus type column of the data data-frame.
 #' @param title Default is no title.
 #' @param xlim Numeric vector of two elements defining the x-axis range of the 
 #' plot. Default is c(-10, 10).
 #' @param ylim Numeric vector of two elements defining the y-axis range of the 
 #' plot. Default is c(-10, 10).
-#' @param verbose print verbose output
+#' @param verbose Print verbose output.
 #'   
 #' @return Plot of median movement of marker with quartile ellipse around per
 #'   condition
@@ -22,10 +22,10 @@
 #'   #@include plotrix
 #'   
 #' @examples
-#' \dontrun{plotXYMarkerMovementPerFrame()}
+#' \dontrun{plotMmpCond()}
 #'    
 #' @export
-plotMarkerCond <- function(data, colNames, colNameCond, title = "", xlim = c(-10, 10), ylim = c(-10, 10), verbose = FALSE) {
+plotMmpCond <- function(data, colNames, colNameCond, title = "", xlim = c(-10, 10), ylim = c(-10, 10), verbose = FALSE) {
     # Error handling
     if (!(is.data.frame(data))) {
         stop("Argument data does not contain a data frame!")
@@ -45,12 +45,9 @@ plotMarkerCond <- function(data, colNames, colNameCond, title = "", xlim = c(-10
     if (!(is.numeric(ylim)) | length(ylim) != 2) {
         stop("Argument ylim is not numeric or not containing two elements")
     }
-    
     if (!(is.logical(verbose))) {
         stop("Argument verbose is not of type logical!")
     }
-    
-    # load libraries library(plotrix) # needed for draw.ellipse
     
     # Extracting conditions
     cond <- unique(na.omit(unlist(data[colNameCond])))
