@@ -1,33 +1,40 @@
-#' Concatenate data files
+#' Concatenate Blender data files
 #' 
-#' Concatenate several csv/Rdata files into one large 'master'-file. Either csv
-#' or Rdata files can be concatenated, but not mixed cvs/Rdata files. Data files need not
-#' to have the same number of colums, e.g., it is possible to concatenate files with varying
+#' Concatenate several csv or Rdata files into one large 'master'-file. Either csv
+#' or Rdata files can be concatenated, however, not mixed cvs/Rdata files. The data 
+#' files must all reside in the same directory. The files need not to have the 
+#' same number of colums, e.g., it is possible to concatenate files with a different
 #' number of markers tracked. The total number of columns will be
-#' determined by this function.
+#' determined during runtime of this function. Before concatenating the files, 
+#' a feedback of the columns for the final data set is given and asked for it's
+#' correctness.
 #' 
-#' @param dataFileNames character vector of the filenames to be concatenated. 
-#' Possiblefiletypes are csv and R data files (File endings: *.csv, *.rda, 
+#' @param dataFileNames Character vector containing filenames to be concatenated. 
+#' Possible file types are csv and R data files (file extensions: *.csv, *.rda, 
 #' *.Rdata).
-#' @param inputDirectory Character variable containing the path to the input
-#' files (e.g., on Windows: 'C:/Data/Blenderdata/', on Linux:
-#' '/home/user/Data/Blenderdata/').
-#' @param subjectColumn Logical value. Default is FALSE. Do the single data 
-#' files contain a column with the subject number?  If TRUE, the subject number 
-#' is taken from the single files. If FALSE, the subject number has to be part 
-#' of the filename. It should be the last number before the filetype (e.g., 
-#' '.RData' or '.csv') separated by an underscore from the rest of the filename.
-#'  For example, from the filename 'RawData_Subj_39.RData' the subject number 
-#'  39 is generated. 
-#' @param outputFilename Name of the output file
-#' @param outputDirectory Optional. Path to where the output file should be
-#' saved (e.g., on Windows: 'C:/Data/Blenderdata/output/', on Linux:
-#' '/home/user/Data/Blenderdata/output/). If empty, inputDirectory is used.
-#' @param verbose If TRUE, the function prints verbose output.
+#' @param inputDirectory Character vector of length one containing the path to the 
+#' directory of data files (e.g., on Windows: 'C:/Data/Blenderdata/', on 
+#' Unix-type systems: '/home/user/Data/Blenderdata/').
+#' @param colNameSubj Character vector of length one, default is empty (""). 
+#' If empty, the subject number is taken from the last number in the file names 
+#' of the single data files, which should be concatenated (in front of the file 
+#' extension). For example, from the filename 'RawData_Subj_39.RData' the subject number 
+#'  39 is taken. If the subject number is contained the single data files, the
+#' colNameSubj parameter must contain the column name of the subject column of
+#' the data files (e.g., \code{colNameSubj = "subject"}).
+#' @param outputFilename Character vector of length one to name the output 
+#' file. The output file is saved in the directory defined in either 
+#' \code{inputDirectory} or \code{outputDirectory}, if defined.
+#' @param outputDirectory Optional character vector of lenght one. Path to 
+#' where the output file should be saved (e.g., on Windows: 
+#' 'C:/Data/Blenderdata/output/', on Unix-type systems:
+#' '/home/user/Data/Blenderdata/output/). If empty, the \code{inputDirectory} is used.
+#' @param verbose Logical value. If TRUE, the function provides verbose console output.
 #'   
 #' @return Returns data frame and saves Rdata file of concatenated input files.
 #'   
-#' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
+#' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de},
+#' Rainer Alexandrowicz \email{rainer.alexandrowicz@aau.at}
 #'   
 #' @examples
 #' \dontrun{
@@ -36,13 +43,13 @@
 #' filenames <- c("Subject_01.csv","Subject_02.csv")
 #' 
 #' concatBlenderFiles(dataFileNames = filenames, inputDirectory = inputdir, 
-#' subjectColumn = FALSE, outputFilename = "Rawdata.rda", 
+#' colNameSubj = "", outputFilename = "Rawdata.rda", 
 #' outputDirectory = outputdir, verbose = TRUE)
 #' }
 #' 
 #' @export
-concatBlenderFiles <- function(dataFileNames, inputDirectory, subjectColumn = FALSE, outputFilename, outputDirectory = "", verbose = FALSE) {
-    # Error handling
+concatBlenderFiles <- function(dataFileNames, inputDirectory, colNameSubj = "", outputFilename, outputDirectory = "", verbose = FALSE) {
+  # Error handling
     
     # Remove leading / trailing spaces from inputDirectory / outputDirectory
     inputDirectory <- gsub("^\\s+|\\s+$", "",inputDirectory)
@@ -80,8 +87,8 @@ concatBlenderFiles <- function(dataFileNames, inputDirectory, subjectColumn = FA
     if (!(is.character(dataFileNames)) | !(length(dataFileNames) > 1)) {
         stop("Argument filenames is not of type character or does not contain more than one value!")
     }
-    if (!(is.logical(subjectColumn))) {
-        stop("Argument subjectColumn is missing or not of type logical!")
+    if (!is.character(colNameSubj)) {
+        stop("Argument colNameSubj is not of type character!")
     }
     if (!(is.character(outputFilename))) {
         stop("Argument outputFilename is not of type character!")
@@ -143,7 +150,7 @@ concatBlenderFiles <- function(dataFileNames, inputDirectory, subjectColumn = FA
     
     if (verbose) {
         fcat(paste("\nThe final data frame will have ", 
-                         if (subjectColumn == FALSE)
+                         if (colNameSubj == "")
                          {length(dataColNames) + 1}
                          else {length(dataColNames)}, 
                          " columns and ", dataNrows, " rows.", sep = ""))
@@ -166,17 +173,17 @@ concatBlenderFiles <- function(dataFileNames, inputDirectory, subjectColumn = FA
     # Preallocate empty data frame
     if (verbose) {
         fcat(paste("\nPreallocating data frame of a ", 
-                         if (subjectColumn == FALSE)
+                         if (colNameSubj == "")
                          {length(dataColNames) + 1}
                          else {length(dataColNames)}, 
                          "x", dataNrows, " matrix.", sep = ""))
     }
-    if (subjectColumn) {
-        rawdata <- as.data.frame(matrix(data = NA, nrow = dataNrows, ncol = length(dataColNames)))
-        colnames(rawdata) <- dataColNames
-    } else {
+    if (colNameSubj == "") {
         rawdata <- as.data.frame(matrix(data = NA, nrow = dataNrows, ncol = length(dataColNames) + 1))
         colnames(rawdata) <- c("subject", dataColNames)
+    } else {
+        rawdata <- as.data.frame(matrix(data = NA, nrow = dataNrows, ncol = length(dataColNames)))
+        colnames(rawdata) <- dataColNames
     }
     
     # load and concatenate files
@@ -200,7 +207,7 @@ concatBlenderFiles <- function(dataFileNames, inputDirectory, subjectColumn = FA
         }
         
         # Compute subject number from filename
-        if (!subjectColumn) {
+        if (colNameSubj == "") {
             filenameParts1 <- strsplit(dataFileNames[i], "\\.")[[1]][1]
             filenameParts2 <- strsplit(filenameParts1, "_")[[1]]
             subject <- as.numeric(filenameParts2[length(filenameParts2)])

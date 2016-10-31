@@ -4,8 +4,8 @@
 \alias{plotMmpCond}
 \title{Plot marker and quartile ellipse per condition}
 \usage{
-plotMmpCond(data, colNames, colNameCond, title = "", xlim = c(-10, 10),
-  ylim = c(-10, 10), verbose = FALSE)
+plotMmpCond(data, colNames, colNameCond, title = "", xlim = NA, ylim = NA,
+  verbose = FALSE)
 }
 \arguments{
 \item{data}{Data frame containig the data to be plotted.}
@@ -19,27 +19,25 @@ of the stimulus type column of the data data-frame.}
 \item{title}{Default is no title.}
 
 \item{xlim}{Numeric vector of two elements defining the x-axis range of the 
-plot. Default is c(-10, 10).}
+plot. Per default the scaling is done automatically.}
 
 \item{ylim}{Numeric vector of two elements defining the y-axis range of the 
-plot. Default is c(-10, 10).}
+plot. Per default the scaling is done automatically.}
 
-\item{verbose}{Print verbose output.}
+\item{verbose}{Logical value. If TRUE, the function provides verbose 
+console output.}
 }
 \value{
-Plot of median movement of marker with quartile ellipse around per
-  condition
+See vignette for example plots.
 }
 \description{
 Plots the median and quartile ellipse per experimental condition
 }
 \examples{
-\dontrun{plotMmpCond()}
+plotMmpCond(data = dataStdFCen, colNames = c("AU_12_L_x", "AU_12_L_y"), colNameCond = "Stimulustype", title = "AU_12_L")
    
 }
 \author{
 Axel Zinkernagel \email{zinkernagel@uni-landau.de}
-  
-  #@include plotrix
 }
 

@@ -1,11 +1,13 @@
 #' Center marker coordinates
 #' 
-#' Sets the x/y/z-values of markers in colNames defined variable columns to 0 at
-#' the start of every condition defined in variable cond. This is done for every
-#' subject marked in column colNameSubj.
+#' Sets the x/y/z-values of markers in parameter \code{colNames} defined 
+#' variable columns to 0 at the start of every condition defined in parameter 
+#' \code{colNameCond}. This is done for every subject defined by column 
+#' \code{colNameSubj}.
 #' 
-#' @param data Data frame containig the columns which should be centered.
-#'   Remaining colums will be returned untouched.
+#' @param data Data frame containig the columns which should be centered and 
+#' additional columns defining subject number, stimulus conditions, frames, 
+#' etc. Columns not to be centered will return unchanged.
 #' @param colNames Character vector with names of the columns which should be
 #'   centered.
 #' @param colNameSubj Character vector with a single value containig the name of
@@ -20,13 +22,25 @@
 #' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
 #'   
 #' @examples
-#' \dontrun{centerCond()}
+#' colNames <- c("AU_01_L_x", "AU_01_L_y", "AU_01_R_x", "AU_01_R_y", 
+#'               "AU_02_L_x", "AU_02_L_y", "AU_02_R_x", "AU_02_R_y", 
+#'               "AU_06_L_x", "AU_06_L_y", "AU_06_R_x", "AU_06_R_y", 
+#'               "AU_08_x", "AU_08_y", 
+#'               "AU_09_L_x", "AU_09_L_y", "AU_09_R_x", "AU_09_R_y", 
+#'               "AU_10_L_x", "AU_10_L_y", "AU_10_R_x", "AU_10_R_y",  
+#'               "AU_12_L_x", "AU_12_L_y", "AU_12_R_x", "AU_12_R_y", 
+#'               "AU_16_x", "AU_16_y")
+#'               
+#' # To not overwrite existing data, use a new data frame 
+#' # (dataStdFCen means data of standaradized faces, centered)
+#' 
+#' dataStdFCen <- centerCond(dataStdF, colNames = colNames, 
+#'                           colNameSubj = "subject", colNameFrames = "Frame", 
+#'                           colNameCond = "Stimulustype", verbose = TRUE)
 #' 
 #' @import doParallel
 #' 
-#' @return List of (1) data frame with centered columns and (2) data frame with 
-#' individual offset values. The latter may be used to set the markers at
-#' measured locations in standardized face plots.
+#' @return Data frame with centered columns per subject and per stimulus condition.
 #'   
 #' @export
 centerCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, verbose = FALSE) {
@@ -68,6 +82,7 @@ centerCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
         # which the first occurrence is searched for
         
         data <- data.frame(subjCol, frameCol, condCol)
+        names(data) <- c("subjCol", "frameCol", "condCol")
         rm(list = "subjCol", "frameCol", "condCol")
         subjects <- unique(data$subjCol)
         
@@ -208,5 +223,7 @@ centerCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
     }
     stopCluster(cl)
     
-    return(list(dataCen, offsetTable))
+    # Eventually - later - return also the offset Table, e.g., for plotting start positions, etc.
+    # return(list(dataCen, offsetTable))
+    return(dataCen)
 }

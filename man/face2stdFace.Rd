@@ -9,8 +9,8 @@ face2stdFace(data, colNames, colNameSubj, pupilDist, leftPMDist,
 }
 \arguments{
 \item{data}{Data frame containig the columns which should be rescaled.
-Remaining colums will be returned untouched (e.g., z-values because we have
-no information to rescale them).}
+Remaining colums will be returned unchanged (e.g., the z-values because 
+no information for rescaling is available).}
 
 \item{colNames}{Character vector with names of the columns which should be
 rescaled. To differ between x-, and y-axis scaling, the variable names containing horizontal movement (left-right) should end with '_x',
@@ -20,32 +20,34 @@ whereas variable names containing vertical movement (up-down) should end with '_
 of the subject column of the data data-frame.}
 
 \item{pupilDist}{Numeric vector of measurement of the distance from left to right pupil for each subject,
-measured in blender units.}
+measured in blender units. This vector is used to rescale the x-axis.}
 
 \item{leftPMDist}{Numeric vector of measuremet of the distance from left pupil to left
-mouthcorner for each subject, measured in blender units.}
+mouthcorner for each subject, measured in blender units. This vector is used to rescale the y-axis.}
 
-\item{mouthcornerDist}{Numeric vector of measurement of the distance from left to right
-mouthcorner for each subject measured in blender units.}
+\item{mouthcornerDist}{Optional numeric vector of measurement of the distance from left to right
+mouthcorner for each subject measured in blender units. If provided, a mean 
+of \code{pupilDist} and \code{mouthcornerDist} is used for rescaling the x-axis.}
 
-\item{rightPMDist}{Numeric vector of measurement of the distance from right pupil to right
-mouthcorner for each subject, measured in blender units.}
+\item{rightPMDist}{Optional numeric vector of measurement of the distance from right pupil to right
+mouthcorner for each subject, measured in blender units. If provided, a mean 
+of \code{leftPMDist} and \code{rightPMDist} is used for rescaling the y-axis.}
 
-\item{verbose}{If TRUE, the function prints verbose output. Otherwise not.}
+\item{verbose}{Logical value. If TRUE, the function provides verbose console output.}
 }
 \value{
-Data frame with scaled columns.
+Data frame with columns rescaled to a standard face.
 }
 \description{
 The heads of the participants are of different sizes. This function rescales
 the x/y values according to a standardized face. The standardized face is of 
 height 1 and width 1, while the pupil-pupil distance is defined as 1/3 and the 
-left-pupil -- left-mouth-corner distance is defined as 1/3. Accordongly, for resizing
+left-pupil -- left-mouth-corner distance is defined as 1/3. Accordingly, for resizing
 the x-axis, the distance between the pupils of the subject is used. For resizing the y-axis,
 the distance between the left pupil and the left mouthcorner is used. 
 Optionally, the distance between the mouthcorners for the x-axis, and the distance between
-the right pupil and the right mouthcorner for the y-axis may additionally be provided.
-If provided, a mean of both measures is computed. Be aware, if you previously rescaled 
+the right pupil and the right mouthcorner for the y-axis may be provided in addition.
+If provided, a mean of both measures is computed. Be aware that if you previously rescaled 
 the data into millimeter by the function \code{\link{bu2mm}}, you also have to
 rescale the scaling parameters e.g., the pupil-pupil distance into millimeter first
 and use the millimeter values as scaling parameters!
@@ -53,7 +55,7 @@ and use the millimeter values as scaling parameters!
 \examples{
 # Load the file "Blender_Scalingdata.csv"
 scaledata <- read.csv(system.file("extdata", "Blender_Scalingdata.csv", package = "blenderFace"), header = TRUE, sep =",")
-# Be sure to have the data sorted by subjects
+# Make sure to have the data sorted by subjects
 scaledata <- scaledata[with(scaledata, order(scaledata$subject)), ]
 
 # Determin the dataframe columns which should be scaled:
@@ -64,11 +66,11 @@ colNames <- c("AU_01_L_x", "AU_01_L_y", "AU_01_R_x", "AU_01_R_y", "AU_02_L_x", "
 "AU_09_L_x", "AU_09_L_y", "AU_09_R_x", "AU_09_R_y", "AU_10_L_x", "AU_10_L_y", "AU_10_R_x", "AU_10_R_y",  
 "AU_12_L_x", "AU_12_L_y", "AU_12_R_x", "AU_12_R_y", "AU_16_x", "AU_16_y")
 
-# To not overwrite data, use a new data frame (dataStdF means data of standaradized faces)
+# To not overwrite existing data, use a new data frame (dataStdF means data of standaradized faces)
 dataStdF <- face2stdFace(data = rawdata, colNames = colNames, colNameSubj = "subject", pupilDist = scaledata$PupilPupilDistance, leftPMDist = scaledata$LeftPupilLeftMouthcornerDistance)
 }
 \author{
-Axel Zinkernagel, Rainer Alexandrowicz
-  \email{zinkernagel@uni-landau.de, rainer.alexandrowicz@aau.at}
+Axel Zinkernagel \email{zinkernagel@uni-landau.de}, 
+Rainer Alexandrowicz \email{rainer.alexandrowicz@aau.at}
 }
 

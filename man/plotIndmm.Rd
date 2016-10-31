@@ -4,14 +4,15 @@
 \alias{plotIndmm}
 \title{Plots median movement of a marker per subject}
 \usage{
-plotIndmm(data, colNames, colNameSubj, title = "", xlim = c(-10, 10),
-  ylim = c(-10, 10), verbose = FALSE)
+plotIndmm(data, colNames, colNameSubj, title = "", xlim = NA, ylim = NA,
+  verbose = FALSE)
 }
 \arguments{
-\item{data}{Data frame containig the data to be plotted}
+\item{data}{Data frame containig the data columns to be plotted (among other
+columns).}
 
-\item{colNames}{Character vector naming the two columns with the x/y-Values
-to be plotted}
+\item{colNames}{Character vector naming the two columns for with the x/y-Values
+should be plotted.}
 
 \item{colNameSubj}{Character vector with a single value containig the name 
 of the subject column of the data data-frame.}
@@ -19,24 +20,38 @@ of the subject column of the data data-frame.}
 \item{title}{Character string containing the title. Default is no title.}
 
 \item{xlim}{Numeric vector of two elements defining the x-axis range of the 
-plot. Default is c(-10, 10).}
+plot. Default is empty (NA), to compute the min and max values to achieve 
+a quadratic plot.}
 
 \item{ylim}{Numeric vector of two elements defining the y-axis range of the 
-plot. Default is c(-10, 10).}
+plot. Default is empty (NA), to compute the min and max values to achieve 
+a quadratic plot.}
 
-\item{verbose}{print verbose output}
+\item{verbose}{Logical value. If TRUE, the function provides verbose 
+console output.}
 }
 \value{
-Plot of median movement of marker with quartile ellipse around per
-  condition
+See vignette for example plots.
 }
 \description{
 Plots median movement of a marker per subject and labels it with subject 
-number. This function may be used to find individual outliers
+number. This function may be used to identify individual outliers. To achieve 
+meaninful plots, use the function \code{\link{centerCond}} first.
 }
 \examples{
-\dontrun{plotMmpCond()}
-   
+colNames <- c("AU_01_L_x", "AU_01_L_y", "AU_01_R_x", "AU_01_R_y", 
+              "AU_02_L_x", "AU_02_L_y", "AU_02_R_x", "AU_02_R_y", 
+              "AU_06_L_x", "AU_06_L_y", "AU_06_R_x", "AU_06_R_y", 
+              "AU_08_x", "AU_08_y", 
+              "AU_09_L_x", "AU_09_L_y", "AU_09_R_x", "AU_09_R_y", 
+              "AU_10_L_x", "AU_10_L_y", "AU_10_R_x", "AU_10_R_y",  
+              "AU_12_L_x", "AU_12_L_y", "AU_12_R_x", "AU_12_R_y", 
+              "AU_16_x", "AU_16_y")
+              
+# Select data for plotting (selecting stimulus type and omit z-axis)
+data_Subj_happy <- subset(dataStdFCen, subset = (dataStdFCen$Stimulustype == "posed_happy"), select = c("subject",colNames))
+
+plotIndmm(data = data_Subj_happy, colNames = c("AU_12_L_x", "AU_12_L_y"), colNameSubj = "subject", title = "Posed Happy AU_12_L")
 }
 \author{
 Axel Zinkernagel \email{zinkernagel@uni-landau.de}

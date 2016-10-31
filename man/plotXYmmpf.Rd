@@ -4,23 +4,23 @@
 \alias{plotXYmmpf}
 \title{Plot x-, y-axis marker movement per frame}
 \usage{
-plotXYmmpf(frames, xMarker, yMarker, stimF = "", center = TRUE,
+plotXYmmpf(colFrames, colX, colY, colCond = "", center = TRUE,
   color = c("red", "orange"), title = "", overplot = FALSE)
 }
 \arguments{
-\item{frames}{numeric vector containing the frames for which x/y-values
+\item{colFrames}{Numeric vector containing the frames for which x/y-values
 should be plotted}
 
-\item{xMarker}{numeric vector with x values (same length as frames vector)}
+\item{colX}{Numeric vector with x values (same length as frames vector)}
 
-\item{yMarker}{numeric vector with y values (same length as frames vector)}
+\item{colY}{Numeric vector with y values (same length as frames vector)}
 
-\item{stimF}{character vector containing the stimuli presented at each frame (same length as frames vector). Stimulus labels must be unique. Optional. Default is NA.}
+\item{colCond}{Character vector containing the stimuli presented at each frame (same length as frames vector). Stimulus labels must be unique. Optional. Default is NA.}
 
-\item{center}{if TRUE, center x/y values by setting the x/y values to 0 at
+\item{center}{If TRUE, center x/y values by setting the x/y values to 0 at
 the first (appropriate, e.g. non NA frame) frame. Default = TRUE}
 
-\item{color}{character vector of two values to define color for x/y values of
+\item{color}{Character vector of two values to define color for x/y values of
 the Marker. Default is c('red','orange').}
 
 \item{title}{Default is no title.}
@@ -35,7 +35,9 @@ See vignette for example plots.
 Plots separate lines for the x,y marker values (y-axis) per frame (x-axis).
 }
 \examples{
-\dontrun{plotXYmmpf()}
+# Select data of a subject at relevant frame sections
+data_Subj2Cen <- subset(dataStdFCen, subset = ((dataSmm$subject == 2) & (dataSmm$Frame >= 690)& (dataSmm$Frame <= 1610)))
+plotXYmmpf(colFrames = data_Subj2Cen$Frame, colX = data_Subj2Cen$AU_09_R_x, colY = data_Subj2Cen$AU_09_R_y, colCond = data_Subj2Cen$Stimulustype, center = FALSE, title = "Subject 2, AU_09_R")
   
 }
 \author{

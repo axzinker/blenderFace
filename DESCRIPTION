@@ -1,7 +1,7 @@
 Package: blenderFace
 Type: Package
 Title: Collection of functions to process blender measured facial movement data
-Version: 0.1.9004
+Version: 0.1.9005
 Date: 2016-09-30
 Authors@R: c(
   person("Axel", "Zinkernagel", email = "zinkernagel@uni-landau.de", role = c("cre","aut")),
@@ -17,13 +17,14 @@ Imports:
     plotrix (>= 3.6-1),
     parallel (>= 3.3.1),
     doParallel (>= 1.0.10),
-    foreach (>= 1.4.3)
+    foreach (>= 1.4.3),
+    calibrate (>= 1.7.2)
 Collate:
     'concatBlenderFiles.R'
     'bu2mm.R'
     'face2stdFace.R'
-    '03_Function_CenterCond.R'
-    '04_Function_AngleDistance.R'
+    'centerCond.R'
+    'angleDist.R'
     'plotXYmmpf.R'
     'plotXhead.R'
     'plotMmpCond.R'

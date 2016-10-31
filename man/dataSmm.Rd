@@ -5,7 +5,7 @@
 R-data file of data scaled to millimeter of the two sample subjects.
 }
 \description{
-R-data file of data scaled to millimeter of the two sample subjects concatenated by the function \link{concatBlenderFiles}. Scaling has been performed with function the \link{bu2mm} for the `rawdata` dataset.
+R-data file of data scaled to millimeter of the two sample subjects concatenated by the function \code{\link{concatBlenderFiles}}. Scaling has been performed with function the \code{\link{bu2mm}} for the `rawdata` dataset.
 }
 \usage{data("dataSmm")}
 \format{
@@ -63,15 +63,6 @@ R-data file of data scaled to millimeter of the two sample subjects concatenated
     \item{\code{Stimulustype}}{Stimulus presented to the participant}
     \item{\code{subject}}{Subject number}
   }
-}
-\details{
-%%  ~~ If necessary, more details than the __description__ above ~~
-}
-\source{
-%%  ~~ reference to a publication or URL from which the data were obtained ~~
-}
-\references{
-%%  ~~ possibly secondary sources and usages ~~
 }
 \examples{
 data(dataSmm)
