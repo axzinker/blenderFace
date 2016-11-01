@@ -5,7 +5,7 @@
 \title{Center marker coordinates}
 \usage{
 centerCond(data, colNames, colNameSubj, colNameFrames, colNameCond,
-  verbose = FALSE)
+  maxCPUcores = 4, verbose = FALSE)
 }
 \arguments{
 \item{data}{Data frame containig the columns which should be centered and 
@@ -24,6 +24,10 @@ of the frames column.}
 
 \item{colNameCond}{Character vector with a single value containing the
 experimental conditions column name of the data frame.}
+
+\item{maxCPUcores}{Optional integer value. Per default, all available CPU 
+cores up to 4 are used. If more or less cores should be used, set it via 
+the parameter \code{maxCPUcores} (e.g., \code{maxCPUcores} = 12).}
 
 \item{verbose}{If TRUE, the function prints verbose output. Otherwise not.}
 }

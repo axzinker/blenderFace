@@ -230,7 +230,7 @@ data(rawdata, package="blenderFace") # for the package example, please comment o
 rawdata <- rawdata[with(rawdata, order(rawdata$subject)), ]
 ```
 
-Subsequently, prepare the parameters and call the function *face2stdFace*:
+Subsequently, prepare the parameters and call the function `face2stdFace`:
 ```{r}
 # Geting the column names of the scaledata dataframe
 names(scaledata)
@@ -408,9 +408,9 @@ Keep in mind, that the angles are computed in degrees in the mathematical sense.
 
 ```{r}
 # Data preparation
-data_Subj_happy <- subset(dataStdF, subset = dataStdF["Stimulustype"] == "posed_happy", 
+data_Subj_happy <- subset(dataSmm, subset = dataSmm["Stimulustype"] == "posed_happy", 
                           select = c("subject",colNames))
-data_Subj_disgust <- subset(dataStdF, subset = dataStdF["Stimulustype"] == "posed_disgust", 
+data_Subj_disgust <- subset(dataSmm, subset = dataSmm["Stimulustype"] == "posed_disgust", 
                             select = c("subject",colNames))
 
 angleDist(data_Subj_happy, colNames = c("AU_12_L_x", "AU_12_L_y"), 
@@ -433,4 +433,4 @@ knitr::kable(angleDist(data_Subj_happy, colNames = c("AU_09_L_x", "AU_09_L_y"),
                        colNameSubj = "subject"))
 ```
 
-The angles suggest, that the left AU_09 marker is moved rather to the left (to 180 degrees), when posing happines, and rather moving upwards (to 90 degrees), when posing disgust.
+The angles suggest, that the left AU_09 marker is moved rather to the left (to 180 degrees), when posing happines, and rather moving upwards (to 90 degrees), when posing disgust. Because data scaled to mm was used (`dataSmm`) the distance represents median movement in millimeter.

@@ -49,9 +49,11 @@ colNames <- c("AU_01_L_x", "AU_01_L_y", "AU_01_R_x", "AU_01_R_y",
               "AU_16_x", "AU_16_y")
               
 # Select data for plotting (selecting stimulus type and omit z-axis)
-data_Subj_happy <- subset(dataStdFCen, subset = (dataStdFCen$Stimulustype == "posed_happy"), select = c("subject",colNames))
+data_Subj_happy <- subset(dataStdFCen, subset = (dataStdFCen$Stimulustype == "posed_happy"), 
+                          select = c("subject",colNames))
 
-plotIndmm(data = data_Subj_happy, colNames = c("AU_12_L_x", "AU_12_L_y"), colNameSubj = "subject", title = "Posed Happy AU_12_L")
+plotIndmm(data = data_Subj_happy, colNames = c("AU_12_L_x", "AU_12_L_y"), 
+          colNameSubj = "subject", title = "Posed Happy AU_12_L")
 }
 \author{
 Axel Zinkernagel \email{zinkernagel@uni-landau.de}

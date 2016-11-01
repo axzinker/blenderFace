@@ -32,7 +32,21 @@ use the function \code{\link{centerCond}} before, to set the x/y-start
 values for each condition to x = 0, y = 0.
 }
 \examples{
-\dontrun{angleDistance(x,y)}
+colNames <- c("AU_01_L_x", "AU_01_L_y", "AU_01_R_x", "AU_01_R_y", 
+              "AU_02_L_x", "AU_02_L_y", "AU_02_R_x", "AU_02_R_y", 
+              "AU_06_L_x", "AU_06_L_y", "AU_06_R_x", "AU_06_R_y", 
+              "AU_08_x", "AU_08_y", 
+              "AU_09_L_x", "AU_09_L_y", "AU_09_R_x", "AU_09_R_y", 
+              "AU_10_L_x", "AU_10_L_y", "AU_10_R_x", "AU_10_R_y",  
+              "AU_11_L_x", "AU_11_L_y", "AU_11_R_x", "AU_11_R_y",
+              "AU_12_L_x", "AU_12_L_y", "AU_12_R_x", "AU_12_R_y", 
+              "AU_16_x", "AU_16_y")
+
+# Data preparation
+data_Subj_happy <- subset(dataSmm, subset = dataSmm["Stimulustype"] == "posed_happy",
+                          select = c("subject",colNames))
+angleDist(data_Subj_happy, colNames = c("AU_12_L_x", "AU_12_L_y"),
+          colNameSubj = "subject", rndDig = 3)
 
 }
 \author{

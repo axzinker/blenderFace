@@ -440,7 +440,7 @@ data(rawdata, package=&quot;blenderFace&quot;) # for the package example, please
 rawdata &lt;- rawdata[with(rawdata, order(rawdata$subject)), ]
 </code></pre>
 
-<p>Subsequently, prepare the parameters and call the function <em>face2stdFace</em>:</p>
+<p>Subsequently, prepare the parameters and call the function <code>face2stdFace</code>:</p>
 
 <pre><code class="r"># Geting the column names of the scaledata dataframe
 names(scaledata)
@@ -516,7 +516,7 @@ dataStdFCen &lt;- centerCond(dataStdF, colNames = colNames, colNameSubj = &quot;
                           verbose = TRUE)
 </code></pre>
 
-<pre><code>## Starting up CPU-cluster: Using 3 CPU-cores, leaving one for the OS.
+<pre><code>## Starting up CPU-cluster: Using 4 CPU-cores.
 ## Step 1: Getting condition start frames per subject.
 ## Step 2: Getting offset values per condition per subject.
 ## Step 3: Subtracting offset values per condition per subject.
@@ -536,15 +536,15 @@ dataStdFCen &lt;- centerCond(dataStdF, colNames = colNames, colNameSubj = &quot;
 ## 
 ## Time for completing each step of the function:
 ## Step1: Getting condition start frames per subject: 
-## Time difference of 0.11 secs
+## Time difference of 0.12 secs
 ## Step2: Getting offset values per condition per subject: 
 ## Time difference of 0.07 secs
 ## Step3: Subtracting offset values per condition per subject: 
-## Time difference of 0.24 secs
+## Time difference of 0.22 secs
 ## Step4: Replacing centered values in the original data: 
 ## Time difference of 0.06 secs
 ## Overall time: 
-## Time difference of 0.48 secs
+## Time difference of 0.47 secs
 ## Shutting down CPU-Cluster
 </code></pre>
 
@@ -691,9 +691,9 @@ plotMmpCond(data = dataStdFCen, colNames = c("AU_12_R_x", "AU_12_R_y"),
 Keep in mind, that the angles are computed in degrees in the mathematical sense. That means, that a movement to the right is around 0 / 360 degrees, a movement upwars is in direction of 90 degrees, a movement to the left is around 180 degrees, and a movement downwards is around 270 degrees.</p>
 
 <pre><code class="r"># Data preparation
-data_Subj_happy &lt;- subset(dataStdF, subset = dataStdF[&quot;Stimulustype&quot;] == &quot;posed_happy&quot;, 
+data_Subj_happy &lt;- subset(dataSmm, subset = dataSmm[&quot;Stimulustype&quot;] == &quot;posed_happy&quot;, 
                           select = c(&quot;subject&quot;,colNames))
-data_Subj_disgust &lt;- subset(dataStdF, subset = dataStdF[&quot;Stimulustype&quot;] == &quot;posed_disgust&quot;, 
+data_Subj_disgust &lt;- subset(dataSmm, subset = dataSmm[&quot;Stimulustype&quot;] == &quot;posed_disgust&quot;, 
                             select = c(&quot;subject&quot;,colNames))
 
 angleDist(data_Subj_happy, colNames = c(&quot;AU_12_L_x&quot;, &quot;AU_12_L_y&quot;), 
@@ -701,8 +701,8 @@ angleDist(data_Subj_happy, colNames = c(&quot;AU_12_L_x&quot;, &quot;AU_12_L_y&q
 </code></pre>
 
 <pre><code>##   subject   angle distance
-## 1       1 218.858    0.278
-## 2       2 216.363    0.257
+## 1       1 221.398   54.783
+## 2       2 218.793   48.896
 </code></pre>
 
 <pre><code class="r">angleDist(data_Subj_happy, colNames = c(&quot;AU_12_R_x&quot;, &quot;AU_12_R_y&quot;), 
@@ -714,8 +714,8 @@ angleDist(data_Subj_happy, colNames = c(&quot;AU_12_L_x&quot;, &quot;AU_12_L_y&q
 </code></pre>
 
 <pre><code>##   subject   angle distance
-## 1       1 321.225    0.262
-## 2       2 323.755    0.251
+## 1       1 318.686   51.742
+## 2       2 321.329   47.761
 </code></pre>
 
 <p>It also facilitates comparimg the marker movements. For example you could compare the movement of a posed happy facial expression and a posed disgust facial expression for the marker AU_09_L.</p>
@@ -731,13 +731,13 @@ angleDist(data_Subj_happy, colNames = c(&quot;AU_12_L_x&quot;, &quot;AU_12_L_y&q
 </thead><tbody>
 <tr>
 <td align="right">1</td>
-<td align="right">152.51</td>
-<td align="right">0.10</td>
+<td align="right">150.35</td>
+<td align="right">19.69</td>
 </tr>
 <tr>
 <td align="right">2</td>
-<td align="right">141.63</td>
-<td align="right">0.11</td>
+<td align="right">139.16</td>
+<td align="right">20.73</td>
 </tr>
 </tbody></table>
 
@@ -752,17 +752,17 @@ angleDist(data_Subj_happy, colNames = c(&quot;AU_12_L_x&quot;, &quot;AU_12_L_y&q
 </thead><tbody>
 <tr>
 <td align="right">1</td>
-<td align="right">170.66</td>
-<td align="right">0.1</td>
+<td align="right">169.80</td>
+<td align="right">18.61</td>
 </tr>
 <tr>
 <td align="right">2</td>
-<td align="right">154.23</td>
-<td align="right">0.1</td>
+<td align="right">152.21</td>
+<td align="right">18.57</td>
 </tr>
 </tbody></table>
 
-<p>The angles suggest, that the left AU_09 marker is moved rather to the left (to 180 degrees), when posing happines, and rather moving upwards (to 90 degrees), when posing disgust.</p>
+<p>The angles suggest, that the left AU_09 marker is moved rather to the left (to 180 degrees), when posing happines, and rather moving upwards (to 90 degrees), when posing disgust. Because data scaled to mm was used (<code>dataSmm</code>) the distance represents median movement in millimeter.</p>
 
 </body>
 

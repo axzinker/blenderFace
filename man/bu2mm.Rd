@@ -46,7 +46,8 @@ description of the rescaling procedure refere to the vignette.
 }
 \examples{
 # Load the file "Blender_Scalingdata.csv"
-scaledata <- read.csv(system.file("extdata", "Blender_Scalingdata.csv", package = "blenderFace"), header = TRUE, sep =",")
+scaledata <- read.csv(system.file("extdata", "Blender_Scalingdata.csv", 
+                      package = "blenderFace"), header = TRUE, sep =",")
 # Be sure to have the data sorted by subjects
 scaledata <- scaledata[with(scaledata, order(scaledata$subject)), ]
 
@@ -62,8 +63,11 @@ colNames <- c("AU_01_L_x", "AU_01_L_y", "AU_01_L_z", "AU_01_R_x", "AU_01_R_y", "
               "AU_12_L_x", "AU_12_L_y", "AU_12_L_z", "AU_12_R_x", "AU_12_R_y", "AU_12_R_z", 
               "AU_16_x", "AU_16_y", "AU_16_z")
 
-# To not overwrite existing data, use a new data frame (dataSmm means data scaled in millimeter)
-dataSmm <- bu2mm(data = rawdata, colNames = colNames, colNameSubj = "subject", scaleFactor = scaledata$GlueDotDiameter, rwMeasure = 8, verbose = TRUE)
+# To not overwrite existing data, use a new data frame 
+# (dataSmm means data scaled in millimeter)
+dataSmm <- bu2mm(data = rawdata, colNames = colNames, colNameSubj = "subject", 
+                 scaleFactor = scaledata$GlueDotDiameter, rwMeasure = 8, 
+                 verbose = TRUE)
 }
 \author{
 Axel Zinkernagel \email{zinkernagel@uni-landau.de}

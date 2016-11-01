@@ -54,20 +54,30 @@ and use the millimeter values as scaling parameters!
 }
 \examples{
 # Load the file "Blender_Scalingdata.csv"
-scaledata <- read.csv(system.file("extdata", "Blender_Scalingdata.csv", package = "blenderFace"), header = TRUE, sep =",")
+scaledata <- read.csv(system.file("extdata", "Blender_Scalingdata.csv", 
+                      package = "blenderFace"), header = TRUE, sep =",")
 # Make sure to have the data sorted by subjects
 scaledata <- scaledata[with(scaledata, order(scaledata$subject)), ]
 
 # Determin the dataframe columns which should be scaled:
 names(rawdata)
-# -> Frame, Stimulustype, subject and z-axis values should not be scaled -> removed for variable colNames
-colNames <- c("AU_01_L_x", "AU_01_L_y", "AU_01_R_x", "AU_01_R_y", "AU_02_L_x", "AU_02_L_y", "AU_02_R_x", "AU_02_R_y", 
-"AU_06_L_x", "AU_06_L_y", "AU_06_R_x", "AU_06_R_y", "AU_08_x", "AU_08_y", 
-"AU_09_L_x", "AU_09_L_y", "AU_09_R_x", "AU_09_R_y", "AU_10_L_x", "AU_10_L_y", "AU_10_R_x", "AU_10_R_y",  
-"AU_12_L_x", "AU_12_L_y", "AU_12_R_x", "AU_12_R_y", "AU_16_x", "AU_16_y")
+# -> Frame, Stimulustype, subject and z-axis values should not be scaled 
+# -> removed for variable colNames
+colNames <- c("AU_01_L_x", "AU_01_L_y", "AU_01_R_x", "AU_01_R_y", 
+              "AU_02_L_x", "AU_02_L_y", "AU_02_R_x", "AU_02_R_y", 
+              "AU_06_L_x", "AU_06_L_y", "AU_06_R_x", "AU_06_R_y", 
+              "AU_08_x", "AU_08_y", 
+              "AU_09_L_x", "AU_09_L_y", "AU_09_R_x", "AU_09_R_y", 
+              "AU_10_L_x", "AU_10_L_y", "AU_10_R_x", "AU_10_R_y",  
+              "AU_11_L_x", "AU_11_L_y", "AU_11_R_x", "AU_11_R_y",
+              "AU_12_L_x", "AU_12_L_y", "AU_12_R_x", "AU_12_R_y", 
+              "AU_16_x", "AU_16_y")
 
-# To not overwrite existing data, use a new data frame (dataStdF means data of standaradized faces)
-dataStdF <- face2stdFace(data = rawdata, colNames = colNames, colNameSubj = "subject", pupilDist = scaledata$PupilPupilDistance, leftPMDist = scaledata$LeftPupilLeftMouthcornerDistance)
+# To not overwrite existing data, use a new data frame 
+# (dataStdF means data of standaradized faces)
+dataStdF <- face2stdFace(data = rawdata, colNames = colNames, 
+                         colNameSubj = "subject", pupilDist = scaledata$PupilPupilDistance, 
+                         leftPMDist = scaledata$LeftPupilLeftMouthcornerDistance)
 }
 \author{
 Axel Zinkernagel \email{zinkernagel@uni-landau.de}, 

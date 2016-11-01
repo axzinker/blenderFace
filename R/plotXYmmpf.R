@@ -21,8 +21,11 @@
 #'   
 #' @examples
 #' # Select data of a subject at relevant frame sections
-#' data_Subj2Cen <- subset(dataStdFCen, subset = ((dataSmm$subject == 2) & (dataSmm$Frame >= 690)& (dataSmm$Frame <= 1610)))
-#' plotXYmmpf(colFrames = data_Subj2Cen$Frame, colX = data_Subj2Cen$AU_09_R_x, colY = data_Subj2Cen$AU_09_R_y, colCond = data_Subj2Cen$Stimulustype, center = FALSE, title = "Subject 2, AU_09_R")
+#' data_Subj2Cen <- subset(dataStdFCen, subset = ((dataSmm$subject == 2) & 
+#'                        (dataSmm$Frame >= 690)& (dataSmm$Frame <= 1610)))
+#' plotXYmmpf(colFrames = data_Subj2Cen$Frame, colX = data_Subj2Cen$AU_09_R_x, 
+#'            colY = data_Subj2Cen$AU_09_R_y, colCond = data_Subj2Cen$Stimulustype, 
+#'            center = FALSE, title = "Subject 2, AU_09_R")
 #'   
 #' @export
 plotXYmmpf <- function(colFrames, colX, colY, colCond = "", center = TRUE, color = c("red", "orange"), title = "", overplot = FALSE) {

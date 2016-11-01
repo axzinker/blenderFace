@@ -22,7 +22,8 @@
 #' @include plotrix
 #'   
 #' @examples
-#' plotMmpCond(data = dataStdFCen, colNames = c("AU_12_L_x", "AU_12_L_y"), colNameCond = "Stimulustype", title = "AU_12_L")
+#' plotMmpCond(data = dataStdFCen, colNames = c("AU_12_L_x", "AU_12_L_y"), 
+#'             colNameCond = "Stimulustype", title = "AU_12_L")
 #'    
 #' @export
 plotMmpCond <- function(data, colNames, colNameCond, title = "", xlim = NA, ylim = NA, verbose = FALSE) {

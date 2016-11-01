@@ -1,7 +1,7 @@
 ---
 title: "blenderFace"
 author: "Axel Zinkernagel"
-date: "2016-10-31"
+date: "2016-11-01"
 output:
   pdf_document:
     toc: true
@@ -281,7 +281,7 @@ data(rawdata, package="blenderFace") # for the package example, please comment o
 rawdata <- rawdata[with(rawdata, order(rawdata$subject)), ]
 ```
 
-Subsequently, prepare the parameters and call the function *face2stdFace*:
+Subsequently, prepare the parameters and call the function `face2stdFace`:
 
 ```r
 # Geting the column names of the scaledata dataframe
@@ -367,7 +367,7 @@ dataStdFCen <- centerCond(dataStdF, colNames = colNames, colNameSubj = "subject"
 ```
 
 ```
-## Starting up CPU-cluster: Using 3 CPU-cores, leaving one for the OS.
+## Starting up CPU-cluster: Using 4 CPU-cores.
 ## Step 1: Getting condition start frames per subject.
 ## Step 2: Getting offset values per condition per subject.
 ## Step 3: Subtracting offset values per condition per subject.
@@ -387,15 +387,15 @@ dataStdFCen <- centerCond(dataStdF, colNames = colNames, colNameSubj = "subject"
 ## 
 ## Time for completing each step of the function:
 ## Step1: Getting condition start frames per subject: 
-## Time difference of 0.11 secs
+## Time difference of 0.12 secs
 ## Step2: Getting offset values per condition per subject: 
 ## Time difference of 0.07 secs
 ## Step3: Subtracting offset values per condition per subject: 
-## Time difference of 0.24 secs
+## Time difference of 0.22 secs
 ## Step4: Replacing centered values in the original data: 
 ## Time difference of 0.06 secs
 ## Overall time: 
-## Time difference of 0.48 secs
+## Time difference of 0.47 secs
 ## Shutting down CPU-Cluster
 ```
 
@@ -558,9 +558,9 @@ Keep in mind, that the angles are computed in degrees in the mathematical sense.
 
 ```r
 # Data preparation
-data_Subj_happy <- subset(dataStdF, subset = dataStdF["Stimulustype"] == "posed_happy", 
+data_Subj_happy <- subset(dataSmm, subset = dataSmm["Stimulustype"] == "posed_happy", 
                           select = c("subject",colNames))
-data_Subj_disgust <- subset(dataStdF, subset = dataStdF["Stimulustype"] == "posed_disgust", 
+data_Subj_disgust <- subset(dataSmm, subset = dataSmm["Stimulustype"] == "posed_disgust", 
                             select = c("subject",colNames))
 
 angleDist(data_Subj_happy, colNames = c("AU_12_L_x", "AU_12_L_y"), 
@@ -569,8 +569,8 @@ angleDist(data_Subj_happy, colNames = c("AU_12_L_x", "AU_12_L_y"),
 
 ```
 ##   subject   angle distance
-## 1       1 218.858    0.278
-## 2       2 216.363    0.257
+## 1       1 221.398   54.783
+## 2       2 218.793   48.896
 ```
 
 ```r
@@ -585,8 +585,8 @@ angleDist(data_Subj_happy, colNames = c("AU_12_R_x", "AU_12_R_y"),
 
 ```
 ##   subject   angle distance
-## 1       1 321.225    0.262
-## 2       2 323.755    0.251
+## 1       1 318.686   51.742
+## 2       2 321.329   47.761
 ```
 
 It also facilitates comparimg the marker movements. For example you could compare the movement of a posed happy facial expression and a posed disgust facial expression for the marker AU_09_L.
@@ -595,14 +595,14 @@ Disgust stimulus episode:
 
 | subject|  angle| distance|
 |-------:|------:|--------:|
-|       1| 152.51|     0.10|
-|       2| 141.63|     0.11|
+|       1| 150.35|    19.69|
+|       2| 139.16|    20.73|
 
 Happy stimulus episode:
 
 | subject|  angle| distance|
 |-------:|------:|--------:|
-|       1| 170.66|      0.1|
-|       2| 154.23|      0.1|
+|       1| 169.80|    18.61|
+|       2| 152.21|    18.57|
 
-The angles suggest, that the left AU_09 marker is moved rather to the left (to 180 degrees), when posing happines, and rather moving upwards (to 90 degrees), when posing disgust.
+The angles suggest, that the left AU_09 marker is moved rather to the left (to 180 degrees), when posing happines, and rather moving upwards (to 90 degrees), when posing disgust. Because data scaled to mm was used (`dataSmm`) the distance represents median movement in millimeter.

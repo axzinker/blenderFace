@@ -17,6 +17,9 @@
 #'   of the frames column.
 #' @param colNameCond Character vector with a single value containing the
 #'   experimental conditions column name of the data frame.
+#' @param maxCPUcores Optional integer value. Per default, all available CPU 
+#'   cores up to 4 are used. If more or less cores should be used, set it via 
+#'   the parameter \code{maxCPUcores} (e.g., \code{maxCPUcores} = 12).
 #' @param verbose If TRUE, the function prints verbose output. Otherwise not.
 #'   
 #' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
@@ -43,7 +46,7 @@
 #' @return Data frame with centered columns per subject and per stimulus condition.
 #'   
 #' @export
-centerCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, verbose = FALSE) {
+centerCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, maxCPUcores = 4, verbose = FALSE) {
     # Error handling
     if (!(is.data.frame(data))) {
         stop("Argument data does not contain a data frame!")
@@ -57,6 +60,9 @@ centerCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
     if (!(is.character(colNameFrames))) {
         stop("Argument colNameFrames is not of type character!")
     }
+    if (!(is.integer(maxCPUcores) | length(maxCPUcores > 1) | (maxCPUcores < 0))) {
+      stop("Argument maxCPUcores is not of type positive integer!")
+    }
     if (!(is.logical(verbose))) {
         stop("Argument verbose is not of type logical!")
     }
@@ -64,13 +70,21 @@ centerCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
     # Reordering columns of input data frame
     data <- data[c(colNameSubj, colNameFrames, colNameCond, colNames)]
     
-    ############################## Setting up CPU-Cluster Leaving one CPU core for OS tasks
-    if (parallel::detectCores() > 1) {
-        cl <- parallel::makeCluster(detectCores() - 1)
-        doParallel::registerDoParallel(cl)
+    ############################## Setting up CPU-Cluster
+    
+    CPUavail <- parallel::detectCores()
+    CPUcluster <- NA
+    if(maxCPUcores <= CPUavail) {
+      CPUcluster <- maxCPUcores
+    } else {
+      CPUcluster <- CPUavail
     }
+    
+    cl <- parallel::makeCluster(CPUcluster)
+    doParallel::registerDoParallel(cl)
+    
     if (verbose) {
-        writeLines(paste("Starting up CPU-cluster: Using ", getDoParWorkers(), " CPU-cores, leaving one for the OS.", sep = ""))
+        writeLines(paste("Starting up CPU-cluster: Using ", getDoParWorkers(), " CPU-cores.", sep = ""))
         timestamp0 <- Sys.time()
     }
     
