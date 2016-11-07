@@ -70,7 +70,7 @@ plotXhead <- function(data, dataPos, title = "", overplot = FALSE, color = "blac
     if (!(is.list(dataPos))) {
         stop("Argument dataPos is a named list!")
     } else {
-      if (as.numeric(table(unique(substr(names(data),1,nchar(names(data))-2)) == names(dataPos))["TRUE"]) != length(dataPos)) {
+      if (as.numeric(table(unique(substr(names(data),1,nchar(names(data))-2)) == sort(names(dataPos)))["TRUE"]) != length(dataPos)) {
         stop("Argument dataPos does not have the same marker names as data dataframe has, or is not ordered in the same way!")
       }
     }

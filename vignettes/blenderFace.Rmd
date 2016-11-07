@@ -1,16 +1,17 @@
 ---
 title: "blenderFace"
 author: "Axel Zinkernagel"
-date: "`r Sys.Date()`"
+date: '`r Sys.Date()`'
 output:
   pdf_document:
-    toc: true
+    number_sections: yes
+    toc: yes
     toc_depth: 2
-    number_sections: true
-vignette: >
-  %\VignetteIndexEntry{blenderFace}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+  html_document:
+    toc: yes
+    toc_depth: '2'
+vignette: |
+  %\VignetteIndexEntry{blenderFace} %\VignetteEngine{knitr::rmarkdown} %\VignetteEncoding{UTF-8}
 ---
 
 <!-- 
