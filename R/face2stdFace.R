@@ -32,7 +32,9 @@
 #'   mouthcorner for each subject, measured in blender units. If provided, a mean 
 #'   of \code{leftPMDist} and \code{rightPMDist} is used for rescaling the y-axis.
 #' @param verbose Logical value. If TRUE, the function provides verbose console output.
-#'   
+#'
+#' @import utils
+#'    
 #' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}, 
 #' Rainer Alexandrowicz \email{rainer.alexandrowicz@aau.at}
 #'   

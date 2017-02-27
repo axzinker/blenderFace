@@ -72,4 +72,3 @@ dataSmm <- bu2mm(data = rawdata, colNames = colNames, colNameSubj = "subject",
 \author{
 Axel Zinkernagel \email{zinkernagel@uni-landau.de}
 }
-

@@ -64,4 +64,3 @@ outputDirectory = outputdir, verbose = TRUE)
 Axel Zinkernagel \email{zinkernagel@uni-landau.de},
 Rainer Alexandrowicz \email{rainer.alexandrowicz@aau.at}
 }
-

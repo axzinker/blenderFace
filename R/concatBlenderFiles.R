@@ -30,7 +30,9 @@
 #' 'C:/Data/Blenderdata/output/', on Unix-type systems:
 #' '/home/user/Data/Blenderdata/output/). If empty, the \code{inputDirectory} is used.
 #' @param verbose Logical value. If TRUE, the function provides verbose console output.
-#'   
+#'
+#' @import utils 
+#'         
 #' @return Returns data frame and saves Rdata file of concatenated input files.
 #'   
 #' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de},

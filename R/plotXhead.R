@@ -25,6 +25,8 @@
 #' @param plotDataPos If TRUE, for debugging puposes, the start position 
 #'   coordinates of dataPos are plotted. Default is FALSE.
 #'   
+#' @import grDevices
+#' 
 #' @return See vignette for example plots.
 #'   
 #' @author Rainer Alexandrowicz \email{rainer.alexandrowicz@aau.at}, 
@@ -69,8 +71,8 @@ plotXhead <- function(data, dataPos, title = "", overplot = FALSE, color = "blac
     }
     if (!(is.list(dataPos))) {
         stop("Argument dataPos is a named list!")
-    } else {
-      if (as.numeric(table(unique(substr(names(data),1,nchar(names(data))-2)) == sort(names(dataPos)))["TRUE"]) != length(dataPos)) {
+    } else { # fix me: better use setdiff()?
+      if (as.numeric(table(sort(unique(substr(names(data),1,nchar(names(data))-2))) == sort(names(dataPos)))["TRUE"]) != length(dataPos)) {
         stop("Argument dataPos does not have the same marker names as data dataframe has, or is not ordered in the same way!")
       }
     }

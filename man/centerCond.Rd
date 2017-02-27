@@ -55,10 +55,10 @@ colNames <- c("AU_01_L_x", "AU_01_L_y", "AU_01_R_x", "AU_01_R_y",
 
 dataStdFCen <- centerCond(dataStdF, colNames = colNames, 
                           colNameSubj = "subject", colNameFrames = "Frame", 
-                          colNameCond = "Stimulustype", verbose = TRUE)
+                          colNameCond = "Stimulustype", maxCPUcores = 1,
+                          verbose = TRUE)
 
 }
 \author{
 Axel Zinkernagel \email{zinkernagel@uni-landau.de}
 }
-

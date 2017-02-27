@@ -83,4 +83,3 @@ dataStdF <- face2stdFace(data = rawdata, colNames = colNames,
 Axel Zinkernagel \email{zinkernagel@uni-landau.de}, 
 Rainer Alexandrowicz \email{rainer.alexandrowicz@aau.at}
 }
-

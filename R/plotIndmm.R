@@ -19,6 +19,9 @@
 #'   a quadratic plot.
 #' @param verbose Logical value. If TRUE, the function provides verbose 
 #'   console output.
+#'
+#' @import utils
+#' @import calibrate
 #'   
 #' @return See vignette for example plots.
 #'   

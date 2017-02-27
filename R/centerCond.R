@@ -39,9 +39,12 @@
 #' 
 #' dataStdFCen <- centerCond(dataStdF, colNames = colNames, 
 #'                           colNameSubj = "subject", colNameFrames = "Frame", 
-#'                           colNameCond = "Stimulustype", verbose = TRUE)
+#'                           colNameCond = "Stimulustype", maxCPUcores = 1,
+#'                           verbose = TRUE)
 #' 
 #' @import doParallel
+#' @import parallel
+#' @import foreach
 #' 
 #' @return Data frame with centered columns per subject and per stimulus condition.
 #'   

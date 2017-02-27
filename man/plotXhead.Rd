@@ -79,4 +79,3 @@ plotXhead(data = data_Subj_happy[-1], dataPos = dataPos, title = "All Subjects,
 Rainer Alexandrowicz \email{rainer.alexandrowicz@aau.at}, 
 Axel Zinkernagel \email{zinkernagel@uni-landau.de}
 }
-

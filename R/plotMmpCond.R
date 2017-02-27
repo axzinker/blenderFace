@@ -14,12 +14,16 @@
 #' plot. Per default the scaling is done automatically.
 #' @param verbose Logical value. If TRUE, the function provides verbose 
 #'   console output.
-#'   
+#'
+#' @import stats
+#' @import graphics
+#'    
 #' @return See vignette for example plots.
 #'   
 #' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
 #'  
-#' @include plotrix
+#' @import plotrix
+#' @import utils
 #'   
 #' @examples
 #' plotMmpCond(data = dataStdFCen, colNames = c("AU_12_L_x", "AU_12_L_y"), 

@@ -27,6 +27,8 @@
 #'   (8 millimeter).
 #' @param verbose Logical value. If TRUE, the function provides verbose console output.
 #'   
+#' @import utils
+#' 
 #' @return Data frame with columns rescaled to millimeter.
 #'   
 #' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}

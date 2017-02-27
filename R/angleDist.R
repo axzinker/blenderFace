@@ -15,7 +15,9 @@
 #' @param rndDig Number of round digits. Default is 2.
 #' @param verbose If TRUE, the function prints verbose output. Otherwise not. 
 #' Default is FALSE.
-#'   
+#'
+#' @import stats
+#'    
 #' @return Numeric matrix with median distance and angle.
 #'   
 #' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}

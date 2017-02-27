@@ -41,4 +41,3 @@ plotMmpCond(data = dataStdFCen, colNames = c("AU_12_L_x", "AU_12_L_y"),
 \author{
 Axel Zinkernagel \email{zinkernagel@uni-landau.de}
 }
-
