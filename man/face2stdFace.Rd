@@ -63,15 +63,14 @@ scaledata <- scaledata[with(scaledata, order(scaledata$subject)), ]
 names(rawdata)
 # -> Frame, Stimulustype, subject and z-axis values should not be scaled 
 # -> removed for variable colNames
-colNames <- c("AU_01_L_x", "AU_01_L_y", "AU_01_R_x", "AU_01_R_y", 
-              "AU_02_L_x", "AU_02_L_y", "AU_02_R_x", "AU_02_R_y", 
-              "AU_06_L_x", "AU_06_L_y", "AU_06_R_x", "AU_06_R_y", 
-              "AU_08_x", "AU_08_y", 
-              "AU_09_L_x", "AU_09_L_y", "AU_09_R_x", "AU_09_R_y", 
-              "AU_10_L_x", "AU_10_L_y", "AU_10_R_x", "AU_10_R_y",  
-              "AU_11_L_x", "AU_11_L_y", "AU_11_R_x", "AU_11_R_y",
-              "AU_12_L_x", "AU_12_L_y", "AU_12_R_x", "AU_12_R_y", 
-              "AU_16_x", "AU_16_y")
+colNames <- c("A7_x",  "A7_y",  "A8_x",  "A8_y",  
+             "BL2_x", "BL2_y", "BL4_x", "BL4_y",  
+             "BL5_x", "BL5_y", "BL7_x", "BL7_y",        
+             "BR2_x", "BR2_y", "BR4_x", "BR4_y",  
+             "BR5_x", "BR5_y", "BR7_x", "BR7_y",  
+             "CL4_x", "CL4_y", "CL7_x", "CL7_y",        
+             "CR4_x", "CR4_y", "CR7_x", "CR7_y",  
+             "DL2_x", "DL2_y", "DR2_x", "DR2_y")
 
 # To not overwrite existing data, use a new data frame 
 # (dataStdF means data of standaradized faces)

@@ -47,9 +47,9 @@ The functions of the `blenderFace` package can be divided into three types, whic
     + `face2stdFace`: scale the Blender data into a standardized face
     + `centerCond`: set the start values of markers to x = 0, y = 0 at the begin of each stimulus presentation
 * Functions to visualize the data:
-    + `plotXYmmpf`: plot the X/Y marker movement per frame
     + `plotXhead`: plot the data on a standardized face
     + `plotIndmm`: plot individual mean marker movement
+    + `plotXYmmpf`: plot the X/Y marker movement per frame
     + `plotMmpCond`: plot aggregated marker movement per stimulus condition
 * Functions to compute higher order variables:
     + `angleDistance`: compute the angle and the distance of median marker movement
@@ -88,14 +88,14 @@ Reading file Subject_02.csv (2/2)
 The final data frame will have 51 columns and 3406 rows. 
 
 These are the unique column names of all files to be concatenated. Check, if they are correct. 
- [1] "AU_01_L_x"    "AU_01_L_y"    "AU_01_L_z"    "AU_01_R_x"    "AU_01_R_y"    "AU_01_R_z"   
- [7] "AU_02_L_x"    "AU_02_L_y"    "AU_02_L_z"    "AU_02_R_x"    "AU_02_R_y"    "AU_02_R_z"   
-[13] "AU_06_L_x"    "AU_06_L_y"    "AU_06_L_z"    "AU_06_R_x"    "AU_06_R_y"    "AU_06_R_z"   
-[19] "AU_08_x"      "AU_08_y"      "AU_08_z"      "AU_09_L_x"    "AU_09_L_y"    "AU_09_L_z"   
-[25] "AU_09_R_x"    "AU_09_R_y"    "AU_09_R_z"    "AU_10_L_x"    "AU_10_L_y"    "AU_10_L_z"   
-[31] "AU_10_R_x"    "AU_10_R_y"    "AU_10_R_z"    "AU_11_L_x"    "AU_11_L_y"    "AU_11_L_z"   
-[37] "AU_11_R_x"    "AU_11_R_y"    "AU_11_R_z"    "AU_12_L_x"    "AU_12_L_y"    "AU_12_L_z"   
-[43] "AU_12_R_x"    "AU_12_R_y"    "AU_12_R_z"    "AU_16_x"      "AU_16_y"      "AU_16_z"     
+ [1] "A7_x"         "A7_y"         "A7_z"         "A8_x"         "A8_y"         "A8_z"        
+ [7] "BL2_x"        "BL2_y"        "BL2_z"        "BL4_x"        "BL4_y"        "BL4_z"       
+[13] "BL5_x"        "BL5_y"        "BL5_z"        "BL7_x"        "BL7_y"        "BL7_z"       
+[19] "BR2_x"        "BR2_y"        "BR2_z"        "BR4_x"        "BR4_y"        "BR4_z"       
+[25] "BR5_x"        "BR5_y"        "BR5_z"        "BR7_x"        "BR7_y"        "BR7_z"       
+[31] "CL4_x"        "CL4_y"        "CL4_z"        "CL7_x"        "CL7_y"        "CL7_z"       
+[37] "CR4_x"        "CR4_y"        "CR4_z"        "CR7_x"        "CR7_y"        "CR7_z"       
+[43] "DL2_x"        "DL2_y"        "DL2_z"        "DR2_x"        "DR2_y"        "DR2_z"       
 [49] "Frame"        "Stimulustype"
 Abort Script? (Press 'y' to abort, or any other key to coninue) 
 ? 
@@ -105,7 +105,6 @@ Preallocating data frame of a 51x3406 matrix.
 Concatenating file Subject_01.csv (1/2) 
 Concatenating file Subject_02.csv (2/2) 
 Step 3: Saving output file (saving large data files takes some time). 
-
 ```
 
 As main output of this function a file with the filename given in `outputFilename` parameter is saved in the directory given in as `inputDirecotry`, or given in the `outputDirectory` parameter, if given. The data frame stored in this file contains the data of all concatenated input data files. The output file of the two sample subjects attached to the `blenderFace` package is also attached to this package and labeled `rawdata`.
@@ -173,15 +172,14 @@ Not all columns of the `rawdata` data frame must be rescaled (e.g., the subject 
 # Determin the dataframe columns which should be scaled:
 names(rawdata)
 # -> Frame, Stimulustype and subject should not be scaled -> removed for variable colNames
-colNames <- c("AU_01_L_x", "AU_01_L_y", "AU_01_L_z", "AU_01_R_x", "AU_01_R_y", "AU_01_R_z", 
-              "AU_02_L_x", "AU_02_L_y", "AU_02_L_z", "AU_02_R_x", "AU_02_R_y", "AU_02_R_z", 
-              "AU_06_L_x", "AU_06_L_y", "AU_06_L_z", "AU_06_R_x", "AU_06_R_y", "AU_06_R_z", 
-              "AU_08_x", "AU_08_y", "AU_08_z", 
-              "AU_09_L_x",  "AU_09_L_y", "AU_09_L_z", "AU_09_R_x", "AU_09_R_y", "AU_09_R_z", 
-              "AU_10_L_x", "AU_10_L_y", "AU_10_L_z", "AU_10_R_x", "AU_10_R_y", "AU_10_R_z",
-              "AU_11_L_x", "AU_11_L_y", "AU_11_L_z", "AU_11_R_x", "AU_11_R_y", "AU_11_R_z",
-              "AU_12_L_x", "AU_12_L_y", "AU_12_L_z", "AU_12_R_x", "AU_12_R_y", "AU_12_R_z", 
-              "AU_16_x", "AU_16_y", "AU_16_z")
+colNames <- c("A7_x",  "A7_y",  "A7_z",  "A8_x",  "A8_y",  "A8_z",  
+              "BL2_x", "BL2_y", "BL2_z", "BL4_x", "BL4_y", "BL4_z", 
+              "BL5_x", "BL5_y", "BL5_z", "BL7_x", "BL7_y", "BL7_z",       
+              "BR2_x", "BR2_y", "BR2_z", "BR4_x", "BR4_y", "BR4_z", 
+              "BR5_x", "BR5_y", "BR5_z", "BR7_x", "BR7_y", "BR7_z", 
+              "CL4_x", "CL4_y", "CL4_z", "CL7_x", "CL7_y", "CL7_z",       
+              "CR4_x", "CR4_y", "CR4_z", "CR7_x", "CR7_y", "CR7_z", 
+              "DL2_x", "DL2_y", "DL2_z", "DR2_x", "DR2_y", "DR2_z")
 
 # To not overwrite existing data, use a new data frame 
 # (dataSmm means data scaled in millimeter)
@@ -240,15 +238,14 @@ names(scaledata)
 names(rawdata)
 
 # Exclude the columns "Frame"", "Stimulustype", "subject" and z-axis columns
-colNames <- c("AU_01_L_x", "AU_01_L_y", "AU_01_R_x", "AU_01_R_y", 
-              "AU_02_L_x", "AU_02_L_y", "AU_02_R_x", "AU_02_R_y", 
-              "AU_06_L_x", "AU_06_L_y", "AU_06_R_x", "AU_06_R_y", 
-              "AU_08_x", "AU_08_y", 
-              "AU_09_L_x", "AU_09_L_y", "AU_09_R_x", "AU_09_R_y", 
-              "AU_10_L_x", "AU_10_L_y", "AU_10_R_x", "AU_10_R_y",  
-              "AU_11_L_x", "AU_11_L_y", "AU_11_R_x", "AU_11_R_y",
-              "AU_12_L_x", "AU_12_L_y", "AU_12_R_x", "AU_12_R_y", 
-              "AU_16_x", "AU_16_y")
+colNames <- c("A7_x",  "A7_y",  "A8_x",  "A8_y",  
+              "BL2_x", "BL2_y", "BL4_x", "BL4_y",  
+              "BL5_x", "BL5_y", "BL7_x", "BL7_y",        
+              "BR2_x", "BR2_y", "BR4_x", "BR4_y",  
+              "BR5_x", "BR5_y", "BR7_x", "BR7_y",  
+              "CL4_x", "CL4_y", "CL7_x", "CL7_y",        
+              "CR4_x", "CR4_y", "CR7_x", "CR7_y",  
+              "DL2_x", "DL2_y", "DR2_x", "DR2_y")
 
 # To not overwrite existing data, use a new data frame 
 # (dataStdF means data of standaradized faces)
@@ -267,20 +264,20 @@ save(dataStdF, file = "path/to/your/directory/dataStdF.rda")
 Because the markers painted on the participant's face are not exactly at the same positions for all participants (e.g., because participant's faces differ in their shape and size, markers drawn by different experimenters, etc.), it is meaningful to center the start values for the markers at x = 0, y = 0 and z = 0 at the begin of each stimulus episode. This allows to aggregate facial movements over participants or compare marker movements of participants for different stimulus episodes, since the movement starts always from the same origin. Otherwise a very standardized, accurate and time consuming marker drawing procedure would have been necessary. However, the extent and direction of the marker movement is not affected by the centering procedure. Technically, the function `centerCond` sets the first frame of each stimulus episode (e.g., the “posing happiness” episode in the "stimulustype" column of the example data frames) to x/y/z = 0 and substracts the offset of the first frame from all remainig frames of this stimulus episode. Because the procedure is computationally very intensive for larger data sets (~ 100 participants, video clips ~ 10 minutes, several stimulus conditions), the function is parallelized and runs on $n-1$ CPU-cores. Nevertheless, it may take a time. Use the `verbose` option to get feedback of the progress of this function.
 
 ```{r}
-colNames <- c("AU_01_L_x", "AU_01_L_y", "AU_01_R_x", "AU_01_R_y", 
-              "AU_02_L_x", "AU_02_L_y", "AU_02_R_x", "AU_02_R_y", 
-              "AU_06_L_x", "AU_06_L_y", "AU_06_R_x", "AU_06_R_y", 
-              "AU_08_x", "AU_08_y", 
-              "AU_09_L_x", "AU_09_L_y", "AU_09_R_x", "AU_09_R_y", 
-              "AU_10_L_x", "AU_10_L_y", "AU_10_R_x", "AU_10_R_y",  
-              "AU_11_L_x", "AU_11_L_y", "AU_11_R_x", "AU_11_R_y",  
-              "AU_12_L_x", "AU_12_L_y", "AU_12_R_x", "AU_12_R_y", 
-              "AU_16_x", "AU_16_y")
+colNames <- c("A7_x",  "A7_y",  "A8_x",  "A8_y",  
+              "BL2_x", "BL2_y", "BL4_x", "BL4_y",  
+              "BL5_x", "BL5_y", "BL7_x", "BL7_y",        
+              "BR2_x", "BR2_y", "BR4_x", "BR4_y",  
+              "BR5_x", "BR5_y", "BR7_x", "BR7_y",  
+              "CL4_x", "CL4_y", "CL7_x", "CL7_y",        
+              "CR4_x", "CR4_y", "CR7_x", "CR7_y",  
+              "DL2_x", "DL2_y", "DR2_x", "DR2_y")
 # To not overwrite existing data, use a new data frame 
 # (dataStdFCen means data of standaradized faces, centered)
+# (only 1 Core is used to follow CRAN and Travis prerequisites)
 dataStdFCen <- centerCond(dataStdF, colNames = colNames, colNameSubj = "subject", 
                           colNameFrames = "Frame", colNameCond = "Stimulustype", 
-                          verbose = TRUE)
+                          maxCPUcores = 1, verbose = TRUE)
 ```
 
 ```{r,eval=FALSE}
@@ -295,27 +292,27 @@ Since the data file can get quite large, graphical visualizations are a good and
 
 This function plots the x-, and y-axis movement of a marker per frame for a single participant. The plot may be used to find artefacts (e.g., sliding of a tracker, scratching the facial skin and therefore moving markers, etc.) or rescaling plausibility and errors. The parameter set of this function differes from the parameter sets of the other functions, because it is intended to be used in loops, for example, to generate many plots for the left and right markers of a subject and arrange them togehter on a pdf page.
 
-On the x-axis the frames, and on the y-axis the marker movement is presented. The example below shows movement of the right AU_09 (marker on the right side next to the nose, when viewing at the participant's face) in millimeter for subject 2 and marked with stimulus episodes:
+On the x-axis the frames, and on the y-axis the marker movement is presented. The example below shows movement of BR4, the marker right of the nose, when viewing at the participant's face, in millimeter for subject 2 and marked with stimulus episodes:
 
 ```{r, fig.show='hold', fig.height=7, fig.width=7}
 # Selecting data for subject 2
 # Additionally, omit untracked frames at the start and the end of the video clip
 data_Subj2 <- subset(dataSmm, subset = ((dataSmm$subject == 2) & 
                                           (dataSmm$Frame >= 690)& (dataSmm$Frame <= 1610)))
-plotXYmmpf(colFrames = data_Subj2$Frame, colX = data_Subj2$AU_09_R_x, 
-           colY = data_Subj2$AU_09_R_y, colCond = data_Subj2$Stimulustype, 
-           center = FALSE, title = "Subject 2, AU_09_R")
+plotXYmmpf(colFrames = data_Subj2$Frame, colX = data_Subj2$BR4_x, 
+           colY = data_Subj2$BR4_y, colCond = data_Subj2$Stimulustype, 
+           center = FALSE, title = "Subject 2, BR4")
 ```
 
 The next example allows to compare left and right movements (e.g., for judging symmetry of the facial expression) via combining two plots with the `overplot` parameter. To achieve an appropriate scaling, use also the `center` switch. Note, that for the left and the right marker the movement on the x-axis aims into the opposite direction.
 
 ```{r, fig.show='hold', fig.height=7, fig.width=7}
-# Plotting right marker of AU_09 (Centered)
-plotXYmmpf(colFrames = data_Subj2$Frame, colX = data_Subj2$AU_09_R_x, 
-           colY = data_Subj2$AU_09_R_y, center = TRUE, title = "Subject 1, AU_09")
-# Adding left marker of AU09
-plotXYmmpf(colFrames = data_Subj2$Frame, colX = data_Subj2$AU_09_L_x, 
-           colY = data_Subj2$AU_09_L_y, center = TRUE, color = c("blue", "green"), 
+# Plotting right marker of BR4 (Centered)
+plotXYmmpf(colFrames = data_Subj2$Frame, colX = data_Subj2$BR4_x, 
+           colY = data_Subj2$BR4_y, center = TRUE, title = "Subject 1, BR4 (red, orange), BL4 (blue, green)")
+# Adding left marker of BR4
+plotXYmmpf(colFrames = data_Subj2$Frame, colX = data_Subj2$BL4_x, 
+           colY = data_Subj2$BL4_y, center = TRUE, color = c("blue", "green"), 
            overplot = TRUE)
 ```
 
@@ -324,9 +321,9 @@ This function allows also to check, if centering the stimulus episodes via the `
 data_Subj2Cen <- subset(dataStdFCen, subset = ((dataStdFCen$subject == 2) & 
                                                  (dataStdFCen$Frame >= 690)& 
                                                  (dataStdFCen$Frame <= 1610)))
-plotXYmmpf(colFrames = data_Subj2Cen$Frame, colX = data_Subj2Cen$AU_09_R_x, 
-           colY = data_Subj2Cen$AU_09_R_y, colCond = data_Subj2Cen$Stimulustype, 
-           center = FALSE, title = "Subject 2, AU_09_R")
+plotXYmmpf(colFrames = data_Subj2Cen$Frame, colX = data_Subj2Cen$BR4_x, 
+           colY = data_Subj2Cen$BR4_y, colCond = data_Subj2Cen$Stimulustype, 
+           center = FALSE, title = "Subject 2, BR4")
 ```
 
 ## Plot the movement of the markers on a standardized head with the function `plotXhead`
@@ -334,15 +331,14 @@ plotXYmmpf(colFrames = data_Subj2Cen$Frame, colX = data_Subj2Cen$AU_09_R_x,
 This function plots the data of several facial markers for a single-, or for aggregated subjects on a standardized head model. To get meaninful and well scaled plots, it is important to use the functions `face2stdFace` and `centerCond` first. Because the number and the position of markers are different for varying research questions, the starting positions of the markers have to be defined by the parameter `dataPos`. The names and the order of the variables in `dataPos` list must be equal to the names and the order of the columns in the `data` data-frame.
 
 ```{r, fig.show='hold', fig.height=7, fig.width=7}
-colNames <- c("AU_01_L_x", "AU_01_L_y", "AU_01_R_x", "AU_01_R_y", 
-              "AU_02_L_x", "AU_02_L_y", "AU_02_R_x", "AU_02_R_y", 
-              "AU_06_L_x", "AU_06_L_y", "AU_06_R_x", "AU_06_R_y", 
-              "AU_08_x", "AU_08_y", 
-              "AU_09_L_x", "AU_09_L_y", "AU_09_R_x", "AU_09_R_y", 
-              "AU_10_L_x", "AU_10_L_y", "AU_10_R_x", "AU_10_R_y",  
-              "AU_11_L_x", "AU_11_L_y", "AU_11_R_x", "AU_11_R_y",
-              "AU_12_L_x", "AU_12_L_y", "AU_12_R_x", "AU_12_R_y", 
-              "AU_16_x", "AU_16_y")
+colNames <- c("A7_x",  "A7_y",  "A8_x",  "A8_y",  
+              "BL2_x", "BL2_y", "BL4_x", "BL4_y",  
+              "BL5_x", "BL5_y", "BL7_x", "BL7_y",        
+              "BR2_x", "BR2_y", "BR4_x", "BR4_y",  
+              "BR5_x", "BR5_y", "BR7_x", "BR7_y",  
+              "CL4_x", "CL4_y", "CL7_x", "CL7_y",        
+              "CR4_x", "CR4_y", "CR7_x", "CR7_y",  
+              "DL2_x", "DL2_y", "DR2_x", "DR2_y")
 
 # Select data for plotting (selecting stimulus type and omit z-axis)
 data_Subj_happy <- subset(dataStdFCen, subset = (dataStdFCen$Stimulustype == "posed_happy"), 
@@ -352,15 +348,15 @@ data_Subj_disgust <- subset(dataStdFCen, subset = (dataStdFCen$Stimulustype == "
 
 # Define the positions for the markers for the standardized face of x (-1,1) 
 # and y (-1,1) size as named list
-dataPos <- list(AU_01_L = c(-.3,.7), AU_01_R = c(.3,.7), 
-                AU_02_L = c(-.7,.7), AU_02_R = c(.7,.7), 
-                AU_06_L = c(-.5,.2), AU_06_R = c(.5,.2), 
-                AU_08 = c(0,-.55), 
-                AU_09_L = c(-.2,.2), AU_09_R = c(.2,.2), 
-                AU_10_L = c(-.2,-.6), AU_10_R = c(.2,-.6), 
-                AU_11_L = c(-.2,-.1), AU_11_R = c(.2,-.1), 
-                AU_12_L = c(-.3,-.7), AU_12_R = c(.3,-.7), 
-                AU_16 = c(0,-.8)) 
+dataPos <- list(BL2 = c(-.3,.7), BR2 = c(.3,.7), 
+                DL2 = c(-.7,.7), DR2 = c(.7,.7), 
+                BL4 = c(-.2,.2), BR4 = c(.2,.2), 
+                CL4 = c(-.5,.2), CR4 = c(.5,.2), 
+                BL5 = c(-.2,-.1), BR5 = c(.2,-.1), 
+                BL7 = c(-.2,-.6), BR7 = c(.2,-.6), 
+                CL7 = c(-.3,-.7), CR7 = c(.3,-.7), 
+                A7 = c(0,-.55), 
+                A8 = c(0,-.8)) 
 
 # For debugging purposes the marker names and start positions may also be plotted
 plotXhead(data = data_Subj_happy[-1], dataPos = dataPos, 
@@ -376,13 +372,13 @@ plotXhead(data = data_Subj_disgust[-1], dataPos = dataPos, overplot = TRUE, colo
 
 ## Plot individual median movement per participant using the function `plotIndmm`
 
-The plots generated by the function `plotIndmm` may be used to detect individual outliers. For example, it may be possible, that some subjects did not follow the instructions to pose a disgusted face. Based on the plots, these individuals may be identified. Bcause the movement of the markers is most likely not normally distributed, the median of movement is computed and plotted. The subjects can be identified by the subject number plotted next to their median. To unify the scaling use the `xlim` and `ylim` parameters. In the following example the markers at the left and right mouthcorners (AU_12) are used.
+The plots generated by the function `plotIndmm` may be used to detect individual outliers. For example, it may be possible, that some subjects did not follow the instructions to pose a disgusted face. Based on the plots, these individuals may be identified. Bcause the movement of the markers is most likely not normally distributed, the median of movement is computed and plotted. The subjects can be identified by the subject number plotted next to their median. To unify the scaling use the `xlim` and `ylim` parameters. In the following example the markers at the left and right mouthcorners (CL7, CR7) are used.
 
 ```{r, fig.show='hold', , fig.height=3.4, fig.width=3.4}
-plotIndmm(data = data_Subj_happy, colNames = c("AU_12_L_x", "AU_12_L_y"), 
-          colNameSubj = "subject", title = "Posed Happy AU_12_L")
-plotIndmm(data = data_Subj_happy, colNames = c("AU_12_R_x", "AU_12_R_y"), 
-          colNameSubj = "subject", title = "Posed Happy AU_12_R",xlim = c(-.05,.05), 
+plotIndmm(data = data_Subj_happy, colNames = c("CL7_x", "CL7_y"), 
+          colNameSubj = "subject", title = "Posed Happy CL7")
+plotIndmm(data = data_Subj_happy, colNames = c("CR7_x", "CR7_y"), 
+          colNameSubj = "subject", title = "Posed Happy CR7",xlim = c(-.05,.05), 
           ylim = c(-.05,.05), verbose = TRUE)
 ```
 
@@ -391,12 +387,12 @@ plotIndmm(data = data_Subj_happy, colNames = c("AU_12_R_x", "AU_12_R_y"),
 This plot facilitates the comparison of the movement of a marker for different stimulus episodes. The function plots aggregated data of the median movement one or more subjects per marker and per condition. Additionally, distribution quartiles are plotted as ellipses around the median. The median and the quartiles are plottet in different colors for each stimulus episode. To achieve meaningful plots, make sure to have used the function `centerCond` first.
 
 ```{r, fig.show='hold', fig.height=7, fig.width=7}
-plotMmpCond(data = dataStdFCen, colNames = c("AU_12_L_x", "AU_12_L_y"), 
-            colNameCond = "Stimulustype", title = "AU_12_L")
+plotMmpCond(data = dataStdFCen, colNames = c("CL7_x", "CL7_y"), 
+            colNameCond = "Stimulustype", title = "CL7")
 ```
 <!-- 
-plotMmpCond(data = dataStdFCen, colNames = c("AU_12_R_x", "AU_12_R_y"), 
-            colNameCond = "Stimulustype", title = "AU_12_R",xlim = c(-.05,.05), 
+plotMmpCond(data = dataStdFCen, colNames = c("CR7_x", "CR7_y"), 
+            colNameCond = "Stimulustype", title = "CR7",xlim = c(-.05,.05), 
             ylim = c(-.05,.05), verbose = TRUE)
 -->
 
@@ -414,24 +410,24 @@ data_Subj_happy <- subset(dataSmm, subset = dataSmm["Stimulustype"] == "posed_ha
 data_Subj_disgust <- subset(dataSmm, subset = dataSmm["Stimulustype"] == "posed_disgust", 
                             select = c("subject",colNames))
 
-angleDist(data_Subj_happy, colNames = c("AU_12_L_x", "AU_12_L_y"), 
+angleDist(data_Subj_happy, colNames = c("CL7_x", "CL7_y"), 
           colNameSubj = "subject", rndDig = 3)
-angleDist(data_Subj_happy, colNames = c("AU_12_R_x", "AU_12_R_y"), 
+angleDist(data_Subj_happy, colNames = c("CR7_x", "CR7_y"), 
           colNameSubj = "subject", rndDig = 3, verbose = TRUE)
 ```
 
-It also facilitates comparimg the marker movements. For example you could compare the movement of a posed happy facial expression and a posed disgust facial expression for the marker AU_09_L.
+It also facilitates comparimg the marker movements. For example you could compare the movement of a posed happy facial expression and a posed disgust facial expression for the marker BL4.
 
 Disgust stimulus episode:
 ```{r, echo=FALSE, results='asis'}
-knitr::kable(angleDist(data_Subj_disgust, colNames = c("AU_09_L_x", "AU_09_L_y"), 
+knitr::kable(angleDist(data_Subj_disgust, colNames = c("BL4_x", "BL4_y"), 
                        colNameSubj = "subject"))
 ```
 
 Happy stimulus episode:
 ```{r, echo=FALSE, results='asis'}
-knitr::kable(angleDist(data_Subj_happy, colNames = c("AU_09_L_x", "AU_09_L_y"), 
+knitr::kable(angleDist(data_Subj_happy, colNames = c("BL4_x", "BL4_y"), 
                        colNameSubj = "subject"))
 ```
 
-The angles suggest, that the left AU_09 marker is moved rather to the left (to 180 degrees), when posing happines, and rather moving upwards (to 90 degrees), when posing disgust. Because data scaled to mm was used (`dataSmm`) the distance represents median movement in millimeter.
+The angles suggest, that the BL4 marker is moved rather to the left (to 180 degrees), when posing happines, and rather moving upwards (to 90 degrees), when posing disgust. Because data scaled to mm was used (`dataSmm`) the distance represents median movement in millimeter.

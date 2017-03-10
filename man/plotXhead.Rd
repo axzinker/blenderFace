@@ -16,7 +16,7 @@ must end in '_x' for the x-axis and in '_y' for the y-axis.}
 
 \item{dataPos}{Named list of x/y starting position coordinates for each marker which
 should be plotted on the standardized face (e.g., dataPos = 
-c(AU_01_L = c(-.3,.7), AU_01_R = c(.3,.7)), ...). Due to the tracking
+c(BL2 = c(-.3,.7), BR2 = c(.3,.7)), ...). Due to the tracking
 procedure in blender, the center of the coordinate system is the nose tip 
 at x = 0, y = 0.}
 
@@ -44,35 +44,36 @@ starting points. To get meaningful plots, functions
 \code{\link{face2stdFace}} and \code{\link{centerCond}} first.
 }
 \examples{
-colNames <- c("AU_01_L_x", "AU_01_L_y", "AU_01_R_x", "AU_01_R_y", 
-              "AU_02_L_x", "AU_02_L_y", "AU_02_R_x", "AU_02_R_y", 
-              "AU_06_L_x", "AU_06_L_y", "AU_06_R_x", "AU_06_R_y", 
-              "AU_08_x", "AU_08_y", 
-              "AU_09_L_x", "AU_09_L_y", "AU_09_R_x", "AU_09_R_y", 
-              "AU_10_L_x", "AU_10_L_y", "AU_10_R_x", "AU_10_R_y",
-              "AU_11_L_x", "AU_11_L_y", "AU_11_R_x", "AU_11_R_y",  
-              "AU_12_L_x", "AU_12_L_y", "AU_12_R_x", "AU_12_R_y", 
-              "AU_16_x", "AU_16_y")
+colNames <- c("A7_x",  "A7_y",  "A8_x",  "A8_y",  
+              "BL2_x", "BL2_y", "BL4_x", "BL4_y",  
+              "BL5_x", "BL5_y", "BL7_x", "BL7_y",        
+              "BR2_x", "BR2_y", "BR4_x", "BR4_y",  
+              "BR5_x", "BR5_y", "BR7_x", "BR7_y",  
+              "CL4_x", "CL4_y", "CL7_x", "CL7_y",        
+              "CR4_x", "CR4_y", "CR7_x", "CR7_y",  
+              "DL2_x", "DL2_y", "DR2_x", "DR2_y")
 
 # Select data for plotting (selecting stimulus type and omit z-axis)
 data_Subj_happy <- subset(dataStdFCen, subset = (dataStdFCen$Stimulustype == "posed_happy"), 
-                          select = colNames)
+                         select = c("subject",colNames))
+data_Subj_disgust <- subset(dataStdFCen, subset = (dataStdFCen$Stimulustype == "posed_disgust"), 
+                           select = c("subject",colNames))
 
-# Define the positions for the markers for the standardized face 
-# of x (-1,1) and y (-1,1) size as named list
-dataPos <- list(AU_01_L = c(-.3,.7), AU_01_R = c(.3,.7), 
-                AU_02_L = c(-.7,.7), AU_02_R = c(.7,.7), 
-                AU_06_L = c(-.5,.2), AU_06_R = c(.5,.2), 
-                AU_08 = c(0,-.55), 
-                AU_09_L = c(-.2,.2), AU_09_R = c(.2,.2), 
-                AU_10_L = c(-.2,-.6), AU_10_R = c(.2,-.6), 
-                AU_11_L = c(-.2,-.1), AU_11_R = c(.2,-.1), 
-                AU_12_L = c(-.3,-.7), AU_12_R = c(.3,-.7), 
-                AU_16 = c(0,-.8)) 
+# Define the positions for the markers for the standardized face of x (-1,1) 
+# and y (-1,1) size as named list
+dataPos <- list(BL2 = c(-.3,.7), BR2 = c(.3,.7), 
+               DL2 = c(-.7,.7), DR2 = c(.7,.7), 
+               BL4 = c(-.2,.2), BR4 = c(.2,.2), 
+               CL4 = c(-.5,.2), CR4 = c(.5,.2), 
+               BL5 = c(-.2,-.1), BR5 = c(.2,-.1), 
+               BL7 = c(-.2,-.6), BR7 = c(.2,-.6), 
+               CL7 = c(-.3,-.7), CR7 = c(.3,-.7), 
+               A7 = c(0,-.55), 
+               A8 = c(0,-.8)) 
 
 # For debugging purposes the marker names and start positions may also be plotted
-plotXhead(data = data_Subj_happy[-1], dataPos = dataPos, title = "All Subjects, 
-          happy", plotDataPos = TRUE)
+plotXhead(data = data_Subj_happy[-1], dataPos = dataPos, 
+         title = "All Subjects, happy", plotDataPos = TRUE)
 
 }
 \author{

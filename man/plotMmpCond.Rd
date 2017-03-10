@@ -34,8 +34,8 @@ See vignette for example plots.
 Plots the median and quartile ellipse per experimental condition
 }
 \examples{
-plotMmpCond(data = dataStdFCen, colNames = c("AU_12_L_x", "AU_12_L_y"), 
-            colNameCond = "Stimulustype", title = "AU_12_L")
+plotMmpCond(data = dataStdFCen, colNames = c("CL7_x", "CL7_y"), 
+            colNameCond = "Stimulustype", title = "CL7")
    
 }
 \author{

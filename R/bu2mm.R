@@ -43,14 +43,14 @@
 #' # Determin the dataframe columns which should be scaled:
 #' names(rawdata)
 #' # -> Frame, Stimulustype and subject should not be scaled -> removed for variable colNames
-#' colNames <- c("AU_01_L_x", "AU_01_L_y", "AU_01_L_z", "AU_01_R_x", "AU_01_R_y", "AU_01_R_z", 
-#'               "AU_02_L_x", "AU_02_L_y", "AU_02_L_z", "AU_02_R_x", "AU_02_R_y", "AU_02_R_z", 
-#'               "AU_06_L_x", "AU_06_L_y", "AU_06_L_z", "AU_06_R_x", "AU_06_R_y", "AU_06_R_z", 
-#'               "AU_08_x", "AU_08_y", "AU_08_z", 
-#'               "AU_09_L_x", "AU_09_L_y", "AU_09_L_z", "AU_09_R_x", "AU_09_R_y", "AU_09_R_z", 
-#'               "AU_10_L_x", "AU_10_L_y", "AU_10_L_z", "AU_10_R_x", "AU_10_R_y", "AU_10_R_z",  
-#'               "AU_12_L_x", "AU_12_L_y", "AU_12_L_z", "AU_12_R_x", "AU_12_R_y", "AU_12_R_z", 
-#'               "AU_16_x", "AU_16_y", "AU_16_z")
+#'colNames <- c("A7_x",  "A7_y",  "A7_z",  "A8_x",  "A8_y",  "A8_z",  
+#'              "BL2_x", "BL2_y", "BL2_z", "BL4_x", "BL4_y", "BL4_z", 
+#'              "BL5_x", "BL5_y", "BL5_z", "BL7_x", "BL7_y", "BL7_z",       
+#'              "BR2_x", "BR2_y", "BR2_z", "BR4_x", "BR4_y", "BR4_z", 
+#'              "BR5_x", "BR5_y", "BR5_z", "BR7_x", "BR7_y", "BR7_z", 
+#'              "CL4_x", "CL4_y", "CL4_z", "CL7_x", "CL7_y", "CL7_z",       
+#'              "CR4_x", "CR4_y", "CR4_z", "CR7_x", "CR7_y", "CR7_z", 
+#'              "DL2_x", "DL2_y", "DL2_z", "DR2_x", "DR2_y", "DR2_z")
 #'
 #' # To not overwrite existing data, use a new data frame 
 #' # (dataSmm means data scaled in millimeter)

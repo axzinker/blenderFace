@@ -15,7 +15,7 @@ colNameData, and colNameCond.}
 frames column of the data data-frame}
 
 \item{colNameData}{Character vector containing the column name of the 
-data which should be analyzed for outliers (e.g., AU_01_L_x)}
+data which should be analyzed for outliers (e.g., BL2_x)}
 
 \item{colNameCond}{Character vector containing the column name of the
 stimuli presented at each frame. Default is no colNameCond.}

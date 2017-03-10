@@ -15,7 +15,7 @@
 #' @param colNameFrames Character vector containing the column name of the 
 #' frames column of the data data-frame
 #' @param colNameData Character vector containing the column name of the 
-#' data which should be analyzed for outliers (e.g., AU_01_L_x)
+#' data which should be analyzed for outliers (e.g., BL2_x)
 #' @param colNameCond Character vector containing the column name of the
 #' stimuli presented at each frame. Default is no colNameCond.
 #' @param SDFactor Numeric vector of length 1. Factor the SD is multiplied with.

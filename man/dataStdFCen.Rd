@@ -11,38 +11,38 @@ R-data file of data scaled to a standardized and centered per stimulus condition
 \format{
   A data frame with 3406 observations on the following 51 variables.
   \describe{
-    \item{\code{AU_01_L_x}}{standardized and centered per stimulus condition x-axis movement of Marker at left AU 01}
-    \item{\code{AU_01_L_y}}{standardized and centered per stimulus condition y-axis movement of Marker at left AU 01}
-    \item{\code{AU_01_R_x}}{standardized and centered per stimulus condition x-axis movement of Marker at right AU 01}
-    \item{\code{AU_01_R_y}}{standardized and centered per stimulus condition y-axis movement of Marker at right AU 01}
-    \item{\code{AU_02_L_x}}{standardized and centered per stimulus condition x-axis movement of Marker at left AU 02}
-    \item{\code{AU_02_L_y}}{standardized and centered per stimulus condition y-axis movement of Marker at left AU 02}
-    \item{\code{AU_02_R_x}}{standardized and centered per stimulus condition x-axis movement of Marker at right AU 02}
-    \item{\code{AU_02_R_y}}{standardized and centered per stimulus condition y-axis movement of Marker at right AU 02}
-    \item{\code{AU_06_L_x}}{standardized and centered per stimulus condition x-axis movement of Marker at left AU 06}
-    \item{\code{AU_06_L_y}}{standardized and centered per stimulus condition y-axis movement of Marker at left AU 06}
-    \item{\code{AU_06_R_x}}{standardized and centered per stimulus condition x-axis movement of Marker at right AU 06}
-    \item{\code{AU_06_R_y}}{standardized and centered per stimulus condition y-axis movement of Marker at right AU 06}
-    \item{\code{AU_08_x}}{standardized and centered per stimulus condition x-axis movement of Marker at AU 08}
-    \item{\code{AU_08_y}}{standardized and centered per stimulus condition y-axis movement of Marker at AU 08}
-    \item{\code{AU_09_L_x}}{standardized and centered per stimulus condition x-axis movement of Marker at left AU 09}
-    \item{\code{AU_09_L_y}}{standardized and centered per stimulus condition y-axis movement of Marker at left AU 09}
-    \item{\code{AU_09_R_x}}{standardized and centered per stimulus condition x-axis movement of Marker at right AU 09}
-    \item{\code{AU_09_R_y}}{standardized and centered per stimulus condition y-axis movement of Marker at right AU 09}
-    \item{\code{AU_10_L_x}}{standardized and centered per stimulus condition x-axis movement of Marker at left AU 10}
-    \item{\code{AU_10_L_y}}{standardized and centered per stimulus condition y-axis movement of Marker at left AU 10}
-    \item{\code{AU_10_R_x}}{standardized and centered per stimulus condition x-axis movement of Marker at right AU 10}
-    \item{\code{AU_10_R_y}}{standardized and centered per stimulus condition y-axis movement of Marker at right AU 10}
-    \item{\code{AU_11_L_x}}{standardized and centered per stimulus condition x-axis movement of Marker at left AU 11}
-    \item{\code{AU_11_L_y}}{standardized and centered per stimulus condition y-axis movement of Marker at left AU 11}
-    \item{\code{AU_11_R_x}}{standardized and centered per stimulus condition x-axis movement of Marker at right AU 11}
-    \item{\code{AU_11_R_y}}{standardized and centered per stimulus condition y-axis movement of Marker at right AU 11}
-    \item{\code{AU_12_L_x}}{standardized and centered per stimulus condition x-axis movement of Marker at left AU 12}
-    \item{\code{AU_12_L_y}}{standardized and centered per stimulus condition y-axis movement of Marker at left AU 12}
-    \item{\code{AU_12_R_x}}{standardized and centered per stimulus condition x-axis movement of Marker at right AU 12}
-    \item{\code{AU_12_R_y}}{standardized and centered per stimulus condition y-axis movement of Marker at right AU 12}
-    \item{\code{AU_16_x}}{standardized and centered per stimulus condition x-axis movement of Marker at AU 16}
-    \item{\code{AU_16_y}}{standardized and centered per stimulus condition y-axis movement of Marker at AU 16}
+    \item{\code{BL2_x}}{standardized and centered per stimulus condition x-axis movement of Marker at BL2}
+    \item{\code{BL2_y}}{standardized and centered per stimulus condition y-axis movement of Marker at BL2}
+    \item{\code{BR2_x}}{standardized and centered per stimulus condition x-axis movement of Marker at BR2}
+    \item{\code{BR2_y}}{standardized and centered per stimulus condition y-axis movement of Marker at BR2}
+    \item{\code{DL2_x}}{standardized and centered per stimulus condition x-axis movement of Marker at DL2}
+    \item{\code{DL2_y}}{standardized and centered per stimulus condition y-axis movement of Marker at DL2}
+    \item{\code{DR2_x}}{standardized and centered per stimulus condition x-axis movement of Marker at DR2}
+    \item{\code{DR2_y}}{standardized and centered per stimulus condition y-axis movement of Marker at DR2}
+    \item{\code{CL4_x}}{standardized and centered per stimulus condition x-axis movement of Marker at CL4}
+    \item{\code{CL4_y}}{standardized and centered per stimulus condition y-axis movement of Marker at CL4}
+    \item{\code{CR4_x}}{standardized and centered per stimulus condition x-axis movement of Marker at CR4}
+    \item{\code{CR4_y}}{standardized and centered per stimulus condition y-axis movement of Marker at CR4}
+    \item{\code{A7_x}}{standardized and centered per stimulus condition x-axis movement of Marker at A7}
+    \item{\code{A7_y}}{standardized and centered per stimulus condition y-axis movement of Marker at A7}
+    \item{\code{BL4_x}}{standardized and centered per stimulus condition x-axis movement of Marker at BL4}
+    \item{\code{BL4_y}}{standardized and centered per stimulus condition y-axis movement of Marker at BL4}
+    \item{\code{BR4_x}}{standardized and centered per stimulus condition x-axis movement of Marker at BR4}
+    \item{\code{BR4_y}}{standardized and centered per stimulus condition y-axis movement of Marker at BR4}
+    \item{\code{BL7_x}}{standardized and centered per stimulus condition x-axis movement of Marker at BL7}
+    \item{\code{BL7_y}}{standardized and centered per stimulus condition y-axis movement of Marker at BL7}
+    \item{\code{BR7_x}}{standardized and centered per stimulus condition x-axis movement of Marker at BR7}
+    \item{\code{BR7_y}}{standardized and centered per stimulus condition y-axis movement of Marker at BR7}
+    \item{\code{BL5_x}}{standardized and centered per stimulus condition x-axis movement of Marker at BL5}
+    \item{\code{BL5_y}}{standardized and centered per stimulus condition y-axis movement of Marker at BL5}
+    \item{\code{BR5_x}}{standardized and centered per stimulus condition x-axis movement of Marker at BR5}
+    \item{\code{BR5_y}}{standardized and centered per stimulus condition y-axis movement of Marker at BR5}
+    \item{\code{CL7_x}}{standardized and centered per stimulus condition x-axis movement of Marker at CL7}
+    \item{\code{CL7_y}}{standardized and centered per stimulus condition y-axis movement of Marker at CL7}
+    \item{\code{CR7_x}}{standardized and centered per stimulus condition x-axis movement of Marker at CR7}
+    \item{\code{CR7_y}}{standardized and centered per stimulus condition y-axis movement of Marker at CR7}
+    \item{\code{A8_x}}{standardized and centered per stimulus condition x-axis movement of Marker at A8}
+    \item{\code{A8_y}}{standardized and centered per stimulus condition y-axis movement of Marker at A8}
     \item{\code{Frame}}{Frame number of the video clip per participant}
     \item{\code{Stimulustype}}{Stimulus presented to the participant}
     \item{\code{subject}}{Subject number}
