@@ -1,26 +1,40 @@
 #' Plot potential outliers for specific frames 
 #' 
-#' The function computes the difference of the marker coordinate (x, y, or z) of 
-#' frame \emph{t} with frame \emph{t + 1}. An outlier is identified by hitting 
-#' a cut off definded by a multiplicative of the standard deviation (SD). The SD
-#' is computed for the whole difference vector. The default cut off value is 
-#' 3 SD. The function plots for each potential outlier the movemnent of the 
-#' centered marker coordinate (x, y, or z), the deviation of the movement, the upper 
-#' and lower cut off values and marks the frame with outlier. Use the function
-#' ahead of code{\link{centerCond}} otherwise the centering may be identified
-#' as an outlier.
+#' Because SD is unsuited for the purpose of outlier detection in this case 
+#' (e.g., if there is rarely movement, even very small movements / noise are 
+#' detected as outliers) a theoretical approach is used: The fastest human 
+#' movement is the eyeblink, which takes about 300 - 400 ms (Robert A.Moses 
+#' (Ed.), (1981). Adler's Physiology of the eye clinical application. Mosby, 
+#' Chapter 1, p. 1-15). The cornea of the eye has a diameter of 11.5 mm. The 
+#' speed of the eye-blink movement can be therefore 
+#' (11.5mm / 150 ms) = 0.0766 mm/ms. Based on the framerate (fps), the maximal 
+#' plausible movement from one frame to the next is computed, and taken as a 
+#' cut off value. For example, a video clip recorded at 30fps contains an 
+#' image taken every 33ms. Therefore the maximal distance from one frame to 
+#' the next is 0.0766 mm/ms * 33 ms = 2.53 mm. Every larger 
+#' distance is marked as an outlier.
+#' The function computes the 2D distance (Pytagoras) of a marker coordinates
+#' pair (x and y) of frame \emph{t} and frame \emph{t + 1}. Per default, any 
+#' distance larger than 2.53 mm is marked as a potential outlier. The function 
+#' plots for each potential outlier the movement of the centered marker 
+#' coordinates (x and y), the distance from \emph{t} to \emph{t + 1}, the upper 
+#' cut off value, and marks the frame with the outlier. This function
+#' needs data scaled to mm because the cut off value is scaled in mm. Therefore,
+#' use the function {\link{bu2mm}} beforehand, otherwise the outlier detection
+#' is not meaningful.
 #' 
 #' @param data Data-frame containing the variables labeled in colNameFrames,
 #' colNameData, and colNameCond.
 #' @param colNameFrames Character vector containing the column name of the 
 #' frames column of the data data-frame
-#' @param colNameData Character vector containing the column name of the 
-#' data which should be analyzed for outliers (e.g., BL2_x)
+#' @param colNameData Character vector containing the column names for x and y 
+#' values of the data which should be analyzed for outliers (e.g., BL2_x, BL2_y)
 #' @param colNameCond Character vector containing the column name of the
 #' stimuli presented at each frame. Default is no colNameCond.
-#' @param SDFactor Numeric vector of length 1. Factor the SD is multiplied with.
-#' Default is 3.
-#' @param title Default is no title.
+#' @param maxM Numeric vector of length 1. Cut off value (maximal allwed 
+#' movement) in mm. Movments larger than maxM are marked as outliers. Optional 
+#' value, default is 2.2 mm.
+#' @param title Default are the column names.
 #' @param verbose Logical value. If verbose is TRUE, the plots for each outlier
 #' will be presented separately.
 #'
@@ -35,22 +49,22 @@
 #' # fix me: meaningful example
 #' }   
 #' @export
-plotOutliers <- function(data, colNameFrames, colNameData, colNameCond = "", SDFactor =  3, title = "", verbose = FALSE) {
-  # Error handling
+plotOutliers <- function(data, colNameFrames, colNameData, colNameCond = "", maxM = 2.53, title = colNameData, verbose = FALSE) {
+  # Axel: fix me: footage error handling (e.g., detect artefacts because of wrong framerates)
   if (!(nrow(data)) > 0 | !(is.data.frame(data))) {
     stop("Argument data is missing or of incorrect type!")
   }
   if (!(is.character(colNameFrames)) | length(colNameFrames) != 1) {
     stop("Argument colNameFrames is not of type character!")
   }
-  if (!(is.character(colNameData)) | length(colNameData) != 1) {
-    stop("Argument colNameData is not of type character!")
+  if (!(is.character(colNameData)) | length(colNameData) != 2) {
+    stop("Argument colNameData is missing, not of type character, or does not contain two names (x/y columns)!")
   }
   if (!(is.character(colNameCond)) | length(colNameCond) != 1) {
     stop("Argument colNameCond is not of type character!")
   }
-  if (!is.na(SDFactor[1]) & (!(is.numeric(SDFactor)) | length(SDFactor) != 1)) {
-    stop("Argument SDfactor is not numeric or containing more than one element!")
+  if (!is.na(maxM[1]) & (!(is.numeric(maxM)) | length(maxM) != 1)) {
+    stop("Argument maxM is not numeric or containing more than one element!")
   }
   if (!(is.character(title))) {
     stop("Argument title is not of type character!")
@@ -60,92 +74,135 @@ plotOutliers <- function(data, colNameFrames, colNameData, colNameCond = "", SDF
   }
   
   # Static data
-  FramesOffset <- 1 # Frames for which the difference is computed (1 -> (t, t+1); 2 -> (t, t+2))
+  FramesOffset <- 1 # Frame offset for which the difference is computed (1 -> (t, t+1); 2 -> (t, t+2))
   FramesRange <- 50 # Range of frames to be plotted before and after each possible outlier
-  PlotColor <- c("black","red","blue","darkgreen","darkgrey") # Colors for (1) data, (2) SD cut-off, (3) outlier, (4) t / t+n difference, (5) Stimulus
+  PlotColor <- c("black","brown","red","blue","darkgreen","darkgrey") # Colors for (1,2) data, (2) SD cut-off, (3) outlier, (4) t / t+n difference, (5) Stimulus
   CenterData <- TRUE # center raw data that it fits to the difference score on the plot
   
   # Helper functions
   fcat <- function(...,newline=TRUE) {if (newline) cat(...,"\n") else cat(...); flush.console() }  # immediate console output
   
-  # If not data is given, break funktion at this point
-  if(unique(is.na(data[colNameData])) == TRUE) {
-    fcat(paste0("No data for column ",colNameData))
+  getDistance <- function(Point1, Point2) { # points must be with x/y-values
+    # Computes distance between two points in a coordinate system (pytagoras). Its a two dimensional distance (not eukledian)
+    # same function as in angleDist.R
+    return(as.vector(sqrt((Point2[1] - Point1[1])^2 + (Point2[2] - Point1[2])^2)))
+  }
+  
+  # If one of the columns does not contain (enough) data but only NAs, break funktion at this point
+  if (sum(is.na(data[colNameData][1])) == nrow(data[colNameData][1]) |
+      sum(is.na(data[colNameData][1])) == nrow(data[colNameData][1]) -1 |
+      sum(is.na(data[colNameData][2])) == nrow(data[colNameData][2]) |
+      sum(is.na(data[colNameData][2])) == nrow(data[colNameData][2]) -1) {
+    fcat(paste("No data (colNameData), only NAs at least in one of the columns: ", colNameData[1],", ",colNameData[2], sep = ""))
     return()
   }
-    
+  
   # Build temporary data frame used for outlier detection
-  tempData <- as.data.frame(cbind(data[colNameFrames], data[colNameData], data[colNameCond]))
-  names(tempData) <- c("frames", "data", "cond")
+  tempData <- as.data.frame(cbind(data[colNameFrames], data[colNameData][1], data[colNameData][2], data[colNameCond]))
+  names(tempData) <- c("frames", "data_x_t2", "data_y_t2", "cond")
+  rm(data)
   
   # Compute difference of movement t - (t - FramesOffset)
-  # => compute difference of movement with the next frame
-  diff <- tempData$data - c(rep(NA,FramesOffset),tempData$data[1:(length(tempData$data)-FramesOffset)])
-  # diff lags FramesOffset frames behine, moving it to its original position
-  diff <- c(diff[-FramesOffset],rep(NA,FramesOffset))
-  tempData <- cbind(tempData,diff)
-  
-  # Compute Standard deviation
-  tempSD <- sd(tempData$diff, na.rm = TRUE)
-  # Multiply SD with SDFactor
-  tempSD <- tempSD * SDFactor
+  # => compute difference of movement (pytagoras) with the next frame
+  # Prepare data
+  offsetMatrix <- as.data.frame(matrix(rep(NA,FramesOffset * 2), ncol = 2))
+  names(offsetMatrix) <- c("data_x_t1", "data_y_t1")
+  tempData_t2 <- tempData[c("data_x_t2","data_y_t2")]
+  names(tempData_t2) <- c("data_x_t1", "data_y_t1")
+  tempData_t1 <- rbind(offsetMatrix, tempData_t2)
+  tempData_t1 <- tempData_t1[-((nrow(tempData_t1) - FramesOffset + 1):nrow(tempData_t1)),]
+  tempData <- cbind(tempData, tempData_t1)
+  # Delete offset columns at the beginning of the matrix because there is no difference to compute
+  tempData <- tempData[-(1:FramesOffset),]
+  rm(list = c("tempData_t1","tempData_t2","offsetMatrix"))
+  # Compute pytagorean distance
+  dist <- getDistance(tempData[c("data_x_t1","data_y_t1")], tempData[c("data_x_t2","data_y_t2")])
+  tempData <- cbind(tempData,dist = dist)
+  rm(dist)
   
   # Compute possible outliers
-  outliers <- (abs(tempData$diff) > tempSD)
+  outliers <- (abs(tempData$dist) > maxM)
   tempData <- cbind(tempData, outliers)
-  
   # Get frames with possible outliers
   outlierFrames <- subset(tempData$frames, subset = (tempData$outliers == TRUE))
   
-  for (i in 1:length(outlierFrames)) {
-    startFrame <-  outlierFrames[i] - FramesRange
-    stopFrame <- outlierFrames[i] + FramesRange
-    plotData <- subset(tempData, subset = ((tempData$frame > startFrame) & (tempData$frame < stopFrame)))
+  # if there are outliers, do the following:
+  if (sum(outliers, na.rm = TRUE) >= 1) {
+    fcat(paste(sum(outliers, na.rm = TRUE)," possible outlier(s) found:",sep=""))
+    print.table(cbind(Dist = subset(tempData$dist, subset = (tempData$outliers == TRUE)), Frames = outlierFrames))
     
-    if(CenterData) {
-      # Subtract value of first frame from remaining frame window  
-      plotData$data <- plotData$data - plotData$data[1]                         
-      } else {
-      plotData$data <- tempData$data
+    fcat(paste("Plot each outlier? ('y', 'n', or 'c' to cancel)", sep = ""))
+    userinput <- ""
+    while(!((userinput == "y") | (userinput == "n") | (userinput == "c")) ) {
+      userinput <- tolower(readline(prompt = "(y,n,c)? "))  
     }
-    
-    plot(plotData$frames, plotData$data, type = "l", xlim = c(startFrame,stopFrame), xlab = "Frames", ylab = "Deviation", main = title, sub = paste("Possible outlier at Frame ",outlierFrames[i],sep=""))
-    abline(h = tempSD, col="red")
-    abline(h = -tempSD, col="red")
-    abline(v = (outlierFrames[i]), col="blue")
-    points(tempData$frames, tempData$diff, col="darkgreen", type="l")
-    
-    # If present, draw stimuli episodes as labeled rectangles 
-    if(colNameCond != "") {
+
+    if (userinput == "y") {
       
-      # find unique stimulus conditions within the plotted section
-      tempPlotSection <- subset(tempData, subset = ((tempData$frames > startFrame) & (tempData$frames < stopFrame)))
-      colCond <- na.omit(unique(tempPlotSection$cond))[1]
-      
-      for(j in 1:length(colCond)) {
-        # compute min and max frames for the actual condition
-        minCond <- min(subset(tempPlotSection$frames, subset = (tempPlotSection$cond == colCond[j])))
-        maxCond <- max(subset(tempPlotSection$frames, subset = (tempPlotSection$cond == colCond[j])))
-        maxY <- max(tempData$data,rm.na=TRUE)
-        minY <- min(tempData$data,rm.na=TRUE)
-        # plot the actual condition
-        rect(xleft = minCond, ybottom = minY, xright = maxCond, ytop = maxY, lty = 3, lwd = .5, col = "transparent")
-        text(x = (maxCond - minCond)/2 + minCond, y = (maxY - minY)/3 + minY, labels = colCond[j], col = "gray60")
-      } 
-      
-      # make legend when condition is available
-      legend("bottomright", c("Cen. data", "SDFactor cut-off", "Outlier","Difference","Condition"), col = PlotColor, lty = 1)  
-    } else  {
-      # make legend without condition
-      legend("bottomright", c("Cen. data", "SDFactor cut-off", "Outlier","Difference"), col = PlotColor[-(length(PlotColor))], lty = 1)
-    }
-    
-    
-    if(verbose) {
-      fcat("Next plot? (Press return to coninue, or 'c' to cancel)")
-      if (tolower(readline(prompt = "? ")) == "c") {
-        stop("Aborted due to user request.")
+      for (i in 1:length(outlierFrames)) {
+        startFrame <-  outlierFrames[i] - FramesRange
+        stopFrame <- outlierFrames[i] + FramesRange
+        plotData <- subset(tempData, subset = ((tempData$frames >= startFrame) & (tempData$frames <= stopFrame)))
+        
+        if (CenterData) {
+          # Subtract value of first frame from remaining frame window  
+          plotData$data_x_t1 <- plotData$data_x_t1 - mean(plotData$data_x_t1, na.rm = TRUE)
+          plotData$data_x_t2 <- plotData$data_x_t2 - mean(plotData$data_x_t2, na.rm = TRUE)
+          plotData$data_y_t1 <- plotData$data_y_t1 - mean(plotData$data_y_t1, na.rm = TRUE)
+          plotData$data_y_t2 <- plotData$data_y_t2 - mean(plotData$data_y_t2, na.rm = TRUE)
+        }
+        
+        plotYlimMin <- min(c(plotData$data_x_t1, plotData$data_y_t1, plotData$data_x_t2, plotData$data_y_t2, plotData$dist), na.rm = TRUE)
+        plotYlimMax <- max(c(plotData$data_x_t1, plotData$data_y_t1, plotData$data_x_t2, plotData$data_y_t2, plotData$dist), na.rm = TRUE)
+        
+        plot(plotData$frames, plotData$data_x_t1, type = "l", xlim = c(startFrame,stopFrame), ylim = c(plotYlimMin,plotYlimMax),
+             xlab = "Frames", ylab = "Movement", main = title, 
+             sub = paste("Possible outlier at frame ",outlierFrames[i]," (Dist.: ",round(plotData$dist[plotData$frames == outlierFrames[i]],digits = 2),")",sep = ""))
+        points(plotData$frames, plotData$data_y_t1, col = "brown", type = "l")
+        abline(h = maxM, col = "red")
+        abline(v = (outlierFrames[i]), col = "blue")
+        points(plotData$frames, plotData$dist, col = "darkgreen", type = "l")
+        
+        # If present, draw stimuli episodes as labeled rectangles 
+        if (colNameCond != "") {
+          # find unique stimulus conditions within the plotted section
+          colCond <- na.omit(unique(plotData$cond))[1]
+          
+          for (j in 1:length(colCond)) {
+            # compute min and max frames for the actual condition
+            minCond <- min(subset(plotData$frames, subset = (plotData$cond == colCond[j])))
+            maxCond <- max(subset(plotData$frames, subset = (plotData$cond == colCond[j])))
+            # plot the actual condition
+            rect(xleft = minCond, ybottom = plotYlimMin, xright = maxCond, ytop = plotYlimMax, lty = 3, lwd = .5, col = "transparent")
+            text(x = (maxCond - minCond)/2 + minCond, y = (plotYlimMax - plotYlimMin)/3 + plotYlimMin, labels = colCond[j], col = "gray60")
+          } 
+          
+          # make legend when condition is available
+          legend("bottomright", c("Cen. data x", "Cen. data y", "Cut-off", "Outlier",paste("t+",FramesOffset," Distance", sep = ""),"Condition"), col = PlotColor, lty = 1)  
+        } else {
+          # make legend without condition
+          legend("bottomright", c("Cen. data ", "Cen. data y", "Cut-off", "Outlier",paste("t+",FramesOffset," Distance",sep = "")), col = PlotColor[-(length(PlotColor))], lty = 1)
+        }
+        
+        if (i < length(outlierFrames)) {
+          fcat("Next plot? (Press return to coninue, or 'c' to cancel)")
+          if (tolower(readline(prompt = "? ")) == "c") {
+            stop("Aborted due to user request.")
+          }
+        }
       }
+    } # end if 'y'
+    
+    if (userinput == "n") {
+      fcat("Skipped plots due to user request.")
     }
+    
+    if (userinput == "c") {
+      stop("Script aborted due to user request.")
+    }
+    
+  } else { # if there are no outliers, do the following:
+    fcat(paste("No outliers found. Maximal movement is ",round(max(tempData$dist, na.rm = TRUE), digits = 2)," mm at Frame ",subset(tempData$frames,subset = (tempData$dist == max(tempData$dist, na.rm = TRUE))),".", sep = ""))
   }
+  
 }

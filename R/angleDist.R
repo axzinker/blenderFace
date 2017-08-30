@@ -45,7 +45,7 @@ angleDist <- function(data, colNames, colNameSubj, rndDig = 2, verbose = FALSE) 
     stop("Argument data does not contain a data frame!")
   }
   if (!(is.character(colNames)) | length(colNames) != 2) {
-    stop("Argument colNames is missing, not of type character, or contains not two names (x/y columns)!")
+    stop("Argument colNames is missing, not of type character, or does not contain two names (x/y columns)!")
   }
   if (!(is.character(colNameSubj)) | length(colNameSubj) != 1) {
     stop("Argument colNameSubj is not of type character!")
@@ -59,6 +59,7 @@ angleDist <- function(data, colNames, colNameSubj, rndDig = 2, verbose = FALSE) 
   
   getDistance <- function(Point1, Point2) { # points must be with x/y-values
     # Computes distance between two points in a coordinate system (pytagoras). Its a two dimensional distance (not eukledian)
+    # same function as in plotOutliers.R
     return(sqrt((Point2[1] - Point1[1])^2 + (Point2[2] - Point1[2])^2))
   }
   

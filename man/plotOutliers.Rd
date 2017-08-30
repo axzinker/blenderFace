@@ -5,7 +5,7 @@
 \title{Plot potential outliers for specific frames}
 \usage{
 plotOutliers(data, colNameFrames, colNameData, colNameCond = "",
-  SDFactor = 3, title = "", verbose = FALSE)
+  maxM = 2.53, title = colNameData, verbose = FALSE)
 }
 \arguments{
 \item{data}{Data-frame containing the variables labeled in colNameFrames,
@@ -14,16 +14,17 @@ colNameData, and colNameCond.}
 \item{colNameFrames}{Character vector containing the column name of the 
 frames column of the data data-frame}
 
-\item{colNameData}{Character vector containing the column name of the 
-data which should be analyzed for outliers (e.g., BL2_x)}
+\item{colNameData}{Character vector containing the column names for x and y 
+values of the data which should be analyzed for outliers (e.g., BL2_x, BL2_y)}
 
 \item{colNameCond}{Character vector containing the column name of the
 stimuli presented at each frame. Default is no colNameCond.}
 
-\item{SDFactor}{Numeric vector of length 1. Factor the SD is multiplied with.
-Default is 3.}
+\item{maxM}{Numeric vector of length 1. Cut off value (maximal allwed 
+movement) in mm. Movments larger than maxM are marked as outliers. Optional 
+value, default is 2.2 mm.}
 
-\item{title}{Default is no title.}
+\item{title}{Default are the column names.}
 
 \item{verbose}{Logical value. If verbose is TRUE, the plots for each outlier
 will be presented separately.}
@@ -32,15 +33,28 @@ will be presented separately.}
 See vignette for example plots.
 }
 \description{
-The function computes the difference of the marker coordinate (x, y, or z) of 
-frame \emph{t} with frame \emph{t + 1}. An outlier is identified by hitting 
-a cut off definded by a multiplicative of the standard deviation (SD). The SD
-is computed for the whole difference vector. The default cut off value is 
-3 SD. The function plots for each potential outlier the movemnent of the 
-centered marker coordinate (x, y, or z), the deviation of the movement, the upper 
-and lower cut off values and marks the frame with outlier. Use the function
-ahead of code{\link{centerCond}} otherwise the centering may be identified
-as an outlier.
+Because SD is unsuited for the purpose of outlier detection in this case 
+(e.g., if there is rarely movement, even very small movements / noise are 
+detected as outliers) a theoretical approach is used: The fastest human 
+movement is the eyeblink, which takes about 300 - 400 ms (Robert A.Moses 
+(Ed.), (1981). Adler's Physiology of the eye clinical application. Mosby, 
+Chapter 1, p. 1-15). The cornea of the eye has a diameter of 11.5 mm. The 
+speed of the eye-blink movement can be therefore 
+(11.5mm / 150 ms) = 0.0766 mm/ms. Based on the framerate (fps), the maximal 
+plausible movement from one frame to the next is computed, and taken as a 
+cut off value. For example, a video clip recorded at 30fps contains an 
+image taken every 33ms. Therefore the maximal distance from one frame to 
+the next is 0.0766 mm/ms * 33 ms = 2.53 mm. Every larger 
+distance is marked as an outlier.
+The function computes the 2D distance (Pytagoras) of a marker coordinates
+pair (x and y) of frame \emph{t} and frame \emph{t + 1}. Per default, any 
+distance larger than 2.53 mm is marked as a potential outlier. The function 
+plots for each potential outlier the movement of the centered marker 
+coordinates (x and y), the distance from \emph{t} to \emph{t + 1}, the upper 
+cut off value, and marks the frame with the outlier. This function
+needs data scaled to mm because the cut off value is scaled in mm. Therefore,
+use the function {\link{bu2mm}} beforehand, otherwise the outlier detection
+is not meaningful.
 }
 \examples{
 \dontrun{
