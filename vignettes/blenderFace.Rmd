@@ -10,13 +10,26 @@ output:
   html_document:
     toc: yes
     toc_depth: '2'
-vignette: |
-  %\VignetteIndexEntry{blenderFace} %\VignetteEngine{knitr::rmarkdown} %\VignetteEncoding{UTF-8}
+  word_document:
+    toc: yes
+    toc_depth: '2'
+vignette: >
+  %\VignetteIndexEntry{blenderFace}   
+  %\VignetteEngine{knitr::rmarkdown}   
+  %\VignetteEncoding{UTF-8}  
+  \usepackage[utf8]{inputenc}
 ---
 
 <!-- 
 output: rmarkdown::html_vignette 
 Build pdf vignette via devtools::build_vignettes()
+
+Attention: To build the vignette via devtools::build_vignettes() the Metadata vignette part should look like this:
+vignette: >
+  %\VignetteIndexEntry{blenderFace}   
+  %\VignetteEngine{knitr::rmarkdown}   
+  %\VignetteEncoding{UTF-8}  
+  \usepackage[utf8]{inputenc}
 -->
 
 # Workflow of Blender-data post-processing with the blenderFace package 
@@ -45,6 +58,7 @@ The functions of the `blenderFace` package can be divided into three types, whic
     + `concatBlenderFiles`: concatenate Blender files into one large RData-file
     + `bu2mm`: scale the Blender data into millimeter
     + `face2stdFace`: scale the Blender data into a standardized face
+    + `plotOutlier`: scan the marker movement for potential outliers
     + `centerCond`: set the start values of markers to x = 0, y = 0 at the begin of each stimulus presentation
 * Functions to visualize the data:
     + `plotXhead`: plot the data on a standardized face
@@ -259,9 +273,9 @@ dataStdF <- face2stdFace(data = rawdata, colNames = colNames, colNameSubj = "sub
 save(dataStdF, file = "path/to/your/directory/dataStdF.rda")
 ```
 
-## Check the data for outliers
+## Scan the data for outliers with the `plotOutliers` function
 
-To ensure that the data is valid and does not contain any artifacts (e.g., tracks "dropping off" the facial surface, tracks jumping between two different positions, because the pattern matching algorithm very probable matchings) a function to plot potential outliers is provided. The principle of detecting an outlier is based on the maximal plausible movemnent from one frame to the next frame of the video footage. The fastest human movement is the eyeblink, which takes about 300 - 400 ms (Robert A.Moses (Ed.), (1981). Adler's Physiology of the eye clinical application. Mosby, Chapter 1, p. 1-15), whereas the cornea of the eye has a diameter of 11.5 mm. The speed of the eye-blink movement can be therefore (11.5mm / 150 ms) = 0.0766 mm/ms. Based on the framerate (fps), the maximal plausible movement from one frame to the next is computed, and taken as a cut off value. For example, a video clip recorded at 30 fps contains an image taken every 33 ms. Therefore the maximal distance from one frame to the next is 0.0766 mm/ms * 33 ms = 2.53 mm. Every larger distance is marked as an outlier. The function computes the 2D distance (Pytagoras) of a marker coordinates pair (x and y) of frame t and frame t + 1. Per default, any distance larger than 2.53 mm is marked as a potential outlier. This function needs data scaled to mm because the cut off value is scaled in mm. Therefore, use the function bu2mm beforehand, otherwise the outlier detection is not meaningful. If the function does not find any outliers, it prints the result (no outliers) together with the maximal movement at the corresponding frame:
+To ensure that the data is valid and does not contain any artifacts (e.g., tracks "dropping off" the facial surface, tracks jumping between two different positions, because the pattern matching algorithm very probable matchings) a function to plot potential outliers is provided. The principle of detecting an outlier is based on the maximal plausible movemnent from one frame to the next frame of the video footage. The fastest human movement is the eyeblink, which takes about 300 - 400 ms (Robert A.Moses (Ed.), (1981). Adler's Physiology of the eye clinical application. Mosby, Chapter 1, p. 1-15), whereas the cornea of the eye has a diameter of 11.5 mm. The speed of the eye-blink movement can be therefore (11.5mm / 150 ms) = 0.0766 mm/ms. Based on the framerate (fps), the maximal plausible movement from one frame to the next is computed, and taken as a cut off value. For example, a video clip recorded at 30 fps contains an image taken every 33 ms. Therefore the maximal distance from one frame to the next is 0.0766 mm/ms * 33 ms = 2.53 mm. Every larger distance is marked as an outlier. The function computes the 2D distance (Pytagoras) of a marker coordinates pair (x and y) of frame t and frame t + 1. Per default, any distance larger than 2.53 mm is marked as a potential outlier. This function needs data scaled to mm because the cut off value is scaled in mm. Therefore, use the function `bu2mm` beforehand, otherwise the outlier detection is not meaningful. If the function does not find any outliers, it prints the result (no outliers) together with the maximal movement at the corresponding frame:
 
 ```{r}
 plotOutliers(subset(dataSmm, subset = (dataSmm$subject == 1)), colNameFrames = "Frame", 
