@@ -259,6 +259,45 @@ dataStdF <- face2stdFace(data = rawdata, colNames = colNames, colNameSubj = "sub
 save(dataStdF, file = "path/to/your/directory/dataStdF.rda")
 ```
 
+## Check the data for outliers
+
+To ensure that the data is valid and does not contain any artifacts (e.g., tracks "dropping off" the facial surface, tracks jumping between two different positions, because the pattern matching algorithm very probable matchings) a function to plot potential outliers is provided. The principle of detecting an outlier is based on the maximal plausible movemnent from one frame to the next frame of the video footage. The fastest human movement is the eyeblink, which takes about 300 - 400 ms (Robert A.Moses (Ed.), (1981). Adler's Physiology of the eye clinical application. Mosby, Chapter 1, p. 1-15), whereas the cornea of the eye has a diameter of 11.5 mm. The speed of the eye-blink movement can be therefore (11.5mm / 150 ms) = 0.0766 mm/ms. Based on the framerate (fps), the maximal plausible movement from one frame to the next is computed, and taken as a cut off value. For example, a video clip recorded at 30 fps contains an image taken every 33 ms. Therefore the maximal distance from one frame to the next is 0.0766 mm/ms * 33 ms = 2.53 mm. Every larger distance is marked as an outlier. The function computes the 2D distance (Pytagoras) of a marker coordinates pair (x and y) of frame t and frame t + 1. Per default, any distance larger than 2.53 mm is marked as a potential outlier. This function needs data scaled to mm because the cut off value is scaled in mm. Therefore, use the function bu2mm beforehand, otherwise the outlier detection is not meaningful. If the function does not find any outliers, it prints the result (no outliers) together with the maximal movement at the corresponding frame:
+
+```{r}
+plotOutliers(subset(dataSmm, subset = (dataSmm$subject == 1)), colNameFrames = "Frame", 
+             colNameData = c("DR2_x","DR2_y"), colNameCond = "Stimulustype")
+```
+Because the example data set dataSmm does not contain any outliers, we have to create one:
+ 
+```{r}
+outlierTest <- subset(dataSmm, subset = (dataSmm$subject == 1))
+outlierTest[995,"DR2_x"] <- outlierTest[995,"DR2_x"] + 2
+```
+
+The function now detects one movement which is larger than the cut off value (2.53 mm). Because lots of outliers may be found, the function asks if the outliers should be plotted:
+
+```{r,eval=FALSE}
+> plotOutliers(outlierTest, colNameFrames = "Frame", colNameData = c("DR2_x","DR2_y"),
+               colNameCond = "Stimulustype")
+1 possible outlier(s) found: 
+           Dist     Frames
+[1,]   2.741625 996.000000
+Plot each outlier? ('y', 'n', or 'c' to cancel) 
+(y,n,c)? 
+```
+
+If the plotting is confirmed, the function plots for each potential outlier the movement of the centered marker coordinates (x as black and y as brown line), the pythagorean distance from t to t + 1 (green line), the cut off value (horizontal red line), and marks the frame with the outlier (vertical blue line). 
+ 
+
+```{r, eval=FALSE}
+plotOutliers(outlierTest, colNameFrames = "Frame", colNameData = c("DR2_x","DR2_y"), 
+             colNameCond = "Stimulustype", title = "Subject 1, DR2")
+```
+
+![Outlier Plot](./Vignette_Outlierplot.pdf)
+
+If outliers are identified, the wrong movement has to be corrected in Blender. Subsequently, again the corrected data has to be exported and postprocessed by the blenderFace functions.
+
 ## Center the start values of the markers per stimulus condition with the function `centerCond`
 
 Because the markers painted on the participant's face are not exactly at the same positions for all participants (e.g., because participant's faces differ in their shape and size, markers drawn by different experimenters, etc.), it is meaningful to center the start values for the markers at x = 0, y = 0 and z = 0 at the begin of each stimulus episode. This allows to aggregate facial movements over participants or compare marker movements of participants for different stimulus episodes, since the movement starts always from the same origin. Otherwise a very standardized, accurate and time consuming marker drawing procedure would have been necessary. However, the extent and direction of the marker movement is not affected by the centering procedure. Technically, the function `centerCond` sets the first frame of each stimulus episode (e.g., the “posing happiness” episode in the "stimulustype" column of the example data frames) to x/y/z = 0 and substracts the offset of the first frame from all remainig frames of this stimulus episode. Because the procedure is computationally very intensive for larger data sets (~ 100 participants, video clips ~ 10 minutes, several stimulus conditions), the function is parallelized and runs on $n-1$ CPU-cores. Nevertheless, it may take a time. Use the `verbose` option to get feedback of the progress of this function.
@@ -309,7 +348,8 @@ The next example allows to compare left and right movements (e.g., for judging s
 ```{r, fig.show='hold', fig.height=7, fig.width=7}
 # Plotting right marker of BR4 (Centered)
 plotXYmmpf(colFrames = data_Subj2$Frame, colX = data_Subj2$BR4_x, 
-           colY = data_Subj2$BR4_y, center = TRUE, title = "Subject 1, BR4 (red, orange), BL4 (blue, green)")
+           colY = data_Subj2$BR4_y, center = TRUE, title = "Subject 1, 
+           BR4 (red, orange), BL4 (blue, green)")
 # Adding left marker of BR4
 plotXYmmpf(colFrames = data_Subj2$Frame, colX = data_Subj2$BL4_x, 
            colY = data_Subj2$BL4_y, center = TRUE, color = c("blue", "green"), 
