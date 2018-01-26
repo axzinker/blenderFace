@@ -1,27 +1,25 @@
 ---
 title: "blenderFace"
 author: "Axel Zinkernagel"
-date: '`r Sys.Date()`'
-output:
-  pdf_document:
-    number_sections: yes
-    toc: yes
-    toc_depth: 2
-  html_document:
-    toc: yes
-    toc_depth: '2'
-  word_document:
-    toc: yes
-    toc_depth: '2'
-vignette: |
-  %\VignetteIndexEntry{blenderFace}       %\VignetteEngine{knitr::rmarkdown}       %\VignetteEncoding{UTF-8}      \usepackage[utf8]{inputenc}
+date: "`r Sys.Date()`"
+output: pdf_document
+toc: yes
+vignette: >
+  %\VignetteIndexEntry{blenderFace}   
+  %\VignetteEngine{knitr::rmarkdown}   
+  %\VignetteEncoding{UTF-8}  
+  \usepackage[utf8]{inputenc}
 ---
 
 <!-- 
-output: rmarkdown::html_vignette 
+output: rmarkdown::html_vignette
+output: pdf_document
+
 Build pdf vignette via devtools::build_vignettes()
 
 Attention: To build the vignette via devtools::build_vignettes() the Metadata vignette part should look like this:
+output: pdf_document
+toc: yes
 vignette: >
   %\VignetteIndexEntry{blenderFace}   
   %\VignetteEngine{knitr::rmarkdown}   
@@ -305,7 +303,7 @@ plotOutliers(outlierTest, colNameFrames = "Frame", colNameData = c("DR2_x","DR2_
              colNameCond = "Stimulustype", title = "Subject 1, DR2")
 ```
 
-![Outlier Plot](./Vignette_Outlierplot.png)
+![Outlier Plot](./Vignette_Outlierplot.pdf)
 
 If outliers are identified, the wrong movement has to be corrected in Blender. Subsequently, again the corrected data has to be exported and post processed by the blenderFace functions.
 
