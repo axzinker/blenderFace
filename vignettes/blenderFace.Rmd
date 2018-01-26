@@ -3,9 +3,6 @@ title: "blenderFace"
 author: "Axel Zinkernagel"
 date: '`r Sys.Date()`'
 output:
-  word_document:
-    toc: yes
-    toc_depth: '2'
   pdf_document:
     number_sections: yes
     toc: yes
@@ -13,11 +10,11 @@ output:
   html_document:
     toc: yes
     toc_depth: '2'
-vignette: >
-  %\VignetteIndexEntry{blenderFace}    
-  %\VignetteEngine{knitr::rmarkdown}    
-  %\VignetteEncoding{UTF-8}   
-  \usepackage[utf8]{inputenc}
+  word_document:
+    toc: yes
+    toc_depth: '2'
+vignette: |
+  %\VignetteIndexEntry{blenderFace}      %\VignetteEngine{knitr::rmarkdown}      %\VignetteEncoding{UTF-8}     \usepackage[utf8]{inputenc}
 ---
 
 <!-- 
