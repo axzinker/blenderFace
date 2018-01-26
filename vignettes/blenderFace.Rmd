@@ -14,7 +14,7 @@ output:
     toc: yes
     toc_depth: '2'
 vignette: |
-  %\VignetteIndexEntry{blenderFace}      %\VignetteEngine{knitr::rmarkdown}      %\VignetteEncoding{UTF-8}     \usepackage[utf8]{inputenc}
+  %\VignetteIndexEntry{blenderFace}       %\VignetteEngine{knitr::rmarkdown}       %\VignetteEncoding{UTF-8}      \usepackage[utf8]{inputenc}
 ---
 
 <!-- 
@@ -305,7 +305,7 @@ plotOutliers(outlierTest, colNameFrames = "Frame", colNameData = c("DR2_x","DR2_
              colNameCond = "Stimulustype", title = "Subject 1, DR2")
 ```
 
-![Outlier Plot](./Vignette_Outlierplot.pdf)
+![Outlier Plot](./Vignette_Outlierplot.png)
 
 If outliers are identified, the wrong movement has to be corrected in Blender. Subsequently, again the corrected data has to be exported and post processed by the blenderFace functions.
 
