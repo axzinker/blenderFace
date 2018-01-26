@@ -111,7 +111,7 @@ bu2mm <- function(data, colNames, colNameSubj, scaleFactor, rwMeasure = 8, verbo
     subjects <- unique(data[[colNameSubj]])   # Determine number of subjects in data
     for (i in 1:length(subjects)) {           # *** RA: tapply?
       isF <- scaleFactor[i]/rwMeasure         # Determine individual scaleFactor; very important to have the same subject sorting of data dataframe and scaleFactor vector!
-      if (verbose) fcat(paste("Perform scaling to millimeter for subject ", i, " of ", length(subjects), ". Individual scale factor is ",round(isF,6),".", sep = ""))
+      if (verbose) fcat(paste("Perform scaling to millimeters for Subject ", i, " of ", length(subjects), ". Individual scale factor is ",round(isF,6),".", sep = ""))
       data[data$subject == subjects[i], colNames] <- data[data$subject == subjects[i], colNames] / isF  # Rescale data per subject
     }  # end for
   }  # end else

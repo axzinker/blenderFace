@@ -123,12 +123,28 @@ plotOutliers <- function(data, colNameFrames, colNameData, colNameCond = "", max
   # Compute possible outliers
   outliers <- (abs(tempData$dist) > maxM)
   tempData <- cbind(tempData, outliers)
+
+  # correct for outlier-artefacts by data subsets / footage cuts (= non consecutive frame numbers)
+  # get rowlinenumber containing outliers
+  outlierLinNums <- which(tempData$outliers == TRUE)
+  # test if line numbers are consecutive
+  if((length(outlierLinNums) >= 1) & (outlierLinNums[1] > 1)){
+    for(i in 1:length(outlierLinNums)) {
+      if(!(tempData[outlierLinNums[i]-1,"frames"] + 1 == tempData[outlierLinNums[i],"frames"])){
+        if(verbose) {
+          fcat(paste("Non-consecutive frame numbers detected and corrected (frame ",tempData[outlierLinNums[i]-1,"frames"]," followed by frame ",tempData[outlierLinNums[i],"frames"]," (wrongly identified as outlier))!", sep = ""))
+        }
+        tempData[outlierLinNums[i],"outliers"] <- FALSE
+      }
+    }
+  }
+  
   # Get frames with possible outliers
   outlierFrames <- subset(tempData$frames, subset = (tempData$outliers == TRUE))
   
   # if there are outliers, do the following:
-  if (sum(outliers, na.rm = TRUE) >= 1) {
-    fcat(paste(sum(outliers, na.rm = TRUE)," possible outlier(s) found:",sep=""))
+  if (sum(tempData$outliers, na.rm = TRUE) >= 1) {
+    fcat(paste(sum(tempData$outliers, na.rm = TRUE)," possible outlier(s) found:",sep=""))
     print.table(cbind(Dist = subset(tempData$dist, subset = (tempData$outliers == TRUE)), Frames = outlierFrames))
     
     fcat(paste("Plot each outlier? ('y', 'n', or 'c' to cancel)", sep = ""))

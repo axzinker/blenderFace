@@ -86,7 +86,7 @@ angleDist <- function(data, colNames, colNameSubj, rndDig = 2, verbose = FALSE) 
   
   for (i in 1:length(subjects)) {
     if (verbose) {
-      fcat(paste("Computing angle and distance for subject ", subjects[i], sep = ""))
+      fcat(paste("Compute angle and distance for Subject ", subjects[i], sep = ""))
     }
     tempData[i,"subject"] <- subjects[i]
     tempData[i,"angle"] <- round(getAngle(median(as.numeric(unlist(subset(data, subset = (data[colNameSubj] == subjects[i]), select = colNames[1]))), na.rm = TRUE), median(as.numeric(unlist(subset(data, subset = (data[colNameSubj] == subjects[i]), select = colNames[2]))), na.rm = TRUE)), digits = rndDig)

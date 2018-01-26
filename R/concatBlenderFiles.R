@@ -101,10 +101,10 @@ concatBlenderFiles <- function(dataFileNames, inputDirectory, colNameSubj = "", 
     
     # Determing file type from file ending (*.csv, *.rda, *.Rdata); only the first filename is used!
     filetype <- NULL
-    if (tolower(substr(dataFileNames[1], nchar(dataFileNames[1])-2, nchar(dataFileNames[1]))) == "csv") {
+    if (tolower(substr(dataFileNames[1], nchar(dataFileNames[1])- 2, nchar(dataFileNames[1]))) == "csv") {
         filetype <- "csv"
     }
-    if ((tolower(substr(dataFileNames[1], nchar(dataFileNames[1])-2, nchar(dataFileNames[1]))) == "rda") | (tolower(substr(dataFileNames[1], nchar(dataFileNames[1])-4, nchar(dataFileNames[1]))) == "rdata")) {
+    if ((tolower(substr(dataFileNames[1], nchar(dataFileNames[1])- 2, nchar(dataFileNames[1]))) == "rda") | (tolower(substr(dataFileNames[1], nchar(dataFileNames[1])-4, nchar(dataFileNames[1]))) == "rdata")) {
         filetype <- "rda"
     }
     if (!((filetype != "csv") | (filetype != "rda"))) {
@@ -117,18 +117,18 @@ concatBlenderFiles <- function(dataFileNames, inputDirectory, colNameSubj = "", 
     # Step 1: Determing unique column names and nrows of the files to be concatenated for preallocation of dataframe
     # Axel: fix me: compute also unique Stimulustypes
     if (verbose) {
-        fcat("Step 1: Determing unique column names and number of rows of the files to be concatenated.")
+        fcat("Step 1: Determine unique column names and number of rows of the files to be concatenated.")
     }
     
     NFiles <- length(dataFileNames)
     dataColNames <- NULL
     dataNrows <- 0
     if (verbose) {
-      fcat(paste("Reading", NFiles,"files:"))
+      fcat(paste("Read", NFiles,"files:"))
     }
     for (i in 1:length(dataFileNames)) {
         if (verbose) {
-            fcat(paste("Reading file ", dataFileNames[i], " (", i, "/", NFiles, ")", sep = ""))
+            fcat(paste("Read file ", dataFileNames[i], " (", i, "/", NFiles, ")", sep = ""))
         }
         if (filetype == "rda") {
             # loading Rdata-files
@@ -142,7 +142,7 @@ concatBlenderFiles <- function(dataFileNames, inputDirectory, colNameSubj = "", 
             tempData <- read.table(paste(inputDirectory, dataFileNames[i], sep = ""), header = TRUE, sep = ";", stringsAsFactors = FALSE, , dec = ".")
         }
         if (verbose) {
-            fcat(paste("  Adding ", nrow(tempData), " rows to data frame of actually ", dataNrows, " rows.", sep = ""))
+            fcat(paste("  Add ", nrow(tempData), " rows to data frame of actually ", dataNrows, " rows.", sep = ""))
         }
         dataColNames <- c(dataColNames, names(tempData))
         dataNrows <- dataNrows + nrow(tempData)
@@ -159,9 +159,9 @@ concatBlenderFiles <- function(dataFileNames, inputDirectory, colNameSubj = "", 
     }
     
     if (verbose) {
-        fcat("\nThese are the unique column names of all files to be concatenated. Check, if they are correct.")
+        fcat("\nThese are the unique column names of all files to be concatenated. Check whether they are correct.")
         print(dataColNames)
-        fcat("Abort Script? (Press 'y' to abort, or any other key to coninue)")
+        fcat("Abort Script? (Press 'y' to abort or any other key to continue)")
         if (tolower(readline(prompt = "? ")) == "y") {
             stop("Aborted due to user request.")
         }
@@ -169,12 +169,12 @@ concatBlenderFiles <- function(dataFileNames, inputDirectory, colNameSubj = "", 
     
     # Step 2: Concatenating files
     if (verbose) {
-        fcat("Step 2: Concatenating files.")
+        fcat("Step 2: Concatenate files.")
     }
     
     # Preallocate empty data frame
     if (verbose) {
-        fcat(paste("\nPreallocating data frame of a ", 
+        fcat(paste("\nPreallocat data frame of a ", 
                          if (colNameSubj == "")
                          {length(dataColNames) + 1}
                          else {length(dataColNames)}, 
@@ -192,10 +192,10 @@ concatBlenderFiles <- function(dataFileNames, inputDirectory, colNameSubj = "", 
     dataNrows <- 1  # counter must start at 1 to address dataframe rows correctly
     for (i in 1:length(dataFileNames)) {
         if (verbose) {
-            fcat(paste("Concatenating file ", dataFileNames[i], " (", i, "/", length(dataFileNames), ")", sep = ""))
+            fcat(paste("Concatenate file ", dataFileNames[i], " (", i, "/", length(dataFileNames), ")", sep = ""))
         } else {
             # This process may take a while, so its better to give feedback
-            fcat(paste("Concatenating file ", dataFileNames[i], " (", i, "/", length(dataFileNames), ")", sep = ""))
+            fcat(paste("Concatenate file ", dataFileNames[i], " (", i, "/", length(dataFileNames), ")", sep = ""))
         }
         if (filetype == "rda") {
             # loading Rdata-files
@@ -225,7 +225,7 @@ concatBlenderFiles <- function(dataFileNames, inputDirectory, colNameSubj = "", 
     
     # Step 3: Save output file
     if (verbose) {
-        fcat("Step 3: Saving output file (saving large data files takes some time).")
+        fcat("Step 3: Savie output file (saving large data files takes some time).")
     }
     
     # Sorting rows according to subject

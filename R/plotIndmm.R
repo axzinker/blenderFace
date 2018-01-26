@@ -87,8 +87,8 @@ plotIndmm <- function(data, colNames, colNameSubj, title = "", xlim = NA,
   names(tempData) <- c("subject","x","y")
   
   for (i in 1:length(subjects)) {
-    if(verbose) {
-      fcat(paste("Computing median for subject ", subjects[i], sep=""))
+    if (verbose) {
+      fcat(paste("Compute median for Subject ", subjects[i], sep = ""))
     }
     tempData[i,"subject"] <- subjects[i]
     tempData[i,"x"] <- median(as.numeric(unlist(subset(data[colNames[1]], subset = (data[colNameSubj] == subjects[i])))), na.rm = TRUE)
@@ -122,8 +122,8 @@ plotIndmm <- function(data, colNames, colNameSubj, title = "", xlim = NA,
   max <- max(c(maxX, maxY))
   
   # Make sure that 0 is contained in the min-max interval (0 is the origin of the movement -> use function centerCond first!)
-  if(min > 0) {min <- 0}
-  if(max < 0) {max <- 0}
+  if (min > 0) {min <- 0}
+  if (max < 0) {max <- 0}
   
   # if user-xlim or user-ylim are given, overwrite computed values
   if (!unique(is.na(xlim))) { # TRUE, if user presets given
@@ -142,17 +142,17 @@ plotIndmm <- function(data, colNames, colNameSubj, title = "", xlim = NA,
   }
   
   # Make basic plot
-  plot(c(minX,maxX),c(minY,maxY),type="n", main = title, xlab="Median movement x-axis",ylab="Median movement y-axis")
-  points(0,0,pch=19,col=1)
+  plot(c(minX,maxX),c(minY,maxY),type = "n", main = title, xlab = "Median movement x-axis", ylab = "Median movement y-axis")
+  points(0,0,pch = 19,col = 1)
   
   # Plot individual values
   for (i in 1:length(subjects)) {
-    if(verbose) {
-      fcat(paste("Plotting subject ",subjects[i],sep=""))
+    if (verbose) {
+      fcat(paste("Plot Subject ",subjects[i],sep = ""))
     }
     
-    points(tempData[i,"x"], tempData[i,"y"], pch=19, col=1)
-    lines(c(0,tempData[i,"x"]),c(0,tempData[i,"y"]),type="l",col=1)
-    if(!is.na(tempData[i,"x"])) {textxy(tempData[i,"x"],tempData[i,"y"],tempData[i,"subject"],cex=1)}
+    points(tempData[i,"x"], tempData[i,"y"], pch = 19, col = 1)
+    lines(c(0,tempData[i,"x"]),c(0,tempData[i,"y"]),type = "l",col = 1)
+    if (!is.na(tempData[i,"x"])) {textxy(tempData[i,"x"],tempData[i,"y"],tempData[i,"subject"],cex = 1)}
   }
 }

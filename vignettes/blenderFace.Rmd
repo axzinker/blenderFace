@@ -3,6 +3,9 @@ title: "blenderFace"
 author: "Axel Zinkernagel"
 date: '`r Sys.Date()`'
 output:
+  word_document:
+    toc: yes
+    toc_depth: '2'
   pdf_document:
     number_sections: yes
     toc: yes
@@ -10,13 +13,10 @@ output:
   html_document:
     toc: yes
     toc_depth: '2'
-  word_document:
-    toc: yes
-    toc_depth: '2'
 vignette: >
-  %\VignetteIndexEntry{blenderFace}   
-  %\VignetteEngine{knitr::rmarkdown}   
-  %\VignetteEncoding{UTF-8}  
+  %\VignetteIndexEntry{blenderFace}    
+  %\VignetteEngine{knitr::rmarkdown}    
+  %\VignetteEncoding{UTF-8}   
   \usepackage[utf8]{inputenc}
 ---
 
@@ -32,13 +32,13 @@ vignette: >
   \usepackage[utf8]{inputenc}
 -->
 
-# Workflow of Blender-data post-processing with the blenderFace package 
+# Workflow of Blender-data post processing with the blenderFace package 
 
-For using the `blenderFace` package it is assumed, that you have tracked facial movements for at least two subjects, following the "Step_by_Step_Instructions.pdf". The output of this procedure is a csv file for each participant, which includes the x,y,z-axis movement of the tracked facial markers. Additionally, you need to mark the frames for which a stimulus was presented to the participants. This must be done for each participant (a.k.a. csv file) in a column, for example labelled "Stimulustype", which marks the frames for which a stimulus was presented to the participant (e.g., "posing happiness" or viewing a specific emotion eliciting film clip). Unfortunately, there is no procedure or function that helps you with this step, because it depends strongly on how you presented the stimuli, and how you recorded the participant's video clips. If you know the start- and stop-frames of the presented stimuli, for example, by recording the computer screen via a mirror in the back of the participant, you can fill in  the stimulustype-colums by hand using a spreadsheet programm. Make sure, that each stimulus condition label occurs only once per subject.
+To use the `blenderFace` package, it is assumed, that you have tracked facial movements for at least two participants, following the "Step_by_Step_Instructions.pdf." The output of this procedure is a csv file for each participant, which includes the x,y,z-axis movement of the tracked facial markers. In additionally, you need to mark the frames for which a stimulus was presented to the participants. This must be done for each participant (a.k.a. csv file) in a column, for example, labeled "Stimulustype," which marks the frames for which a stimulus was presented to the participant (e.g., "posing happiness" or viewing a specific emotion eliciting film clip). Unfortunately, there is no procedure or function that helps you with this step because it depends to a large extent on how you presented the stimuli and how you recorded the participant's video clips. If you know the start- and stop-frames of the presented stimuli, for example, because you recorded the computer screen via a mirror behind the participant, you can fill in the stimulustype columns by hand using a spreadsheet program. Make sure that each stimulus condition label occurs only once per subject.
 
-The `blenderFace` package comes with raw data sets of two subjects (in fact, it is one subject recorded and tracked twice) which already have the stimulustype-column attached. 
+The `blenderFace` package comes with raw-data sets from two participants (in fact, it is one participant who was recorded and tracked twice) for which the stimulustype column is already attached. 
 
-First, be sure to have installed and loaded the package:
+First, be sure you have installed and loaded the package:
 ```{r, eval=FALSE}
 install.packages("devtools")
 library(devtools)
@@ -52,27 +52,27 @@ library(blenderFace)
 
 ## Overview of the package functions
 
-The functions of the `blenderFace` package can be divided into three types, which should be applied subsequently:
+The functions of the `blenderFace` package can be divided into three types, which should subsequently be applied:
 
 * Functions to process Blenders raw data:
-    + `concatBlenderFiles`: concatenate Blender files into one large RData-file
-    + `bu2mm`: scale the Blender data into millimeter
+    + `concatBlenderFiles`: concatenate Blender files into one large R Data-file
+    + `bu2mm`: scale the Blender data into millimeters
     + `face2stdFace`: scale the Blender data into a standardized face
     + `plotOutlier`: scan the marker movement for potential outliers
-    + `centerCond`: set the start values of markers to x = 0, y = 0 at the begin of each stimulus presentation
-* Functions to visualize the data:
+    + `centerCond`: set the start values for the markers to x = 0, y = 0 at the beginning of each stimulus presentation
+* Functions to visually represent the data:
     + `plotXhead`: plot the data on a standardized face
-    + `plotIndmm`: plot individual mean marker movement
+    + `plotIndmm`: plot the individual mean marker movement
     + `plotXYmmpf`: plot the X/Y marker movement per frame
-    + `plotMmpCond`: plot aggregated marker movement per stimulus condition
+    + `plotMmpCond`: plot the aggregated marker movement per stimulus condition
 * Functions to compute higher order variables:
     + `angleDistance`: compute the angle and the distance of median marker movement
 
-# Functions to process Blenders raw data
+# Functions to process the raw data from Blender
 
-## Concatenating Blenders raw data files to a single RData file with the function `concatBlenderFiles`
+## Concatenating Blender's raw data files into a single RData file with the function `concatBlenderFiles`
 
-To perform the concatenation of Blenders csv output files, use the `concatBlenderFiles` function. If you have followed the "Step-by-Step"-instructions, the subject number is part of the file name. However, the file name ends with "_Step_03" for each participant. Please rename the files, so that the subject number is the last number before the filetype ending (e.g., ".csv"). For example, if you have the file "Subject_39_Step_03.csv", rename it into "Subject_39.csv". The package includes two sample csv files in the `./inst/extdata` directory ("Subject_01.csv","Subject_02.csv"). Although the `concatBlenderFiles` function does some basic input checks, be aware that this function writes on your hard disk and may change/overwrite/delete files, if messed up input strings are given!
+To perform the concatenation of Blenders csv output files, use the `concatBlenderFiles` function. If you have followed the "Step-by-Step" instructions, the subject number is part of the file name. However, the file name ends with "_Step_03" for each participant. Please rename the files  so that the subject number is the last number before the file type ending (e.g., ".csv"). For example, if you have the file "Subject_39_Step_03.csv," rename it into "Subject_39.csv" and ignore the "_Step_03." The package includes two sample csv files in the `./inst/extdata` directory ("Subject_01.csv";"Subject_02.csv"). Although the `concatBlenderFiles` function does some basic input checks, be aware that this function writes on your hard disk and may change/overwrite/delete files if messed up input strings are given!
 
 The path specifications are adapted for the package example. Please change the paths according to your needs.
 
@@ -92,7 +92,7 @@ concatBlenderFiles(dataFileNames = filenames, inputDirectory = inputdir,
 The console output of the `concatBlenderFiles` function for the two sample data files shows:
 
 ```{r,eval=FALSE}
-Step 1: Determing unique column names and number of rows of the files to be concatenated. 
+Step 1: Determine unique column names and number of rows of the files to be concatenated. 
 Reading 2 files: 
 Reading file Subject_01.csv (1/2) 
   Adding 1714 rows to data frame of actually 0 rows. 
@@ -101,7 +101,7 @@ Reading file Subject_02.csv (2/2)
 
 The final data frame will have 51 columns and 3406 rows. 
 
-These are the unique column names of all files to be concatenated. Check, if they are correct. 
+These are the unique column names of all files to be concatenated. Check whether they are correct. 
  [1] "A7_x"         "A7_y"         "A7_z"         "A8_x"         "A8_y"         "A8_z"        
  [7] "BL2_x"        "BL2_y"        "BL2_z"        "BL4_x"        "BL4_y"        "BL4_z"       
 [13] "BL5_x"        "BL5_y"        "BL5_z"        "BL7_x"        "BL7_y"        "BL7_z"       
@@ -111,35 +111,35 @@ These are the unique column names of all files to be concatenated. Check, if the
 [37] "CR4_x"        "CR4_y"        "CR4_z"        "CR7_x"        "CR7_y"        "CR7_z"       
 [43] "DL2_x"        "DL2_y"        "DL2_z"        "DR2_x"        "DR2_y"        "DR2_z"       
 [49] "Frame"        "Stimulustype"
-Abort Script? (Press 'y' to abort, or any other key to coninue) 
+Abort Script? (Press 'y' to abort or any other key to continue) 
 ? 
-Step 2: Concatenating files. 
+Step 2: Concatenate files. 
 
 Preallocating data frame of a 51x3406 matrix. 
 Concatenating file Subject_01.csv (1/2) 
 Concatenating file Subject_02.csv (2/2) 
-Step 3: Saving output file (saving large data files takes some time). 
+Step 3: Savie output file (saving large data files takes some time). 
 ```
 
-As main output of this function a file with the filename given in `outputFilename` parameter is saved in the directory given in as `inputDirecotry`, or given in the `outputDirectory` parameter, if given. The data frame stored in this file contains the data of all concatenated input data files. The output file of the two sample subjects attached to the `blenderFace` package is also attached to this package and labeled `rawdata`.
+As the main output of this function a file with the file name given in the `outputFilename` parameter is saved in the directory given as `inputDirectory`, or given in the `outputDirectory` parameter, if given. The data frame stored in this file contains the data of all concatenated input data files. The output file of the two sample subjects attached to the `blenderFace` package is also attached to this package and labeled `rawdata`.
 
-The correct spelling of the columns (= tracked markers) of the input data files is alread performed by the `concatBlenderFiles` function. It is also meaningful, to check the stimulus conditions for correctness. This can be done with standard R code:
+The correct spelling of the columns (= tracked markers) of the input data files has already been completed by the `concatBlenderFiles` function. It is also important, to check the stimulus conditions for correctness. This can be done with standard R code:
 
 ```{r,echo=TRUE, eval=TRUE}
 table(rawdata$Stimulustype, rawdata$subject)
 ```
 
-Since the labels used for the stimulus episodes are equal for both participants (e.g., no misspellings), the file `rawdata` can be used source for further scaling, testing, and statistical analyses.
+Because the labels used for the stimulus episodes are the same for the two participants (e.g., no misspellings), the `rawdata` file can be used for further scaling, testing, and statistical analyses.
 
-## Scale Blender units to millimeter by using the function `bu2mm`
+## Scale the Blender units to millimeters by using the function `bu2mm`
 
-The movements of the facial markers (respectively the x,y, and z- coordinates) measured with the Blender procedure are scaled in Blender Units (BU). One BU should roughly correspond to one meter in reality, however, Blenders scaling algorithm is fairly arbitrary. If you have followed the "Step-by-Step"-instructions, you have also generated a file called "Blender_Scalingdata.csv", which contains scaling parameters (e.g., the glue dot diameter). These parameters can be used to rescale the BU into millimeter. In principle, the rescaling is done by the rule of proportion:
+The movements of the facial markers (respectively the x,y, and z- coordinates) measured with the Blender procedure are scaled in Blender Units (BUs). One BU should roughly correspond to one meter in reality; however, Blender's scaling algorithm is fairly arbitrary. If you have followed the "Step-by-Step" instructions, you have also generated a file called "Blender_Scalingdata.csv," which contains the scaling parameters (e.g., the glue dot diameter). These parameters can be used to rescale the BUs into millimeters. In principle, the rescaling is done by the rule of proportion:
 <!-- aligned works for both, html and pdf output:
 https://stackoverflow.com/questions/31161437/how-to-use-eqnarray-in-r-markdown-for-both-html-and-pdf-output
 -->
 $$
 \begin{aligned}
-  \frac{\mbox{Diameter in Blender units}}{\mbox{Diameter in millimeter}} =
+  \frac{\mbox{Diameter in Blender units}}{\mbox{Diameter in millimeters}} =
   \mbox{Factor to divide BU by, to obtain mm}
 \end{aligned}
 $$
@@ -153,20 +153,20 @@ $$
 \end{aligned}
 $$
 
-In the sample videos "Subject_01.mp4" and "Subject_02.mp4" glue-dots with 8 mm diameter were used. To perform the rescaling for the `rawdata` dataset, the glue-dot diameter measurements in BU for each participant are needed. For the two example subjects, the file "Blender_Scalingdata.csv" is included in the package and should be loaded to get access to the scaling parameters. Please note, that the paths used in the example below are specified for the package datasets. Therefore, please adapt the paths matching to your work environment accordingly.
+In the sample videos, "Subject_01.mp4" and "Subject_02.mp4" glue-dots with diameters of 8 mm were used. To rescale the `rawdata` data set, the glue dot diameter measurements in BU are needed for each participant. For the two example subjects, the file "Blender_Scalingdata.csv" is included in the package and should be loaded to gain access to the scaling parameters. Please note that the paths used in the example below are specified for the package data sets. Therefore, please adapt the paths that match your work environment accordingly.
 
 ```{r}
 # Load the file "Blender_Scalingdata.csv"
 scaledata <- read.csv(system.file("extdata", "Blender_Scalingdata.csv", 
-                                  package = "blenderFace"), header = TRUE, sep =",")
-# For matching reasons, make sure to have the data sorted by subjects
+                                  package = "blenderFace"), header = TRUE, sep = ",")
+# To ensure proper matching, make sure to have the data sorted by subjects
 scaledata <- scaledata[with(scaledata, order(scaledata$subject)), ]
 ```
 
-To scale BU into millimeter, only the glue dot diameter measured in blender is needed. The column name of this parameter is `GlueDotDiameter` and can be determined by:
+To scale BUs into millimeters, only the glue dot diameter measured in Blender is needed. The column name of this parameter is `GlueDotDiameter` and can be determined by:
 
 ```{r,eval=TRUE}
-# Geting the column names of the scaledata dataframe
+# Get the column names of the scaledata dataframe
 names(scaledata)
 ```
 
@@ -174,16 +174,16 @@ Subsequently, load the `rawdata` data file generated by the function `concatBlen
 
 ```{r}
 # Load the file "rawdata"
-data(rawdata, package="blenderFace") # for the package example, please comment out
+data(rawdata, package = "blenderFace") # for the package example, please comment out
 # load("path/to/your/directory/rawdata.rda") # uncomment and adapt to your work environment
-# For matching reasons, make sure to have the data sorted by subjects
+# To ensure proper matching, make sure to have the data sorted by subjects
 rawdata <- rawdata[with(rawdata, order(rawdata$subject)), ]
 ```
 
-Not all columns of the `rawdata` data frame must be rescaled (e.g., the subject or the frames column). Therefore, the column names of the columns which should be rescaled must be passed to the function via the `colNames` parameter.
+Not all columns of the `rawdata` data frame must be rescaled (e.g., the subject or the frames column). Therefore, the column names of the columns that should be rescaled must be passed to the function via the `colNames` parameter.
 
 ```{r,eval=TRUE}
-# Determin the dataframe columns which should be scaled:
+# Determine the dataframe columns that should be scaled:
 names(rawdata)
 # -> Frame, Stimulustype and subject should not be scaled -> removed for variable colNames
 colNames <- c("A7_x",  "A7_y",  "A7_z",  "A8_x",  "A8_y",  "A8_z",  
@@ -195,49 +195,49 @@ colNames <- c("A7_x",  "A7_y",  "A7_z",  "A8_x",  "A8_y",  "A8_z",
               "CR4_x", "CR4_y", "CR4_z", "CR7_x", "CR7_y", "CR7_z", 
               "DL2_x", "DL2_y", "DL2_z", "DR2_x", "DR2_y", "DR2_z")
 
-# To not overwrite existing data, use a new data frame 
-# (dataSmm means data scaled in millimeter)
+# To ensure that you will not overwrite existing data, use a new data frame 
+# (dataSmm means data scaled in millimeters)
 dataSmm <- bu2mm(data = rawdata, colNames = colNames, colNameSubj = "subject", 
                  scaleFactor = scaledata$GlueDotDiameter, rwMeasure = 8, verbose = TRUE)
 ```
 ```{r,eval=FALSE}
-# Optionally, save data at this stage of analysis
+# You have the option to save your data at this stage of the analysis
 save(dataSmm, file = "path/to/your/directory/dataSmm.rda")
 ```
 
-The data frame `dataSmm` which is included in the package is scaled into millimeter. If this data frame is used in other functions, e.g., the median distance of a marker movement can be interpreted in millimeter.
+The data frame `dataSmm`, which is included in the package, is scaled to millimeters. If this data frame is used in other functions, e.g., the median distance of a marker movement can be interpreted in millimeters.
 
 ## Scale facial movements to a standardized face by using the function `face2stdFace`
 
-However, it sometimes may not be useful to scale the movements into an absolute measure, such as millimeter. Instead, it may be better to standardize the movements in relation to a standardized face. Imagine, you want to compare the facial expressions of a child sample with the facial expressions of an adult sample. Because the head sizes of the children are smaller, the facial movements of the cildren are also smaller, compared to the adult sample. Therefore, the standardization of different face sizes with respect to a standard face is important. The function `face2stdFace` performs the standardization of individual face sizes to a standard face. The proportions of the standard face used here are based on biological and artistic resources (*@Rainer: fix me: Literaturangaben?*). In the standardized face the length and the height of the head have each a value of 1, while the left-pupil -- right-pupil distance and the left-pupil -- left-mouth-corner distance are scaled to 1/3rd of the face height and face width.
+However, it might not be useful to scale the movements to an absolute measure (e.g., millimeters). Instead, it might be better to standardize the movements in relation to a standardized face. Imagine that you want to compare the facial expressions of a child sample with the facial expressions of an adult sample. Because the head sizes of the children are smaller, the facial movements of the children are also smaller in comparison with the adult sample. Therefore, the standardization of different face sizes with respect to a standard face is important. The function `face2stdFace` performs the standardization of individual face sizes to a standard face. <!--The proportions of the standard face used here are based on biological and artistic resources (*@Rainer: fix me: Literaturangaben?*)-->. In the standardized face the length and the height of the head each have a value of 1, whereas the left-pupil -- right-pupil distance and the left-pupil -- left-mouth-corner distance are scaled to 1/3rd of the face height and face width.
 
-As individual measures for face width and face height, the individual left-pupil -- right-pupil, and the left-pupil -- left-mouth-corner distances are used. If you have followed the "Step-by-Step"-instructions, you have measured and saved these distances in the file "Blender_Scalingdata.csv". To have comparable measures for all subjects, the left-pupil -- right-pupil distance and the left-pupil -- left-mouth-corner distance are set in proportion to 1/3rd to achieve a factor by which the x-axis and the y-axis must be divided, to obtain a standardized scaling. Additionally, if the left-mouth-corner -- right-mouth-corner distance or the right-pupil -- right-mouth-corner distance are given, the `face2stdFace` function allows to compute a mean of these distances for rescaling the x-, and the y-axis to have a more reliable distance measure. However, to our experience, the mouth corner distance ist not such an reliable measure as the pupil distance is.
+As individual measures of face width and face height, the individual left-pupil -- right-pupil and the left-pupil -- left-mouth-corner distances are used. If you have followed the "Step-by-Step" instructions, you have measured and saved these distances in the file "Blender_Scalingdata.csv." To have comparable measures for all subjects, the left-pupil -- right-pupil distance and the left-pupil -- left-mouth-corner distance are set to a proportion of 1/3rd to achieve a factor by which the x-axis and the y-axis must be divided to obtain a standardized scaling. In addition, if the left-mouth-corner -- right-mouth-corner distance or the right-pupil -- right-mouth-corner distance are given, the `face2stdFace` function allows the user to compute a mean of these distances for rescaling the x-axis and the y-axis to have a more reliable distance measure. However, in our experience, the mouth corner distance is not as reliable a measure as the pupil distance is.
 
-Standardizing the z-axis is not (yet) implemented, mainly due to the lack of an appropriate facial distance measure for rescaling the z-axis. As a consequence, at the moment no meaningful rescaling of the z-axis is possible. Therefore the z-axis is omitted for further analyses.
+Standardizing the z-axis has not (yet) been implemented, mainly due to the lack of an appropriate facial distance measure for rescaling the z-axis. As a consequence, at the moment, no meaningful rescaling of the z-axis is possible. Therefore the z-axis is omitted from further analyses.
 
-Similarly to function `bu2mm`, the rescaling is done via the rule of proportion. For subject 1 in the example data in the file "Blender_Scalingdata.csv", the left-pupil -- right-pupil distance is measured with 0.3346 BU in Blender. This distance is set in proportion to 1/3 to obtain a scaling factor for the x-axis.
+Similar to function `bu2mm`, the rescaling is done via the rule of proportion. For Subject 1 in the example data in the file "Blender_Scalingdata.csv," the left-pupil -- right-pupil distance is measured as 0.3346 BU in Blender. This distance is set to a proportion of 1/3 to obtain a scaling factor for the x-axis.
 $$
 \begin{aligned}
   \frac{0.3346\mbox{ BU}}{0.\bar{3}} = 1.0038
 \end{aligned}
 $$
-as scale factor for the x-axis. The left-pupil -- left-mouth-corner distance for subject 1 is measured with 0.36611 BU. Therefore, the scale factor for the y-axis is
+as a scaling factor for the x-axis. The left-pupil -- left-mouth-corner distance for Subject 1 is measured as 0.36611 BU. Therefore, the scaling factor for the y-axis is
 $$
 \begin{aligned}
   \frac{0.36611\mbox{ BU}}{0.\bar{3}} = 1.09833
 \end{aligned}
 $$
 
-If not yet performed, load the files `scaledata` and `rawdata`  into Rs environment:
+If you have not yet done so, load the files `scaledata` and `rawdata`  into the R environment:
 ```{r}
 # Load the file "Blender_Scalingdata.csv"
 scaledata <- read.csv(system.file("extdata", "Blender_Scalingdata.csv", 
-                                  package = "blenderFace"), header = TRUE, sep =",")
+                                  package = "blenderFace"), header = TRUE, sep = ",")
 # Make sure to have the data sorted by subjects
 scaledata <- scaledata[with(scaledata, order(scaledata$subject)), ]
 
 # Load the file "rawdata"
-data(rawdata, package="blenderFace") # for the package example, please comment out
+data(rawdata, package = "blenderFace") # for the package example, please comment out
 # load("path/to/your/directory/rawdata.rda") # uncomment and adapt to your work environment
 # Make sure to have the data sorted by subjects
 rawdata <- rawdata[with(rawdata, order(rawdata$subject)), ]
@@ -245,13 +245,13 @@ rawdata <- rawdata[with(rawdata, order(rawdata$subject)), ]
 
 Subsequently, prepare the parameters and call the function `face2stdFace`:
 ```{r}
-# Geting the column names of the scaledata dataframe
+# Get the column names of the scaledata dataframe
 names(scaledata)
 
-# Determin the dataframe columns which should be scaled:
+# Determine the dataframe columns that should be scaled:
 names(rawdata)
 
-# Exclude the columns "Frame"", "Stimulustype", "subject" and z-axis columns
+# Exclude the columns "Frame," "Stimulustype," "subject," and z-axis columns
 colNames <- c("A7_x",  "A7_y",  "A8_x",  "A8_y",  
               "BL2_x", "BL2_y", "BL4_x", "BL4_y",  
               "BL5_x", "BL5_y", "BL7_x", "BL7_y",        
@@ -261,7 +261,7 @@ colNames <- c("A7_x",  "A7_y",  "A8_x",  "A8_y",
               "CR4_x", "CR4_y", "CR7_x", "CR7_y",  
               "DL2_x", "DL2_y", "DR2_x", "DR2_y")
 
-# To not overwrite existing data, use a new data frame 
+# To ensure that you will not overwrite existing data, use a new data frame 
 # (dataStdF means data of standaradized faces)
 dataStdF <- face2stdFace(data = rawdata, colNames = colNames, colNameSubj = "subject", 
                          pupilDist = scaledata$PupilPupilDistance, 
@@ -269,13 +269,13 @@ dataStdF <- face2stdFace(data = rawdata, colNames = colNames, colNameSubj = "sub
 ```
 
 ```{r,eval=FALSE}
-# Optionally save data at this stage of analysis
+# You have the option to save your data at this stage of the analysis
 save(dataStdF, file = "path/to/your/directory/dataStdF.rda")
 ```
 
 ## Scan the data for outliers with the `plotOutliers` function
 
-To ensure that the data is valid and does not contain any artifacts (e.g., tracks "dropping off" the facial surface, tracks jumping between two different positions, because the pattern matching algorithm very probable matchings) a function to plot potential outliers is provided. The principle of detecting an outlier is based on the maximal plausible movemnent from one frame to the next frame of the video footage. The fastest human movement is the eyeblink, which takes about 300 - 400 ms (Robert A.Moses (Ed.), (1981). Adler's Physiology of the eye clinical application. Mosby, Chapter 1, p. 1-15), whereas the cornea of the eye has a diameter of 11.5 mm. The speed of the eye-blink movement can be therefore (11.5mm / 150 ms) = 0.0766 mm/ms. Based on the framerate (fps), the maximal plausible movement from one frame to the next is computed, and taken as a cut off value. For example, a video clip recorded at 30 fps contains an image taken every 33 ms. Therefore the maximal distance from one frame to the next is 0.0766 mm/ms * 33 ms = 2.53 mm. Every larger distance is marked as an outlier. The function computes the 2D distance (Pytagoras) of a marker coordinates pair (x and y) of frame t and frame t + 1. Per default, any distance larger than 2.53 mm is marked as a potential outlier. This function needs data scaled to mm because the cut off value is scaled in mm. Therefore, use the function `bu2mm` beforehand, otherwise the outlier detection is not meaningful. If the function does not find any outliers, it prints the result (no outliers) together with the maximal movement at the corresponding frame:
+To ensure that the data is valid and does not contain any artifacts (e.g., tracks "dropping off" the facial surface; tracks jumping between two different positions, because the pattern matching algorithm very probable matchings) a function to plot potential outliers is provided. The principle of detecting an outlier is based on the maximal plausible movement from one frame to the next frame of the video footage. The fastest human movement is the eye blink, which takes about 300 - 400 ms (Robert A.Moses (Ed.), (1981). Adler's Physiology of the eye clinical application. Mosby, Chapter 1, p. 1-15), whereas the cornea of the eye has a diameter of 11.5 mm. The speed of the eye-blink movement can be therefore (11.5mm / 150 ms) = 0.0766 mm/ms. Based on the frame rate (fps), the maximal plausible movement from one frame to the next is computed, and taken as a cut off value. For example, a video clip recorded at 30 fps contains an image taken every 33 ms. Therefore the maximal distance from one frame to the next is 0.0766 mm/ms * 33 ms = 2.53 mm. Every larger distance is marked as an outlier. The function computes the 2D distance (Pythagoras) of a marker coordinates pair (x and y) of frame t and frame t + 1. Per default, any distance larger than 2.53 mm is marked as a potential outlier. This function needs data scaled to mm because the cut off value is scaled in mm. Therefore, use the function `bu2mm` beforehand, otherwise the outlier detection is not meaningful. If the function does not find any outliers, it prints the result (no outliers) together with the maximal movement at the corresponding frame:
 
 ```{r}
 plotOutliers(subset(dataSmm, subset = (dataSmm$subject == 1)), colNameFrames = "Frame", 
@@ -300,7 +300,7 @@ Plot each outlier? ('y', 'n', or 'c' to cancel)
 (y,n,c)? 
 ```
 
-If the plotting is confirmed, the function plots for each potential outlier the movement of the centered marker coordinates (x as black and y as brown line), the pythagorean distance from t to t + 1 (green line), the cut off value (horizontal red line), and marks the frame with the outlier (vertical blue line). 
+If the plotting is confirmed, the function plots for each potential outlier the movement of the centered marker coordinates (x as black and y as brown line), the Pythagorean distance from t to t + 1 (green line), the cut off value (horizontal red line), and marks the frame with the outlier (vertical blue line). 
  
 
 ```{r, eval=FALSE}
@@ -310,11 +310,11 @@ plotOutliers(outlierTest, colNameFrames = "Frame", colNameData = c("DR2_x","DR2_
 
 ![Outlier Plot](./Vignette_Outlierplot.pdf)
 
-If outliers are identified, the wrong movement has to be corrected in Blender. Subsequently, again the corrected data has to be exported and postprocessed by the blenderFace functions.
+If outliers are identified, the wrong movement has to be corrected in Blender. Subsequently, again the corrected data has to be exported and post processed by the blenderFace functions.
 
 ## Center the start values of the markers per stimulus condition with the function `centerCond`
 
-Because the markers painted on the participant's face are not exactly at the same positions for all participants (e.g., because participant's faces differ in their shape and size, markers drawn by different experimenters, etc.), it is meaningful to center the start values for the markers at x = 0, y = 0 and z = 0 at the begin of each stimulus episode. This allows to aggregate facial movements over participants or compare marker movements of participants for different stimulus episodes, since the movement starts always from the same origin. Otherwise a very standardized, accurate and time consuming marker drawing procedure would have been necessary. However, the extent and direction of the marker movement is not affected by the centering procedure. Technically, the function `centerCond` sets the first frame of each stimulus episode (e.g., the “posing happiness” episode in the "stimulustype" column of the example data frames) to x/y/z = 0 and substracts the offset of the first frame from all remainig frames of this stimulus episode. Because the procedure is computationally very intensive for larger data sets (~ 100 participants, video clips ~ 10 minutes, several stimulus conditions), the function is parallelized and runs on $n-1$ CPU-cores. Nevertheless, it may take a time. Use the `verbose` option to get feedback of the progress of this function.
+Because the markers painted on the participants' faces are not exactly at the same positions for all participants (e.g., because participants' faces differ in their shape and size, markers are drawn by different experimenters, etc.), it is meaningful to center the start values for the markers at x = 0, y = 0 and z = 0 at the beginning of each stimulus episode. This will allow users to aggregate facial movements over participants or compare the marker movements of participants for different stimulus episodes, because the movement always begins at the same origin. Otherwise, a very standardized, accurate, and time consuming marker drawing procedure would have been necessary. However, the extent and direction of the marker movements are not affected by the centering procedure. Technically, the function `centerCond` sets the first frame of each stimulus episode (e.g., the “posing happiness” episode in the "stimulustype" column of the example data frames) to x/y/z = 0 and subtracts the offset of the first frame from all remaining frames of this stimulus episode. Because the procedure is computationally very intensive for larger data sets (~ 100 participants, video clips ~ 10 minutes, several stimulus conditions), the function is parallelized and runs on $n-1$ CPU cores. Nevertheless, it may take time. Use the `verbose` option to get feedback on the progress of this function.
 
 ```{r}
 colNames <- c("A7_x",  "A7_y",  "A8_x",  "A8_y",  
@@ -325,8 +325,8 @@ colNames <- c("A7_x",  "A7_y",  "A8_x",  "A8_y",
               "CL4_x", "CL4_y", "CL7_x", "CL7_y",        
               "CR4_x", "CR4_y", "CR7_x", "CR7_y",  
               "DL2_x", "DL2_y", "DR2_x", "DR2_y")
-# To not overwrite existing data, use a new data frame 
-# (dataStdFCen means data of standaradized faces, centered)
+# To ensure that you will not overwrite existing data, use a new data frame 
+# (dataStdFCen means data of standardized faces, centered)
 # (only 1 Core is used to follow CRAN and Travis prerequisites)
 dataStdFCen <- centerCond(dataStdF, colNames = colNames, colNameSubj = "subject", 
                           colNameFrames = "Frame", colNameCond = "Stimulustype", 
@@ -334,22 +334,22 @@ dataStdFCen <- centerCond(dataStdF, colNames = colNames, colNameSubj = "subject"
 ```
 
 ```{r,eval=FALSE}
-# Optionally save data at this stage of analysis
+# You have the option to save your data at this stage of the  analysis
 save(dataStdFCen, file = "path/to/your/directory/dataStdFCen.rda")
 ```
-# Functions to visualize data
+# Functions to visually represent data
 
-Since the data file can get quite large, graphical visualizations are a good and practical way to check the (processed) data for plausibility, outliers, artefacts, etc. The `blenderFace` package provides several functions to visualize the data at different levels of aggregation.
+Since the data file can get quite large, graphical representations are a good and practical way to check the (processed) data for plausibility, outliers, artifacts, etc. The `blenderFace` package provides several functions to visually represent the data at different levels of aggregation.
 
 ## Plot the x- and y-axis movement per marker over the frames with the function `plotXYmmpf`
 
-This function plots the x-, and y-axis movement of a marker per frame for a single participant. The plot may be used to find artefacts (e.g., sliding of a tracker, scratching the facial skin and therefore moving markers, etc.) or rescaling plausibility and errors. The parameter set of this function differes from the parameter sets of the other functions, because it is intended to be used in loops, for example, to generate many plots for the left and right markers of a subject and arrange them togehter on a pdf page.
+This function plots the x-, and y-axis movement of a marker per frame for a single participant. The plot may be used to find artifacts (e.g., sliding of a tracker, scratching the facial skin and therefore moving markers, etc.) or to rescale plausibility and errors. The parameter set of this function differs from the parameter sets of the other functions because it is intended to be used in loops, for example, to generate many plots for the left and right markers of a subject and arrange them together in a pdf file.
 
-On the x-axis the frames, and on the y-axis the marker movement is presented. The example below shows movement of BR4, the marker right of the nose, when viewing at the participant's face, in millimeter for subject 2 and marked with stimulus episodes:
+The frames are presented on the x-axis and the marker movement is presented on the y-axis. The example below shows movement of BR4, the marker right of the nose, when looking at the participant's face, in millimeters for Subject 2 and marked with stimulus episodes:
 
 ```{r, fig.show='hold', fig.height=7, fig.width=7}
-# Selecting data for subject 2
-# Additionally, omit untracked frames at the start and the end of the video clip
+# Select data for Subject 2
+# In addition, omit untracked frames at the start and the end of the video clip
 data_Subj2 <- subset(dataSmm, subset = ((dataSmm$subject == 2) & 
                                           (dataSmm$Frame >= 690)& (dataSmm$Frame <= 1610)))
 plotXYmmpf(colFrames = data_Subj2$Frame, colX = data_Subj2$BR4_x, 
@@ -357,20 +357,20 @@ plotXYmmpf(colFrames = data_Subj2$Frame, colX = data_Subj2$BR4_x,
            center = FALSE, title = "Subject 2, BR4")
 ```
 
-The next example allows to compare left and right movements (e.g., for judging symmetry of the facial expression) via combining two plots with the `overplot` parameter. To achieve an appropriate scaling, use also the `center` switch. Note, that for the left and the right marker the movement on the x-axis aims into the opposite direction.
+The next example allows the user to compare left and right movements (e.g., to judge the symmetry of the facial expression) by combining two plots with the `overplot` parameter. To achieve an appropriate scaling, also use the `center` switch. Note that for the left and the right markers the movement on the x-axis is pointed in the opposite direction.
 
 ```{r, fig.show='hold', fig.height=7, fig.width=7}
-# Plotting right marker of BR4 (Centered)
+# Plot right marker of BR4 (Centered)
 plotXYmmpf(colFrames = data_Subj2$Frame, colX = data_Subj2$BR4_x, 
            colY = data_Subj2$BR4_y, center = TRUE, title = "Subject 1, 
            BR4 (red, orange), BL4 (blue, green)")
-# Adding left marker of BR4
+# Add left marker of BR4
 plotXYmmpf(colFrames = data_Subj2$Frame, colX = data_Subj2$BL4_x, 
            colY = data_Subj2$BL4_y, center = TRUE, color = c("blue", "green"), 
            overplot = TRUE)
 ```
 
-This function allows also to check, if centering the stimulus episodes via the `centerCond` function worked correcly:
+This function also allows the user to check whether centering the stimulus episodes via the `centerCond` function worked correctly:
 ```{r, fig.show='hold', fig.height=7, fig.width=7}
 data_Subj2Cen <- subset(dataStdFCen, subset = ((dataStdFCen$subject == 2) & 
                                                  (dataStdFCen$Frame >= 690)& 
@@ -382,7 +382,7 @@ plotXYmmpf(colFrames = data_Subj2Cen$Frame, colX = data_Subj2Cen$BR4_x,
 
 ## Plot the movement of the markers on a standardized head with the function `plotXhead`
 
-This function plots the data of several facial markers for a single-, or for aggregated subjects on a standardized head model. To get meaninful and well scaled plots, it is important to use the functions `face2stdFace` and `centerCond` first. Because the number and the position of markers are different for varying research questions, the starting positions of the markers have to be defined by the parameter `dataPos`. The names and the order of the variables in `dataPos` list must be equal to the names and the order of the columns in the `data` data-frame.
+This function plots the data of several facial markers for a single subject or for aggregated subjects on a standardized head model. To get meaningful and well-scaled plots, it is important to use the functions `face2stdFace` and `centerCond` first. Because the number and the position of markers are different for varying research questions, the starting positions of the markers have to be defined by the parameter `dataPos`. The names and the order of the variables in the `dataPos` list must be equal to the names and the order of the columns in the `data` data frame.
 
 ```{r, fig.show='hold', fig.height=7, fig.width=7}
 colNames <- c("A7_x",  "A7_y",  "A8_x",  "A8_y",  
@@ -426,7 +426,7 @@ plotXhead(data = data_Subj_disgust[-1], dataPos = dataPos, overplot = TRUE, colo
 
 ## Plot individual median movement per participant using the function `plotIndmm`
 
-The plots generated by the function `plotIndmm` may be used to detect individual outliers. For example, it may be possible, that some subjects did not follow the instructions to pose a disgusted face. Based on the plots, these individuals may be identified. Bcause the movement of the markers is most likely not normally distributed, the median of movement is computed and plotted. The subjects can be identified by the subject number plotted next to their median. To unify the scaling use the `xlim` and `ylim` parameters. In the following example the markers at the left and right mouthcorners (CL7, CR7) are used.
+The plots generated by the function `plotIndmm` may be used to detect individual outliers. For example, it is possible that some subjects will not follow the instructions to pose the facial expression disgust. On the basis of the plots, these individuals can be identified. Because the movement of the markers is most likely not normally distributed, the median of movement is computed and plotted. The subjects can be identified by the subject number plotted next to their median. To unify the scaling, use the `xlim` and `ylim` parameters. In the following example, the markers at the left and right mouth corners (CL7, CR7) were used.
 
 ```{r, fig.show='hold', , fig.height=3.4, fig.width=3.4}
 plotIndmm(data = data_Subj_happy, colNames = c("CL7_x", "CL7_y"), 
@@ -438,7 +438,7 @@ plotIndmm(data = data_Subj_happy, colNames = c("CR7_x", "CR7_y"),
 
 ## Plot aggregated marker movement per stimulus condition using the function `plotMmpCond`
 
-This plot facilitates the comparison of the movement of a marker for different stimulus episodes. The function plots aggregated data of the median movement one or more subjects per marker and per condition. Additionally, distribution quartiles are plotted as ellipses around the median. The median and the quartiles are plottet in different colors for each stimulus episode. To achieve meaningful plots, make sure to have used the function `centerCond` first.
+This plot facilitates the comparison of the movement of a marker for different stimulus episodes. The function plots aggregated data of the median movement of one or more subjects per marker and per condition. In addition, distribution quartiles are plotted as ellipses around the median. The median and the quartiles are plotted in different colors for each stimulus episode. To achieve meaningful plots, make sure you have used the function `centerCond` first.
 
 ```{r, fig.show='hold', fig.height=7, fig.width=7}
 plotMmpCond(data = dataStdFCen, colNames = c("CL7_x", "CL7_y"), 
@@ -454,8 +454,8 @@ plotMmpCond(data = dataStdFCen, colNames = c("CR7_x", "CR7_y"),
 
 ## Compute angle and distance per stimulus condition with the function `angleDist`
 
-This function computes the angle in degree and the distance of a marker movement to facilitate the verbal description of the movement in the sense of direction and extent of movement. It is assumed, that the origin of the movement is at x = 0, y = 0, so be sure to have used the function `centerCond` before.
-Keep in mind, that the angles are computed in degrees in the mathematical sense. That means, that a movement to the right is around 0 / 360 degrees, a movement upwars is in direction of 90 degrees, a movement to the left is around 180 degrees, and a movement downwards is around 270 degrees.
+This function computes the angle in degrees and the distance of a marker movement to facilitate the verbal description of the movement in the sense of the direction and extent of movement. It is assumed that the origin of the movement is at x = 0, y = 0, so be sure to have used the function `centerCond` before.
+Keep in mind that the angles are computed in degrees in the mathematical sense. This means that a movement to the right is around 0 or 360 degrees, a movement upwards is in the direction of 90 degrees, a movement to the left is around 180 degrees, and a movement downwards is around 270 degrees.
 
 ```{r}
 # Data preparation
@@ -470,7 +470,7 @@ angleDist(data_Subj_happy, colNames = c("CR7_x", "CR7_y"),
           colNameSubj = "subject", rndDig = 3, verbose = TRUE)
 ```
 
-It also facilitates comparimg the marker movements. For example you could compare the movement of a posed happy facial expression and a posed disgust facial expression for the marker BL4.
+It also facilitates a comparison of the marker movements. For example, you could compare the movement of a posed happy facial expression and a posed disgust facial expression for the marker BL4.
 
 Disgust stimulus episode:
 ```{r, echo=FALSE, results='asis'}
@@ -484,4 +484,4 @@ knitr::kable(angleDist(data_Subj_happy, colNames = c("BL4_x", "BL4_y"),
                        colNameSubj = "subject"))
 ```
 
-The angles suggest, that the BL4 marker is moved rather to the left (to 180 degrees), when posing happines, and rather moving upwards (to 90 degrees), when posing disgust. Because data scaled to mm was used (`dataSmm`) the distance represents median movement in millimeter.
+The angles suggest that the BL4 marker tends to move to the left (to 180 degrees) when happiness is posed and tends to move upwards (to 90 degrees) when disgust is posed. Because data scaled to mm was used (`dataSmm`) the distance represents the median movement in millimeters.

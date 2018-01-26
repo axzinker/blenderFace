@@ -73,11 +73,11 @@ centerCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
     # Reordering columns of input data frame
     data <- data[c(colNameSubj, colNameFrames, colNameCond, colNames)]
     
-    ############################## Setting up CPU-Cluster
+    ############################## Setting up CPU cluster
     
     CPUavail <- parallel::detectCores()
     CPUcluster <- NA
-    if(maxCPUcores <= CPUavail) {
+    if (maxCPUcores <= CPUavail) {
       CPUcluster <- maxCPUcores
     } else {
       CPUcluster <- CPUavail
@@ -87,7 +87,7 @@ centerCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
     doParallel::registerDoParallel(cl)
     
     if (verbose) {
-        writeLines(paste("Starting up CPU-cluster: Using ", getDoParWorkers(), " CPU-cores.", sep = ""))
+        writeLines(paste("Starting up CPU cluster: Using ", getDoParWorkers(), " CPU-cores.", sep = ""))
         timestamp0 <- Sys.time()
     }
     
@@ -137,7 +137,7 @@ centerCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
     
     ############################## Step 1: Getting condition start frames per subject
     if (verbose) {
-        writeLines("Step 1: Getting condition start frames per subject.")
+        writeLines("Step 1: Get condition start frames per subject.")
         timestamp1 <- Sys.time()
     }
     condStartFrames <- FirstFrameSubjCond(data[colNameSubj], data[colNameFrames], data[colNameCond])
@@ -152,7 +152,7 @@ centerCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
     
     ############################## Step 2: Getting offset values for the to be centered variables for each subject and each condition
     if (verbose) {
-        writeLines("Step 2: Getting offset values per condition per subject.")
+        writeLines("Step 2: Get offset values per condition per subject.")
         timestamp2 <- Sys.time()
     }
     # Verbose output is very time consuming; if wanted, add '.verbose = verbose' to the first foreach loop
@@ -166,7 +166,7 @@ centerCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
     
     ############################## Step 3: compute centered values for all columns and subjects
     if (verbose) {
-        writeLines("Step 3: Subtracting offset values per condition per subject.")
+        writeLines("Step 3: Subtract offset values per condition per subject.")
         timestamp3 <- Sys.time()
     }
     
@@ -194,7 +194,7 @@ centerCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
     ############################## Step 4: replace original values with centered values
     
     if (verbose) {
-        writeLines("Step 4: Replacing centered values in the original data.")
+        writeLines("Step 4: Replace centered values in the original data.")
         timestamp4 <- Sys.time()
     }
     
@@ -220,14 +220,14 @@ centerCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
     
     if (verbose) {
         timestamp5 <- Sys.time()
-        writeLines("\nTime for completing each step of the function:")
-        writeLines("Step1: Getting condition start frames per subject: ")
+        writeLines("\nTime to complete each step of the function:")
+        writeLines("Step1: Get condition start frames per subject: ")
         print(round(timestamp2 - timestamp1, 2))
-        writeLines("Step2: Getting offset values per condition per subject: ")
+        writeLines("Step2: Get offset values per condition per subject: ")
         print(round(timestamp3 - timestamp2, 2))
-        writeLines("Step3: Subtracting offset values per condition per subject: ")
+        writeLines("Step3: Subtract offset values per condition per subject: ")
         print(round(timestamp4 - timestamp3, 2))
-        writeLines("Step4: Replacing centered values in the original data: ")
+        writeLines("Step4: Replace centered values in the original data: ")
         print(round(timestamp5 - timestamp4, 2))
         writeLines("Overall time: ")
         print(round(timestamp5 - timestamp0, 2))
@@ -236,7 +236,7 @@ centerCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
     ############################## Finish
     
     if (verbose) {
-        writeLines("Shutting down CPU-Cluster")
+        writeLines("Shut down CPU cluster")
     }
     stopCluster(cl)
     

@@ -1,8 +1,8 @@
 Package: blenderFace
 Type: Package
 Title: Collection of functions to process blender measured facial movement data
-Version: 0.1.9009
-Date: 2017-09-17
+Version: 0.1.9010
+Date: 2018-01-26
 Authors@R: c(
   person("Axel", "Zinkernagel", email = "zinkernagel@uni-landau.de", role = c("cre","aut")),
   person("Rainer", "Alexandrowicz", email = "rainer.alexandrowicz@aau.at", role = "aut"))
