@@ -56,7 +56,7 @@ angleDist <- function(data, colNames, colNameSubj, rndDig = 2, verbose = FALSE) 
   
   # Helper functions
   fcat <- function(...,newline=TRUE) {if (newline) cat(...,"\n") else cat(...); flush.console() }  # immediate console output
-  
+
   getDistance <- function(Point1, Point2) { # points must be with x/y-values (vector or matrix/df columns)
     # Computes distance between two points in a coordinate system (pytagoras). Its a two dimensional distance (not eukledian)
     # same function as in plotOutliers.R

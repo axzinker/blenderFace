@@ -73,7 +73,7 @@ plotOutliers <- function(data, colNameFrames, colNameData, colNameCond = "", max
   if (!(is.logical(verbose))) {
     stop("Argument verbose is not of type logical!")
   }
-  
+
   # Static data
   FramesOffset <- 1 # Frame offset for which the difference is computed (1 -> (t, t+1); 2 -> (t, t+2))
   FramesRange <- 50 # Range of frames to be plotted before and after each possible outlier
