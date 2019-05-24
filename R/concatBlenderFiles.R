@@ -225,7 +225,7 @@ concatBlenderFiles <- function(dataFileNames, inputDirectory, colNameSubj = "", 
     
     # Step 3: Save output file
     if (verbose) {
-        fcat("Step 3: Savie output file (saving large data files takes some time).")
+        fcat("Step 3: Save output file (saving large data files takes some time).")
     }
     
     # Sorting rows according to subject

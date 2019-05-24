@@ -4,8 +4,8 @@
 \alias{plotMmpCond}
 \title{Plot marker and quartile ellipse per condition}
 \usage{
-plotMmpCond(data, colNames, colNameCond, title = "", xlim = NA, ylim = NA,
-  verbose = FALSE)
+plotMmpCond(data, colNames, colNameCond, title = "", xlim = NA,
+  ylim = NA, verbose = FALSE)
 }
 \arguments{
 \item{data}{Data frame containig the data to be plotted.}

@@ -83,7 +83,7 @@ bu2mm <- function(data, colNames, colNameSubj, scaleFactor, rwMeasure = 8, verbo
     if (!(is.numeric(scaleFactor)) | !(length(scaleFactor) >= 2))
       stop("Argument scaleFactor is neither a column name nor of type numeric, or contains only one value!")
   else
-    if (length(unique(data[[colNameSubj]])) != length(scaleFactor)) # @ Rainer: hier fehlen noch die Anpassungen für die Spalte des Hauptdatenframes (-> unique()?)
+    if (length(unique(data[[colNameSubj]])) != length(scaleFactor)) 
       stop(paste("Number of subjects in data data-frame (", length(unique(data[[colNameSubj]])), ") is not equal to length of scaleFactor (", 
                  length(scaleFactor), ")!", sep = ""))
   

@@ -4,8 +4,8 @@
 \alias{plotXhead}
 \title{Plot markers on symbolic head}
 \usage{
-plotXhead(data, dataPos, title = "", overplot = FALSE, color = "black",
-  alpha = 0.5, plotDataPos = FALSE)
+plotXhead(data, dataPos, title = "", overplot = FALSE,
+  color = "black", alpha = 0.5, plotDataPos = FALSE)
 }
 \arguments{
 \item{data}{Data-frame with a row sequence of standardized and centered x/y
