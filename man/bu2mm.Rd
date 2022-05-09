@@ -4,8 +4,7 @@
 \alias{bu2mm}
 \title{Scale Blender data (Blender Units) into millimeter}
 \usage{
-bu2mm(data, colNames, colNameSubj, scaleFactor, rwMeasure = 8,
-  verbose = FALSE)
+bu2mm(data, colNames, colNameSubj, scaleFactor, rwMeasure = 8, verbose = FALSE)
 }
 \arguments{
 \item{data}{Data frame containig the columns which should be rescaled.

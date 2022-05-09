@@ -4,8 +4,16 @@
 \alias{plotOutliers}
 \title{Plot potential outliers for specific frames}
 \usage{
-plotOutliers(data, colNameFrames, colNameData, colNameCond = "",
-  maxM = 2.53, title = colNameData, verbose = FALSE)
+plotOutliers(
+  data,
+  colNameFrames,
+  colNameData,
+  colNameCond = "",
+  maxM = 2.53,
+  title = colNameData,
+  savePlots = FALSE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{data}{Data-frame containing the variables labeled in colNameFrames,
@@ -26,6 +34,9 @@ value, default is 2.2 mm.}
 
 \item{title}{Default are the column names.}
 
+\item{savePlots}{Set to TRUE if outlier plots should be saved as a pdf. As a 
+filename the title is used. Default is FALSE.}
+
 \item{verbose}{Logical value. If verbose is TRUE, the plots for each outlier
 will be presented separately.}
 }
@@ -33,9 +44,9 @@ will be presented separately.}
 See vignette for example plots.
 }
 \description{
-Because SD is unsuited for the purpose of outlier detection in this case 
+Because in this case the SD is inappropriate for the purpose of outlier detection
 (e.g., if there is rarely movement, even very small movements / noise are 
-detected as outliers) a theoretical approach is used: The fastest human 
+detected as outliers), a theoretical approach is used: The fastest human 
 movement is the eyeblink, which takes about 300 - 400 ms (Robert A.Moses 
 (Ed.), (1981). Adler's Physiology of the eye clinical application. Mosby, 
 Chapter 1, p. 1-15). The cornea of the eye has a diameter of 11.5 mm. The 

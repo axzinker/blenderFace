@@ -4,8 +4,14 @@
 \alias{concatBlenderFiles}
 \title{Concatenate Blender data files}
 \usage{
-concatBlenderFiles(dataFileNames, inputDirectory, colNameSubj = "",
-  outputFilename, outputDirectory = "", verbose = FALSE)
+concatBlenderFiles(
+  dataFileNames,
+  inputDirectory,
+  colNameSubj = "",
+  outputFilename,
+  outputDirectory = "",
+  verbose = FALSE
+)
 }
 \arguments{
 \item{dataFileNames}{Character vector containing filenames to be concatenated. 

@@ -4,8 +4,16 @@
 \alias{face2stdFace}
 \title{Scale head proportions}
 \usage{
-face2stdFace(data, colNames, colNameSubj, pupilDist, leftPMDist,
-  mouthcornerDist = NA, rightPMDist = NA, verbose = FALSE)
+face2stdFace(
+  data,
+  colNames,
+  colNameSubj,
+  pupilDist,
+  leftPMDist,
+  mouthcornerDist = NA,
+  rightPMDist = NA,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{data}{Data frame containig the columns which should be rescaled.

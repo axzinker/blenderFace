@@ -4,8 +4,15 @@
 \alias{centerCond}
 \title{Center marker coordinates}
 \usage{
-centerCond(data, colNames, colNameSubj, colNameFrames, colNameCond,
-  maxCPUcores = 4, verbose = FALSE)
+centerCond(
+  data,
+  colNames,
+  colNameSubj,
+  colNameFrames,
+  colNameCond,
+  maxCPUcores = 4,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{data}{Data frame containig the columns which should be centered and 

@@ -1,8 +1,8 @@
 #' Plot potential outliers for specific frames 
 #' 
-#' Because SD is unsuited for the purpose of outlier detection in this case 
+#' Because in this case the SD is inappropriate for the purpose of outlier detection
 #' (e.g., if there is rarely movement, even very small movements / noise are 
-#' detected as outliers) a theoretical approach is used: The fastest human 
+#' detected as outliers), a theoretical approach is used: The fastest human 
 #' movement is the eyeblink, which takes about 300 - 400 ms (Robert A.Moses 
 #' (Ed.), (1981). Adler's Physiology of the eye clinical application. Mosby, 
 #' Chapter 1, p. 1-15). The cornea of the eye has a diameter of 11.5 mm. The 
@@ -35,6 +35,8 @@
 #' movement) in mm. Movments larger than maxM are marked as outliers. Optional 
 #' value, default is 2.2 mm.
 #' @param title Default are the column names.
+#' @param savePlots Set to TRUE if outlier plots should be saved as a pdf. As a 
+#' filename the title is used. Default is FALSE.
 #' @param verbose Logical value. If verbose is TRUE, the plots for each outlier
 #' will be presented separately.
 #'
@@ -49,9 +51,9 @@
 #' # fix me: meaningful example
 #' }   
 #' @export
-plotOutliers <- function(data, colNameFrames, colNameData, colNameCond = "", maxM = 2.53, title = colNameData, verbose = FALSE) {
+plotOutliers <- function(data, colNameFrames, colNameData, colNameCond = "", maxM = 2.53, title = colNameData, savePlots = FALSE, verbose = FALSE) {
   # Axel: fix me: footage error handling (e.g., detect artefacts because of wrong/changing framerates)
-  # Axel: fix me: write separate plot helper function (at the moment the code is double)
+  # Axel: fix me: write separate plot helper function (at the moment the code is duplicated)
   if (!(nrow(data)) > 0 | !(is.data.frame(data))) {
     stop("Argument data is missing or of incorrect type!")
   }
@@ -108,8 +110,13 @@ plotOutliers <- function(data, colNameFrames, colNameData, colNameCond = "", max
   }
   
   # Build temporary data frame used for outlier detection
-  tempData <- as.data.frame(cbind(data[colNameFrames], data[colNameData][1], data[colNameData][2], data[colNameCond]))
-  names(tempData) <- c("frames", "data_x_t2", "data_y_t2", "cond")
+  if (colNameCond == ""){
+    tempData <- as.data.frame(cbind(data[colNameFrames], data[colNameData][1], data[colNameData][2]))
+    names(tempData) <- c("frames", "data_x_t2", "data_y_t2")
+  } else {
+    tempData <- as.data.frame(cbind(data[colNameFrames], data[colNameData][1], data[colNameData][2], data[colNameCond]))
+    names(tempData) <- c("frames", "data_x_t2", "data_y_t2", "cond")
+  }
   rm(data)
   
   # Compute difference of movement t - (t - FramesOffset)
@@ -242,6 +249,10 @@ plotOutliers <- function(data, colNameFrames, colNameData, colNameCond = "", max
           plotData$data_y_t2 <- plotData$data_y_t2 - mean(plotData$data_y_t2, na.rm = TRUE)
         }
         
+        if (savePlots) {
+          pdf(file = paste0(title,"_Frame_",outlierFrames[i],".pdf"), onefile = TRUE)
+        }
+        
         plotYlimMin <- min(c(plotData$data_x_t1, plotData$data_y_t1, plotData$data_x_t2, plotData$data_y_t2, plotData$dist), na.rm = TRUE)
         plotYlimMax <- max(c(plotData$data_x_t1, plotData$data_y_t1, plotData$data_x_t2, plotData$data_y_t2, plotData$dist), na.rm = TRUE)
         
@@ -271,7 +282,10 @@ plotOutliers <- function(data, colNameFrames, colNameData, colNameCond = "", max
           legend("bottomright", c("Cen. data x", "Cen. data y", "Cut-off", "Outlier",paste("t+",FramesOffset," Distance", sep = ""),"Condition"), col = PlotColor, lty = 1)  
         } else {
           # make legend without condition
-          legend("bottomright", c("Cen. data ", "Cen. data y", "Cut-off", "Outlier",paste("t+",FramesOffset," Distance",sep = "")), col = PlotColor[-(length(PlotColor))], lty = 1)
+          legend("bottomright", c("Cen. data x", "Cen. data y", "Cut-off", "Outlier",paste("t+",FramesOffset," Distance",sep = "")), col = PlotColor[-(length(PlotColor))], lty = 1)
+        }
+        if (savePlots) {
+          dev.off()
         }
       }
       

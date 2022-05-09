@@ -4,8 +4,15 @@
 \alias{plotIndmm}
 \title{Plots median movement of a marker per subject}
 \usage{
-plotIndmm(data, colNames, colNameSubj, title = "", xlim = NA,
-  ylim = NA, verbose = FALSE)
+plotIndmm(
+  data,
+  colNames,
+  colNameSubj,
+  title = "",
+  xlim = NA,
+  ylim = NA,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{data}{Data frame containig the data columns to be plotted (among other

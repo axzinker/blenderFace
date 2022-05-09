@@ -4,8 +4,16 @@
 \alias{plotXYmmpf}
 \title{Plot x-, y-axis marker movement per frame}
 \usage{
-plotXYmmpf(colFrames, colX, colY, colCond = "", center = TRUE,
-  color = c("red", "orange"), title = "", overplot = FALSE)
+plotXYmmpf(
+  colFrames,
+  colX,
+  colY,
+  colCond = "",
+  center = TRUE,
+  color = c("red", "orange"),
+  title = "",
+  overplot = FALSE
+)
 }
 \arguments{
 \item{colFrames}{Numeric vector containing the frames for which x/y-values
