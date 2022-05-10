@@ -305,6 +305,21 @@ plotOutliers(outlierTest, colNameFrames = "Frame", colNameData = c("DR2_x","DR2_
 
 ![Outlier Plot](./Vignette_Outlierplot.pdf)
 
+Outliers may also be bulk identified by saving the outlier plots unsing the option `savePlots = TRUE`. Therefore, the function can be used in nested loops (e.g., loop `i` over participants, and loop `j` over each marker per participant).
+
+```{r, eval=FALSE}
+for (i in 1:length(subjects)) { # loop over participants
+  for (j in 1:(length(MarkerNames)/2)) { # loop over marker-pairs (x/y)
+    plotOutliers(subset(outlierTest, subset = (outlierTest$subject == subjects[i])), 
+                 colNameFrames = "Frame",
+                 colNameData = c(MarkerNames[j*2-1],MarkerNames[j*2]), 
+                 title = paste0("Outl_Subj_",subjects[i],"_", 
+                                MarkerNames[j*2-1],"_",MarkerNames[j*2]),
+                 savePlots = TRUE)
+  }
+}
+```
+
 If outliers are identified, the wrong movement has to be corrected in Blender. Subsequently, again the corrected data has to be exported and post processed by the blenderFace functions.
 
 ## Center the start values of the markers per stimulus condition with the function `centerCond`
