@@ -62,7 +62,7 @@ The functions of the `blenderFace` package can be divided into three types, whic
     + `plotMmpCond`: plot the aggregated marker movement per stimulus condition
 * Functions to compute higher order variables:
     + `angleDistance`: compute the angle and the distance of median marker movement
-
+    + `mmParameters`: compute the movement parameters
 # Functions to process the raw data from Blender
 
 ## Concatenating Blender's raw data files into a single RData file with the function `concatBlenderFiles`
@@ -383,7 +383,7 @@ plotXYmmpf(colFrames = data_Subj2$Frame, colX = data_Subj2$BL4_x,
 This function also allows the user to check whether centering the stimulus episodes via the `centerCond` function worked correctly:
 ```{r, fig.show='hold', fig.height=7, fig.width=7}
 data_Subj2Cen <- subset(dataStdFCen, subset = ((dataStdFCen$subject == 2) & 
-                                                 (dataStdFCen$Frame >= 690)& 
+                                                 (dataStdFCen$Frame >= 690) & 
                                                  (dataStdFCen$Frame <= 1610)))
 plotXYmmpf(colFrames = data_Subj2Cen$Frame, colX = data_Subj2Cen$BR4_x, 
            colY = data_Subj2Cen$BR4_y, colCond = data_Subj2Cen$Stimulustype, 
@@ -495,3 +495,51 @@ knitr::kable(angleDist(data_Subj_happy, colNames = c("BL4_x", "BL4_y"),
 ```
 
 The angles suggest that the BL4 marker tends to move to the left (to 180 degrees) when happiness is posed and tends to move upwards (to 90 degrees) when disgust is posed. Because data scaled to mm was used (`dataSmm`) the distance represents the median movement in millimeters.
+
+## Compute marker movement parameters with the function `mmParameters`
+
+The `mmParameters` function computes the marker movement parameters speed, 
+onset-speed, intensity (amplitude), irregularites (onset, apex, offset-phases),
+and symmetry. The output parameters are:
+
+* Speed (sp): Mean distance from frame t to t+1 
+* Onset-Speed (onSp): Mean distance from frame t to t+1 only for movement onset
+  phases (see irregularities)
+* Intensity/Amplitude (int): Mean of the 20 maximal distances from the first frame of 
+  data (= first frame is seen as baseline). Probably use `centerCond`
+  in advance.
+* Irregularities (irr): A movement has to be larger than measurement noise and is 
+  defined to be larger than the baseline of .5 (which is .5 mm, if function 
+  `bu2mm` is used beforehand). An onset-phase occurs, if the 
+  distance between t+1 and t+2 is larger than the distance between t and t+1 (previous frame).
+  An apex-phase is defined by the distance between t and t+1 stays whithin
+  the baseline, independent of the direction of movement. An offset-phase occurs, if the distance between t+1 and t+2 
+  is smaller than the distance between t and t+1 (previous frame). Every change in phases is counted. Because the
+  analysed episodes have different numbers of frames per participant, the 
+  relative number of onset, apex, and offset-phases is computed.
+* Symmetry (sym): Mean correlation (aggregated over axes x,y, and z) of 
+  symmetrical markers. Symmetrical markers are determined by their label, e.g.,
+  if there is a marker label CL7 (for left mouth corner), it is tests if there 
+  is also a marker labeled CR7 (for right mouth corner). If this is true, the 
+  markers CL7 and CR7 are regarded to be symmetrical.
+
+```{r}
+marker3D <- c("A7_x", "A7_y", "A7_z", "A8_x", "A8_y", "A8_z", 
+             "BL2_x", "BL2_y", "BL2_z", "BL4_x", "BL4_y", "BL4_z",
+             "BL5_x", "BL5_y", "BL5_z", "BL7_x", "BL7_y", "BL7_z",
+             "BR2_x", "BR2_y", "BR2_z", "BR4_x", "BR4_y", "BR4_z",
+             "BR5_x", "BR5_y", "BR5_z", "BR7_x", "BR7_y", "BR7_z",
+             "CL4_x", "CL4_y", "CL4_z", "CL7_x", "CL7_y", "CL7_z",
+             "CR4_x", "CR4_y", "CR4_z", "CR7_x", "CR7_y", "CR7_z", 
+             "DL2_x", "DL2_y", "DL2_z", "DR2_x", "DR2_y", "DR2_z") 
+
+movementParameters <- mmParameters(dataSmm, colNames = marker3D, 
+                                   colNameSubj = "subject", 
+                                   colNameFrames = "Frame", 
+                                   verbose = TRUE)
+```
+
+```{r}
+# Print table
+movementParameters
+```

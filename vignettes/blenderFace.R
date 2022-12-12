@@ -205,7 +205,7 @@ plotXYmmpf(colFrames = data_Subj2$Frame, colX = data_Subj2$BL4_x,
 
 ## ---- fig.show='hold', fig.height=7, fig.width=7------------------------------
 data_Subj2Cen <- subset(dataStdFCen, subset = ((dataStdFCen$subject == 2) & 
-                                                 (dataStdFCen$Frame >= 690)& 
+                                                 (dataStdFCen$Frame >= 690) & 
                                                  (dataStdFCen$Frame <= 1610)))
 plotXYmmpf(colFrames = data_Subj2Cen$Frame, colX = data_Subj2Cen$BR4_x, 
            colY = data_Subj2Cen$BR4_y, colCond = data_Subj2Cen$Stimulustype, 
@@ -278,4 +278,23 @@ knitr::kable(angleDist(data_Subj_disgust, colNames = c("BL4_x", "BL4_y"),
 ## ---- echo=FALSE, results='asis'----------------------------------------------
 knitr::kable(angleDist(data_Subj_happy, colNames = c("BL4_x", "BL4_y"), 
                        colNameSubj = "subject"))
+
+## -----------------------------------------------------------------------------
+marker3D <- c("A7_x", "A7_y", "A7_z", "A8_x", "A8_y", "A8_z", 
+             "BL2_x", "BL2_y", "BL2_z", "BL4_x", "BL4_y", "BL4_z",
+             "BL5_x", "BL5_y", "BL5_z", "BL7_x", "BL7_y", "BL7_z",
+             "BR2_x", "BR2_y", "BR2_z", "BR4_x", "BR4_y", "BR4_z",
+             "BR5_x", "BR5_y", "BR5_z", "BR7_x", "BR7_y", "BR7_z",
+             "CL4_x", "CL4_y", "CL4_z", "CL7_x", "CL7_y", "CL7_z",
+             "CR4_x", "CR4_y", "CR4_z", "CR7_x", "CR7_y", "CR7_z", 
+             "DL2_x", "DL2_y", "DL2_z", "DR2_x", "DR2_y", "DR2_z") 
+
+movementParameters <- mmParameters(dataSmm, colNames = marker3D, 
+                                   colNameSubj = "subject", 
+                                   colNameFrames = "Frame", 
+                                   verbose = TRUE)
+
+## -----------------------------------------------------------------------------
+# Print table
+movementParameters
 
