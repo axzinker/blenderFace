@@ -17,7 +17,7 @@ mmParameters(
 \arguments{
 \item{data}{Dataframe containing the data with the columns subject, Frame and
 marker names labeled according to the blenderFace-method (e.g., CL7_x, CL7_y, 
-CR7_x, CR7_y; to compute symmetry values). If the dataframe privides values
+CR7_x, CR7_y; to compute symmetry values). If the dataframe provides values
 on the z-axis (e.g., CL7_z), the eukledian distances (3D) are computed instead 
 of the pythagorean distances (2D) to determine marker movement parameters.}
 

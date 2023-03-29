@@ -22,13 +22,6 @@
 #'  39 is taken. If the subject number is contained the single data files, the
 #' colNameSubj parameter must contain the column name of the subject column of
 #' the data files (e.g., \code{colNameSubj = "subject"}).
-#' @param outputFilename Character vector of length one to name the output 
-#' file. The output file is saved in the directory defined in either 
-#' \code{inputDirectory} or \code{outputDirectory}, if defined.
-#' @param outputDirectory Optional character vector of lenght one. Path to 
-#' where the output file should be saved (e.g., on Windows: 
-#' 'C:/Data/Blenderdata/output/', on Unix-type systems:
-#' '/home/user/Data/Blenderdata/output/). If empty, the \code{inputDirectory} is used.
 #' @param verbose Logical value. If TRUE, the function provides verbose console output.
 #'
 #' @import utils 
@@ -45,193 +38,173 @@
 #' filenames <- c("Subject_01.csv","Subject_02.csv")
 #' 
 #' concatBlenderFiles(dataFileNames = filenames, inputDirectory = inputdir, 
-#' colNameSubj = "", outputFilename = "Rawdata.rda", 
-#' outputDirectory = outputdir, verbose = TRUE)
+#' colNameSubj = "", verbose = TRUE)
 #' }
 #' 
 #' @export
-concatBlenderFiles <- function(dataFileNames, inputDirectory, colNameSubj = "", outputFilename, outputDirectory = "", verbose = FALSE) {
+concatBlenderFiles <- function(dataFileNames, inputDirectory, colNameSubj = "", verbose = FALSE) {
   # Error handling
-    
-    # Remove leading / trailing spaces from inputDirectory / outputDirectory
-    inputDirectory <- gsub("^\\s+|\\s+$", "",inputDirectory)
-    outputDirectory <- gsub("^\\s+|\\s+$", "",outputDirectory)
-    
-    if (!is.character(dataFileNames) | !length(dataFileNames) > 1) {
-        stop("Argument dataFileNames is not of type character or does not contain two or more filenames!")
+  
+  # Remove leading / trailing spaces from inputDirectory
+  inputDirectory <- gsub("^\\s+|\\s+$", "",inputDirectory)
+  
+  if (!is.character(dataFileNames) | !length(dataFileNames) > 1) {
+    stop("Argument dataFileNames is not of type character or does not contain two or more filenames!")
+  }
+  if (!(is.character(inputDirectory))) {
+    stop("Argument inputDirectory is not of type character!") 
+    # first mode number must be either 5 or 7 to be at least readable / executable (changable) by the user
+    if (!(dir.exists(inputDirectory)) | !(substr(as.character(file.mode(inputDirectory)),1,1) == "5" | substr(as.character(file.mode(inputDirectory)),1,1) == "7")) { 
+      stop("The input directory is not accessible! Please check the path and the directory permissions.")
     }
-    if (!(is.character(inputDirectory))) {
-        stop("Argument inputDirectory is not of type character!") 
-        # first mode number must be either 5 or 7 to be at least readable / executable (changable) by the user
-        if (!(dir.exists(inputDirectory)) | !(substr(as.character(file.mode(inputDirectory)),1,1) == "5" | substr(as.character(file.mode(inputDirectory)),1,1) == "7")) { 
-            stop("The input directory is not accessible! Please check the path and the directory permissions.")
-        }
+  }
+  if (substr(inputDirectory, nchar(inputDirectory), nchar(inputDirectory)) != "/") {
+    # Add Slash, if needed
+    inputDirectory <- paste(inputDirectory, "/", sep = "")
+  }
+  if (!(is.character(dataFileNames)) | !(length(dataFileNames) > 1)) {
+    stop("Argument filenames is not of type character or does not contain more than one value!")
+  }
+  if (!is.character(colNameSubj)) {
+    stop("Argument colNameSubj is not of type character!")
+  }
+  if (!(is.logical(verbose))) {
+    stop("Argument verbose is not of type logical!")
+  }
+  
+  # Determing file type from file ending (*.csv, *.rda, *.Rdata); only the first filename is used!
+  filetype <- NULL
+  if (tolower(substr(dataFileNames[1], nchar(dataFileNames[1]) - 2, nchar(dataFileNames[1]))) == "csv") {
+    filetype <- "csv"
+  }
+  if ((tolower(substr(dataFileNames[1], nchar(dataFileNames[1]) - 2, nchar(dataFileNames[1]))) == "rda") | (tolower(substr(dataFileNames[1], nchar(dataFileNames[1]) - 4, nchar(dataFileNames[1]))) == "rdata")) {
+    filetype <- "rda"
+  }
+  if (!((filetype != "csv") | (filetype != "rda"))) {
+    stop("Filetypes not supperted! This function concatenates *.csv and *.rda / *.RData files.")
+  }
+  
+  # Helper functions
+  fcat <- function(...,newline=TRUE) {if (newline) cat(...,"\n") else cat(...); flush.console() }  # immediate console output
+  
+  # Step 1: Determing unique column names and nrows of the files to be concatenated for preallocation of dataframe
+  # Axel: fix me: compute also unique Stimulustypes
+  if (verbose) {
+    fcat("Step 1: Determine unique column names and number of rows of the files to be concatenated.")
+  }
+  
+  NFiles <- length(dataFileNames)
+  dataColNames <- NULL
+  dataNrows <- 0
+  if (verbose) {
+    fcat(paste("Read", NFiles,"files:"))
+  }
+  for (i in 1:length(dataFileNames)) {
+    if (verbose) {
+      fcat(paste("Read file ", dataFileNames[i], " (", i, "/", NFiles, ")", sep = ""))
     }
-    if (is.character(outputDirectory)) {
-      # first mode number must be either 3 or 7 to be at least writable / executable (changable) by the user
-        if ((outputDirectory == "") | (!(dir.exists(outputDirectory))) | !(substr(as.character(file.mode(outputDirectory)),1,1) == "3" | substr(as.character(file.mode(outputDirectory)),1,1) == "7")) {
-            stop("The output directory is not accessible! Please check the path and the directory permissions.")
-        }
+    if (filetype == "rda") {
+      # loading Rdata-files
+      dataName <- load(paste(inputDirectory, dataFileNames[i], sep = ""))
+      tempData <- get(dataName)
+      rm(list = dataName)  # delete temp data to keep memory usage low
+      gc()
+    }
+    if (filetype == "csv") {
+      # loading csv-files
+      tempData <- read.table(paste0(inputDirectory, dataFileNames[i]), header = TRUE, sep = ";", stringsAsFactors = FALSE, dec = ".")
+    }
+    if (verbose) {
+      fcat(paste("  Add ", nrow(tempData), " rows to data frame of actually ", dataNrows, " rows.", sep = ""))
+    }
+    dataColNames <- c(dataColNames, names(tempData))
+    dataNrows <- dataNrows + nrow(tempData)
+  }
+  rm(list = c("tempData"))
+  dataColNames <- sort(unique(dataColNames))
+  
+  if (verbose) {
+    fcat(paste("\nThe final data frame will have ", 
+               if (colNameSubj == "")
+               {length(dataColNames) + 1}
+               else {length(dataColNames)}, 
+               " columns and ", dataNrows, " rows.", sep = ""))
+  }
+  
+  if (verbose) {
+    fcat("\nThese are the unique column names of all files to be concatenated. Check whether they are correct.")
+    print(dataColNames)
+    fcat("Abort Script? (Press 'y' to abort or any other key to continue)")
+    if (tolower(readline(prompt = "? ")) == "y") {
+      stop("Aborted due to user request.")
+    }
+  }
+  
+  # Step 2: Concatenating files
+  if (verbose) {
+    fcat("Step 2: Concatenate files.")
+  }
+  
+  # Preallocate empty data frame
+  if (verbose) {
+    fcat(paste("\nPreallocat data frame of a ", 
+               if (colNameSubj == "")
+               {length(dataColNames) + 1}
+               else {length(dataColNames)}, 
+               "x", dataNrows, " matrix.", sep = ""))
+  }
+  if (colNameSubj == "") {
+    rawdata <- as.data.frame(matrix(data = NA, nrow = dataNrows, ncol = length(dataColNames) + 1))
+    colnames(rawdata) <- c("subject", dataColNames)
+  } else {
+    rawdata <- as.data.frame(matrix(data = NA, nrow = dataNrows, ncol = length(dataColNames)))
+    colnames(rawdata) <- dataColNames
+  }
+  
+  # load and concatenate files
+  dataNrows <- 1  # counter must start at 1 to address dataframe rows correctly
+  for (i in 1:length(dataFileNames)) {
+    if (verbose) {
+      fcat(paste("Concatenate file ", dataFileNames[i], " (", i, "/", length(dataFileNames), ")", sep = ""))
     } else {
-        stop("Argument inputDirectory is not of type character!")
+      # This process may take a while, so its better to give feedback
+      fcat(paste("Concatenate file ", dataFileNames[i], " (", i, "/", length(dataFileNames), ")", sep = ""))
     }
-    if (outputDirectory == "") {
-        outputDirectory <- inputDirectory
+    if (filetype == "rda") {
+      # loading Rdata-files
+      dataName <- load(paste(inputDirectory, dataFileNames[i], sep = ""))
+      tempData <- get(dataName)
+      rm(list = dataName)  # delete temp data to keep memory usage low
     }
-    if (substr(inputDirectory, nchar(inputDirectory), nchar(inputDirectory)) != "/") {
-        # Add Slash, if needed
-        inputDirectory <- paste(inputDirectory, "/", sep = "")
-    }
-    if (substr(outputDirectory, nchar(outputDirectory), nchar(outputDirectory)) != "/") {
-        # Add Slash, if needed
-        outputDirectory <- paste(outputDirectory, "/", sep = "")
-    }
-    if (!(is.character(dataFileNames)) | !(length(dataFileNames) > 1)) {
-        stop("Argument filenames is not of type character or does not contain more than one value!")
-    }
-    if (!is.character(colNameSubj)) {
-        stop("Argument colNameSubj is not of type character!")
-    }
-    if (!(is.character(outputFilename))) {
-        stop("Argument outputFilename is not of type character!")
-    }
-    if (!(is.logical(verbose))) {
-        stop("Argument verbose is not of type logical!")
+    if (filetype == "csv") {
+      # loading csv-files
+      tempData <- read.table(paste(inputDirectory, dataFileNames[i], sep = ""), header = TRUE, sep = ";", stringsAsFactors = FALSE, dec = ".")
     }
     
-    # Determing file type from file ending (*.csv, *.rda, *.Rdata); only the first filename is used!
-    filetype <- NULL
-    if (tolower(substr(dataFileNames[1], nchar(dataFileNames[1])- 2, nchar(dataFileNames[1]))) == "csv") {
-        filetype <- "csv"
-    }
-    if ((tolower(substr(dataFileNames[1], nchar(dataFileNames[1])- 2, nchar(dataFileNames[1]))) == "rda") | (tolower(substr(dataFileNames[1], nchar(dataFileNames[1])-4, nchar(dataFileNames[1]))) == "rdata")) {
-        filetype <- "rda"
-    }
-    if (!((filetype != "csv") | (filetype != "rda"))) {
-        stop("Filetypes not supperted! This function concatenates *.csv and *.rda / *.RData files.")
-    }
-    
-    # Helper functions
-    fcat <- function(...,newline=TRUE) {if (newline) cat(...,"\n") else cat(...); flush.console() }  # immediate console output
-    
-    # Step 1: Determing unique column names and nrows of the files to be concatenated for preallocation of dataframe
-    # Axel: fix me: compute also unique Stimulustypes
-    if (verbose) {
-        fcat("Step 1: Determine unique column names and number of rows of the files to be concatenated.")
-    }
-    
-    NFiles <- length(dataFileNames)
-    dataColNames <- NULL
-    dataNrows <- 0
-    if (verbose) {
-      fcat(paste("Read", NFiles,"files:"))
-    }
-    for (i in 1:length(dataFileNames)) {
-        if (verbose) {
-            fcat(paste("Read file ", dataFileNames[i], " (", i, "/", NFiles, ")", sep = ""))
-        }
-        if (filetype == "rda") {
-            # loading Rdata-files
-            dataName <- load(paste(inputDirectory, dataFileNames[i], sep = ""))
-            tempData <- get(dataName)
-            rm(list = dataName)  # delete temp data to keep memory usage low
-            gc()
-        }
-        if (filetype == "csv") {
-            # loading csv-files
-            tempData <- read.table(paste(inputDirectory, dataFileNames[i], sep = ""), header = TRUE, sep = ";", stringsAsFactors = FALSE, , dec = ".")
-        }
-        if (verbose) {
-            fcat(paste("  Add ", nrow(tempData), " rows to data frame of actually ", dataNrows, " rows.", sep = ""))
-        }
-        dataColNames <- c(dataColNames, names(tempData))
-        dataNrows <- dataNrows + nrow(tempData)
-    }
-    rm(list = c("tempData"))
-    dataColNames <- sort(unique(dataColNames))
-    
-    if (verbose) {
-        fcat(paste("\nThe final data frame will have ", 
-                         if (colNameSubj == "")
-                         {length(dataColNames) + 1}
-                         else {length(dataColNames)}, 
-                         " columns and ", dataNrows, " rows.", sep = ""))
-    }
-    
-    if (verbose) {
-        fcat("\nThese are the unique column names of all files to be concatenated. Check whether they are correct.")
-        print(dataColNames)
-        fcat("Abort Script? (Press 'y' to abort or any other key to continue)")
-        if (tolower(readline(prompt = "? ")) == "y") {
-            stop("Aborted due to user request.")
-        }
-    }
-    
-    # Step 2: Concatenating files
-    if (verbose) {
-        fcat("Step 2: Concatenate files.")
-    }
-    
-    # Preallocate empty data frame
-    if (verbose) {
-        fcat(paste("\nPreallocat data frame of a ", 
-                         if (colNameSubj == "")
-                         {length(dataColNames) + 1}
-                         else {length(dataColNames)}, 
-                         "x", dataNrows, " matrix.", sep = ""))
-    }
+    # Compute subject number from filename
     if (colNameSubj == "") {
-        rawdata <- as.data.frame(matrix(data = NA, nrow = dataNrows, ncol = length(dataColNames) + 1))
-        colnames(rawdata) <- c("subject", dataColNames)
-    } else {
-        rawdata <- as.data.frame(matrix(data = NA, nrow = dataNrows, ncol = length(dataColNames)))
-        colnames(rawdata) <- dataColNames
+      filenameParts1 <- strsplit(dataFileNames[i], "\\.")[[1]][1]
+      filenameParts2 <- strsplit(filenameParts1, "_")[[1]]
+      subject <- as.numeric(filenameParts2[length(filenameParts2)])
+      
+      tempData <- cbind(subject, tempData)
     }
     
-    # load and concatenate files
-    dataNrows <- 1  # counter must start at 1 to address dataframe rows correctly
-    for (i in 1:length(dataFileNames)) {
-        if (verbose) {
-            fcat(paste("Concatenate file ", dataFileNames[i], " (", i, "/", length(dataFileNames), ")", sep = ""))
-        } else {
-            # This process may take a while, so its better to give feedback
-            fcat(paste("Concatenate file ", dataFileNames[i], " (", i, "/", length(dataFileNames), ")", sep = ""))
-        }
-        if (filetype == "rda") {
-            # loading Rdata-files
-            dataName <- load(paste(inputDirectory, dataFileNames[i], sep = ""))
-            tempData <- get(dataName)
-            rm(list = dataName)  # delete temp data to keep memory usage low
-        }
-        if (filetype == "csv") {
-            # loading csv-files
-            tempData <- read.table(paste(inputDirectory, dataFileNames[i], sep = ""), header = TRUE, sep = ";", stringsAsFactors = FALSE, dec = ".")
-        }
-        
-        # Compute subject number from filename
-        if (colNameSubj == "") {
-            filenameParts1 <- strsplit(dataFileNames[i], "\\.")[[1]][1]
-            filenameParts2 <- strsplit(filenameParts1, "_")[[1]]
-            subject <- as.numeric(filenameParts2[length(filenameParts2)])
-            
-            tempData <- cbind(subject, tempData)
-        }
-        
-        # Writing data into preallocated data frame (much faster than merge())
-        rawdata[(dataNrows:(dataNrows + nrow(tempData) - 1)), names(tempData)] <- tempData
-        dataNrows <- dataNrows + nrow(tempData)
-    }
-    rm(tempData)
-    
-    # Step 3: Save output file
-    if (verbose) {
-        fcat("Step 3: Save output file (saving large data files takes some time).")
-    }
-    
-    # Sorting rows according to subject
-    rawdata <- rawdata[with(rawdata, order(rawdata$subject)), ]
-    # Sorting columns alphabetically
-    rawdata <- rawdata[sort(names(rawdata))]
-    
-    save(rawdata, file = paste(outputDirectory, outputFilename, sep = ""))
+    # Writing data into preallocated data frame (much faster than merge())
+    rawdata[(dataNrows:(dataNrows + nrow(tempData) - 1)), names(tempData)] <- tempData
+    dataNrows <- dataNrows + nrow(tempData)
+  }
+  rm(tempData)
+  
+  # Step 3: Return output dataframe
+  if (verbose) {
+    fcat("Step 3: Returning output dataframe (may take some time if input data is large).")
+  }
+  
+  # Sorting rows according to subject
+  rawdata <- rawdata[with(rawdata, order(rawdata$subject)), ]
+  # Sorting columns alphabetically
+  rawdata <- rawdata[sort(names(rawdata))]
+  
+  return(rawdata)
 }

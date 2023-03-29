@@ -79,9 +79,8 @@ filenames <- c("Subject_01.csv","Subject_02.csv")
 # If all files in a directory should be processes, use:
 # filenames <- list.files(inputdir, pattern = paste("[0-9]",".csv","$",sep=""))
 
-concatBlenderFiles(dataFileNames = filenames, inputDirectory = inputdir, 
-                   colNameSubj = "", outputFilename = "rawdata.rda", 
-                   outputDirectory = outputdir, verbose = TRUE)
+rawdata <- concatBlenderFiles(dataFileNames = filenames, inputDirectory = inputdir, 
+                   colNameSubj = "", verbose = TRUE)
 ```
 
 The console output of the `concatBlenderFiles` function for the two sample data files shows:
@@ -113,10 +112,10 @@ Step 2: Concatenate files.
 Preallocating data frame of a 51x3406 matrix. 
 Concatenating file Subject_01.csv (1/2) 
 Concatenating file Subject_02.csv (2/2) 
-Step 3: Savie output file (saving large data files takes some time). 
+Step 3: Returning output dataframe (may take some time if input data is large). 
 ```
 
-As the main output of this function a file with the file name given in the `outputFilename` parameter is saved in the directory given as `inputDirectory`, or given in the `outputDirectory` parameter, if given. The data frame stored in this file contains the data of all concatenated input data files. The output file of the two sample subjects attached to the `blenderFace` package is also attached to this package and labeled `rawdata`.
+As the main output of this function a dataframe is returned, which contains the data of all concatenated input data files. This output should be assigned to a variable and saved. The output file of the two sample subjects attached to the `blenderFace` package is also attached to this package and labeled `rawdata`.
 
 The correct spelling of the columns (= tracked markers) of the input data files has already been completed by the `concatBlenderFiles` function. It is also important, to check the stimulus conditions for correctness. This can be done with standard R code:
 

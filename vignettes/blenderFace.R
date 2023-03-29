@@ -15,9 +15,8 @@ library(blenderFace)
 #  # If all files in a directory should be processes, use:
 #  # filenames <- list.files(inputdir, pattern = paste("[0-9]",".csv","$",sep=""))
 #  
-#  concatBlenderFiles(dataFileNames = filenames, inputDirectory = inputdir,
-#                     colNameSubj = "", outputFilename = "rawdata.rda",
-#                     outputDirectory = outputdir, verbose = TRUE)
+#  rawdata <- concatBlenderFiles(dataFileNames = filenames, inputDirectory = inputdir,
+#                     colNameSubj = "", verbose = TRUE)
 
 ## ----eval=FALSE---------------------------------------------------------------
 #  Step 1: Determine unique column names and number of rows of the files to be concatenated.
@@ -46,7 +45,7 @@ library(blenderFace)
 #  Preallocating data frame of a 51x3406 matrix.
 #  Concatenating file Subject_01.csv (1/2)
 #  Concatenating file Subject_02.csv (2/2)
-#  Step 3: Savie output file (saving large data files takes some time).
+#  Step 3: Returning output dataframe (may take some time if input data is large).
 
 ## ----echo=TRUE, eval=TRUE-----------------------------------------------------
 table(rawdata$Stimulustype, rawdata$subject)

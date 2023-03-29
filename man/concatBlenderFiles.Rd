@@ -8,8 +8,6 @@ concatBlenderFiles(
   dataFileNames,
   inputDirectory,
   colNameSubj = "",
-  outputFilename,
-  outputDirectory = "",
   verbose = FALSE
 )
 }
@@ -29,15 +27,6 @@ extension). For example, from the filename 'RawData_Subj_39.RData' the subject n
  39 is taken. If the subject number is contained the single data files, the
 colNameSubj parameter must contain the column name of the subject column of
 the data files (e.g., \code{colNameSubj = "subject"}).}
-
-\item{outputFilename}{Character vector of length one to name the output 
-file. The output file is saved in the directory defined in either 
-\code{inputDirectory} or \code{outputDirectory}, if defined.}
-
-\item{outputDirectory}{Optional character vector of lenght one. Path to 
-where the output file should be saved (e.g., on Windows: 
-'C:/Data/Blenderdata/output/', on Unix-type systems:
-'/home/user/Data/Blenderdata/output/). If empty, the \code{inputDirectory} is used.}
 
 \item{verbose}{Logical value. If TRUE, the function provides verbose console output.}
 }
@@ -61,8 +50,7 @@ outputdir <- paste(system.file(package = "blenderFace"),"/data/",sep="")
 filenames <- c("Subject_01.csv","Subject_02.csv")
 
 concatBlenderFiles(dataFileNames = filenames, inputDirectory = inputdir, 
-colNameSubj = "", outputFilename = "Rawdata.rda", 
-outputDirectory = outputdir, verbose = TRUE)
+colNameSubj = "", verbose = TRUE)
 }
 
 }
