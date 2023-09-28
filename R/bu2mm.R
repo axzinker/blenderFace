@@ -31,7 +31,7 @@
 #' 
 #' @return Data frame with columns rescaled to millimeter.
 #'   
-#' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
+#' @author Axel Zinkernagel \email{zinkernagel@uni-wuppertal.de}
 #'   
 #' @examples
 #' # Load the file "Blender_Scalingdata.csv"

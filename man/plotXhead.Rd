@@ -85,5 +85,5 @@ plotXhead(data = data_Subj_happy[-1], dataPos = dataPos,
 }
 \author{
 Rainer Alexandrowicz \email{rainer.alexandrowicz@aau.at}, 
-Axel Zinkernagel \email{zinkernagel@uni-landau.de}
+Axel Zinkernagel \email{zinkernagel@uni-wuppertal.de}
 }

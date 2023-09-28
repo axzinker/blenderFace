@@ -20,7 +20,7 @@
 #'    
 #' @return Numeric matrix with median distance and angle.
 #'   
-#' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
+#' @author Axel Zinkernagel \email{zinkernagel@uni-wuppertal.de}
 #'   
 #' @examples
 #'colNames <- c("A7_x",  "A7_y",  "A8_x",  "A8_y",  

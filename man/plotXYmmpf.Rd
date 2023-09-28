@@ -52,5 +52,5 @@ plotXYmmpf(colFrames = data_Subj2Cen$Frame, colX = data_Subj2Cen$BR4_x,
   
 }
 \author{
-Axel Zinkernagel \email{zinkernagel@uni-landau.de}, Rainer Alexandrowicz \email{rainer.alexandrowicz@aau.at}
+Axel Zinkernagel \email{zinkernagel@uni-wuppertal.de}, Rainer Alexandrowicz \email{rainer.alexandrowicz@aau.at}
 }

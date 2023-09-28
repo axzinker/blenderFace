@@ -17,7 +17,7 @@
 #'   
 #' @return See vignette for example plots.
 #'   
-#' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}, Rainer Alexandrowicz \email{rainer.alexandrowicz@aau.at}
+#' @author Axel Zinkernagel \email{zinkernagel@uni-wuppertal.de}, Rainer Alexandrowicz \email{rainer.alexandrowicz@aau.at}
 #'   
 #' @examples
 #' # Select data of a subject at relevant frame sections

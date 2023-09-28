@@ -67,5 +67,5 @@ dataStdFCen <- centerCond(dataStdF, colNames = colNames,
 
 }
 \author{
-Axel Zinkernagel \email{zinkernagel@uni-landau.de}
+Axel Zinkernagel \email{zinkernagel@uni-wuppertal.de}
 }

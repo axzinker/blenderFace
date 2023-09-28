@@ -69,5 +69,5 @@ dataSmm <- bu2mm(data = rawdata, colNames = colNames, colNameSubj = "subject",
                  verbose = TRUE)
 }
 \author{
-Axel Zinkernagel \email{zinkernagel@uni-landau.de}
+Axel Zinkernagel \email{zinkernagel@uni-wuppertal.de}
 }

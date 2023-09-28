@@ -28,7 +28,7 @@
 #'         
 #' @return Returns data frame and saves Rdata file of concatenated input files.
 #'   
-#' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de},
+#' @author Axel Zinkernagel \email{zinkernagel@uni-wuppertal.de},
 #' Rainer Alexandrowicz \email{rainer.alexandrowicz@aau.at}
 #'   
 #' @examples

@@ -20,7 +20,7 @@
 #'    
 #' @return See vignette for example plots.
 #'   
-#' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
+#' @author Axel Zinkernagel \email{zinkernagel@uni-wuppertal.de}
 #'  
 #' @import plotrix
 #' @import utils

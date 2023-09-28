@@ -87,6 +87,6 @@ dataStdF <- face2stdFace(data = rawdata, colNames = colNames,
                          leftPMDist = scaledata$LeftPupilLeftMouthcornerDistance)
 }
 \author{
-Axel Zinkernagel \email{zinkernagel@uni-landau.de}, 
+Axel Zinkernagel \email{zinkernagel@uni-wuppertal.de}, 
 Rainer Alexandrowicz \email{rainer.alexandrowicz@aau.at}
 }

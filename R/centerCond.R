@@ -22,7 +22,7 @@
 #'   the parameter \code{maxCPUcores} (e.g., \code{maxCPUcores} = 12).
 #' @param verbose If TRUE, the function prints verbose output. Otherwise not.
 #'   
-#' @author Axel Zinkernagel \email{zinkernagel@uni-landau.de}
+#' @author Axel Zinkernagel \email{zinkernagel@uni-wuppertal.de}
 #'   
 #' @examples
 #'colNames <- c("A7_x",  "A7_y",  "A8_x",  "A8_y",  

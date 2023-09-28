@@ -49,5 +49,5 @@ angleDist(data_Subj_happy, colNames = c("CL7_x", "CL7_y"),
 
 }
 \author{
-Axel Zinkernagel \email{zinkernagel@uni-landau.de}
+Axel Zinkernagel \email{zinkernagel@uni-wuppertal.de}
 }

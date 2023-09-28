@@ -63,5 +63,5 @@ plotIndmm(data = data_Subj_happy, colNames = c("CL7_x", "CL7_y"),
           colNameSubj = "subject", title = "Posed Happy CL7")
 }
 \author{
-Axel Zinkernagel \email{zinkernagel@uni-landau.de}
+Axel Zinkernagel \email{zinkernagel@uni-wuppertal.de}
 }

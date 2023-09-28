@@ -30,7 +30,7 @@
 #' @return See vignette for example plots.
 #'   
 #' @author Rainer Alexandrowicz \email{rainer.alexandrowicz@aau.at}, 
-#' Axel Zinkernagel \email{zinkernagel@uni-landau.de}
+#' Axel Zinkernagel \email{zinkernagel@uni-wuppertal.de}
 #'   
 #' @examples
 #' colNames <- c("A7_x",  "A7_y",  "A8_x",  "A8_y",  

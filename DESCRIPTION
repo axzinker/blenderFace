@@ -1,10 +1,10 @@
 Package: blenderFace
 Type: Package
 Title: Collection of functions to process blender measured facial movement data
-Version: 0.1.93
+Version: 0.1.94
 Date: 2022-11-29
 Authors@R: c(
-  person("Axel", "Zinkernagel", email = "zinkernagel@uni-landau.de", role = c("cre","aut")),
+  person("Axel", "Zinkernagel", email = "zinkernagel@uni-wuppertal.de", role = c("cre","aut")),
   person("Rainer", "Alexandrowicz", email = "rainer.alexandrowicz@aau.at", role = "aut"))
 Description: Collection of functions to process blender measured facial movement
     data. This includes functions to scale and plot data.
@@ -37,6 +37,7 @@ Collate:
     'plotXYmmpf.R'
     'plotXhead.R'
     'mmParameters.R'
+    'transformOFcoords.R'
 Suggests:
     knitr,
     rmarkdown
