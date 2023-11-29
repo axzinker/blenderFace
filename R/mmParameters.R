@@ -188,7 +188,7 @@ mmParameters <- function(data, colNames, colNameSubj, colNameFrames, mmCutoff = 
   # Sort dataframe
   # Axel fix me:  order() produces the warning: In xtfrm.data.frame(x) : cannot xtfrm data frames
   #data <- as.matrix  (data) # this fixes it, but takes a lot of time
-  data <- data[order(data[colNameSubj], data[colNameFrames]),]
+  data <- data[order(data[,colNameSubj], data[,colNameFrames]),]
   #data <- as.data.frame(data)
   
   # Preallocate empty output dataframe

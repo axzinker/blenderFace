@@ -11,7 +11,8 @@ plotXhead(
   overplot = FALSE,
   color = "black",
   alpha = 0.5,
-  plotDataPos = FALSE
+  plotDataPos = FALSE,
+  plotDotSize = 0.02
 )
 }
 \arguments{
@@ -41,6 +42,8 @@ transparency, whereas 1 represents full color. Default = .50. This may be
 
 \item{plotDataPos}{If TRUE, for debugging puposes, the start position 
 coordinates of dataPos are plotted. Default is FALSE.}
+
+\item{plotDotSize}{Size of the dots in cex. Default is 0.2.}
 }
 \value{
 See vignette for example plots.

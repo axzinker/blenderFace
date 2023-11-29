@@ -50,12 +50,24 @@ of the head rotation in radiant (e.g., pose_Ry).}
 
 \item{pose_Rz}{String containing the name of the column containig the z-values 
 of the head rotation in radiant (e.g., pose_Rz).}
+
+\item{transfToRcoord}{Logical value if OpenFace coordinates should be transformed
+into the R coordinate system. This means that the Y and the Z axis are reverted. 
+Default is TRUE.}
+
+\item{transpose}{Logical value if the head movements should be controlled for.
+The coordinates of the head pose_Tx, pose_Ty and pose_Tz are subtracted from
+the marker coordinates. Default is TRUE.}
+
+\item{rotate}{Logical value if the head rotation should be controlled for.
+The rotation of the head pose_RTx, pose_Ry and pose_Rz are eleminated from
+the marker coordinates. Default is TRUE.}
 }
 \value{
 Dataframe with transformed OpenFace coordinates.
 }
 \description{
-OpenFace (\code{\link{https://github.com/TadasBaltrusaitis/OpenFace}}) allows
+OpenFace (\url{https://github.com/TadasBaltrusaitis/OpenFace/}) allows
 to export and save x, y, and z-coordinates per frame of a given set of markers. 
 However, these coordinates are confounded by head movements and head turns. 
 The function `transformOFcoords` allows to transform the OpenFace coordinate 
@@ -73,5 +85,5 @@ pose_Rx = "pose_Rx", pose_Ry = "pose_Ry", pose_Rz = "pose_Rz")
   
 }
 \author{
-
+Axel Zinkernagel \email{zinkernagel@uni-wuppertal.de}
 }

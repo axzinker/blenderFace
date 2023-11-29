@@ -24,6 +24,7 @@
 #'   Default is FALSE.
 #' @param plotDataPos If TRUE, for debugging puposes, the start position 
 #'   coordinates of dataPos are plotted. Default is FALSE.
+#' @param plotDotSize Size of the dots in cex. Default is 0.2.
 #'   
 #' @import grDevices
 #' 
@@ -65,16 +66,16 @@
 #'          title = "All Subjects, happy", plotDataPos = TRUE)
 #' 
 #' @export
-plotXhead <- function(data, dataPos, title = "", overplot = FALSE, color = "black", alpha = 0.5, plotDataPos = FALSE) {
+plotXhead <- function(data, dataPos, title = "", overplot = FALSE, color = "black", alpha = 0.5, plotDataPos = FALSE, plotDotSize = .02) {
     # Error handling
     if (!(nrow(data)) > 0 | !(is.data.frame(data))) {
         stop("Argument data is missing or of incorrect type!")
     }
     if (!(is.list(dataPos))) {
-        stop("Argument dataPos is a named list!")
-    } else {# fix me: better use setdiff()?
-      if (as.numeric(table(sort(unique(substr(names(data),1,nchar(names(data)) - 2))) == sort(names(dataPos)))["TRUE"]) != length(dataPos)) {
-        stop("Argument dataPos does not have the same marker names as data dataframe has, or is not ordered in the same way!")
+        stop("Argument dataPos is not a named list!")
+    } else {
+      if (!unique(names(dataPos) %in% unique(substr(names(data), 1, nchar(names(data)) - 2)))) {
+        stop("Argument dataPos does not have the same marker names as data dataframe has!")
       }
     }
     if (!(is.character(title))) {
@@ -137,6 +138,6 @@ plotXhead <- function(data, dataPos, title = "", overplot = FALSE, color = "blac
     
     # Plot markers on square head
     for (i in 1:(ncol(tempData)/2)) {
-        points(as.numeric(unlist(tempData[(i * 2) - 1])), as.numeric(unlist(tempData[i * 2])), pch = 16, col = color, cex = 0.2)
+        points(as.numeric(unlist(tempData[(i * 2) - 1])), as.numeric(unlist(tempData[i * 2])), pch = 16, col = color, cex = plotDotSize)
     }
 }
