@@ -157,8 +157,10 @@ centerCond <- function(data, colNames, colNameSubj, colNameFrames, colNameCond, 
     }
     # Verbose output is very time consuming; if wanted, add '.verbose = verbose' to the first foreach loop
     offsetValues <- foreach(i = 1:nrow(condStartFrames), .combine = rbind) %dopar% {
-        offsetRow <- subset(data, subset = ((data[[colNameSubj]] == condStartFrames$subjCol[i]) & (data[[colNameFrames]] == condStartFrames$frameCol[i])), 
-            select = colNames)
+        offsetRow <- subset(data, subset = ((data[[colNameSubj]] == condStartFrames$subjCol[i]) & 
+                                              (data[[colNameFrames]] == condStartFrames$frameCol[i]) &
+                                              (data[[colNameCond]] == condStartFrames$condCol[i])
+        ), select = colNames)
     }
     
     offsetTable <- cbind(condStartFrames, offsetValues)

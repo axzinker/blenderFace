@@ -74,7 +74,7 @@ The function `transformOFcoords` allows to transform the OpenFace coordinate
 system into the R coordinate system (flip y and z axes, so that the face is
 looking at you) and controls for head movements and rotations (using pose_Tx, 
 pose_Ty, pose_Tz, pose_Rx, pose_Ry, pose_Rz; see 
-\code{\link{https://github.com/TadasBaltrusaitis/OpenFace}}).
+\url{https://github.com/TadasBaltrusaitis/OpenFace}).
 }
 \examples{
 \dontrun{

@@ -7,7 +7,7 @@
 #' system into the R coordinate system (flip y and z axes, so that the face is
 #' looking at you) and controls for head movements and rotations (using pose_Tx, 
 #' pose_Ty, pose_Tz, pose_Rx, pose_Ry, pose_Rz; see 
-#' \code{\link{https://github.com/TadasBaltrusaitis/OpenFace}}).
+#' \url{https://github.com/TadasBaltrusaitis/OpenFace/}).
 #' 
 #' @param df Data frame containing OpenFace output CSV with x,y,z marker columns 
 #' and framerows.
